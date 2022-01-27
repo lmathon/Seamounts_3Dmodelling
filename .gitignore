@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+**/.DS_Store
+01_formating_data/01_eDNA/NouvelleCaledonie/*
+!01_formating_data/01_eDNA/NouvelleCaledonie/metadata/
+01_formating_data/01_eDNA/Rdata/*
+00_metadata/environmental/*

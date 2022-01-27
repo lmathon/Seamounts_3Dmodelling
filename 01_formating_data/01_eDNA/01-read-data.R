@@ -1,0 +1,221 @@
+# This script reads eDNA metabarcoding data from the SWARM clustering pipeline 
+# It cleans and formats data correctly 
+
+# Lib 
+library(tidyverse)
+library(data.table)
+library(conflicted)
+
+conflict_prefer("select", "dplyr")
+conflict_prefer("filter", "dplyr")
+
+# Source functions
+source("Scripts_R/00_functions.R")
+load("Scripts_R/Rdata/archive_class_ncbi.Rdata")
+
+# List the directories 
+list_projects_dir <- list.dirs(path = "Data_MOTUs", full.names = TRUE, recursive = F)
+
+# Create outputs list
+list_read_step1 <- list()
+list_clean_lot_discarded <- list()
+
+
+# For metadata field 
+columns_delete_field_metadata <- c("turbidity", "gps_start", "gps_b", "lat_gps_b", "long_gps_b", "gps_c", "long_gps_c", "lat_gps_d", "gps_half_turn", "longitude_turn", "latitude_end", "longitude_end", 
+                                   "gps_end", "long_gps_d", "gps_d", "lat_gps_c", "latitude_turn", "data_manager", "gps_owner", "chimera")
+
+
+# metadata_field <- read.csv("metadata/Metadata_eDNA_global_V6.csv")
+metadata_field <- read.csv("metadata_all.csv", sep=';')
+
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- # 
+# Step 1 - Assemble & clean
+# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- # 
+
+# Clean the index-hoping (ie. same plate number, different library)
+# Clean the tag-jump (1/1000 threshold for each MOTU within each library)
+
+for(i in 1:length(list_projects_dir)){
+  
+  dir_i <- list_projects_dir[[i]]
+  project_i <- word(dir_i, sep="/", 2)
+  
+  # Open files --- DO A WARNING HERE IF 0 FILES 
+  files_i <- list.files(path=dir_i, pattern = "(.*)teleo(.*)csv", recursive = F, include.dirs = FALSE)
+  
+  if(length(files_i)==0){next}
+  
+  # Metadata file 
+  metadata_i <- fread(paste0(dir_i, "/metadata/all_samples.csv"), sep=";", h=F, stringsAsFactors = F) # %>% # There is sometimes a bug where '-' in original metadata ends up being "." after processing - correct it here -- it only happends with read.csv!! (weird) not fread mutate(V3 = gsub("\\-","\\.",V3))
+  colnames(metadata_i)[1:5] <- c("plaque", "run", "sample_name", "project", "marker")
+  
+  # Check if the lot column is present or not 
+  if(dim(metadata_i)[2] == 6){
+    colnames(metadata_i)[6] <- c("lot")
+    }
+  
+  # ----- # Open files 
+  
+  # For the project 
+  project_table <- fread(
+    paste0(dir_i, "/", grep(paste0(
+      project_i, "(.*)table"), files_i, value=T, ignore.case = TRUE)),
+    sep="\t", stringsAsFactors = F, h=T)
+  
+  # Modif here to take only the double combination of ncbi and custom database
+  project_taxo <- fread(
+    paste0(dir_i, "/", grep(paste0(
+      project_i, "(.*)ecotag_customref"), files_i, value=T, ignore.case = TRUE)),
+    sep="\t", stringsAsFactors = F, h=T)
+  
+  # -------- # For the other files
+  # If there are multiple projects within a directory, the other projects needs to be grouped with the 'Other' files. 
+  # Ifelse condition here to filter 
+  # TEST ICI: REMOVE THE BLANKS TO BE ADDED: IT IS NOT OTHER FILES 
+  
+    # Other 
+      other_table <- fread(paste0(dir_i, "/", grep("Other(.*)table", files_i, value=T)), sep="\t", stringsAsFactors = F, h=T)
+      other_taxo <- fread(paste0(dir_i, "/", grep("Other(.*)ecotag_customref", files_i, value=T)), sep="\t", stringsAsFactors = F, h=T) # Modif here to take only the double combination of ncbi and custom database
+      
+      # Assemble
+      other_data <- assemble_data(table_otu = other_table, taxo_otu = other_taxo) %>%
+        left_join(., metadata_i)
+      
+    
+  # ----- # Assemble project data 
+  project_data <- assemble_data(table_otu = project_table, taxo_otu = project_taxo) %>%
+    left_join(., metadata_i)
+  
+  # Add a control message for samples with SPY which do not match metadata (other than other project)
+  
+  # ----- # Blanks 
+  # Blanks - not always present, and sometimes present but represent empty files
+  # Apply the code using the blanks only if those are present and not empty
+
+  # Find empty files
+  files_blank0 <- system(paste0("find ", dir_i, " -type f -size 0 -print"), intern = TRUE)
+  
+  # No files = no blanks
+  if(length(grep("Blank(.*)", files_i, value=T)) == 0){
+    project_data_clean <- project_data
+    message(paste0("There is no blank files for the ", project_i, " data"))
+  }
+  
+  # Files present but the Blank_teleo has an empty file, then print it is empty 
+  if(length(grep("Blank(.*)", files_i, value=T)) != 0  & sum(grepl("Blank_teleo", files_blank0), na.rm = TRUE) > 0){
+    project_data_clean <- project_data
+    message(paste0("Blank files are empty for the ", project_i, " data"))
+  }
+  
+  # Apply this only if blank files exist and if those are not empty
+    
+    # Read 
+    blank_table <- try(fread(paste0(dir_i, "/", grep("Blank(.*)table", files_i, value=T)), sep="\t", stringsAsFactors = F, h=T))
+    blank_taxo <- try(fread(paste0(dir_i, "/", grep("Blank(.*)ecotag_custom", files_i, value=T)), sep="\t", stringsAsFactors = F, h=T))
+    
+    # Assemble
+    blank_data <- assemble_data(table_otu = blank_table, taxo_otu = blank_taxo) %>%
+      left_join(., metadata_i)
+    
+    # CHeck NAs 
+    lesna <- blank_data %>% filter(is.na(plaque))
+    
+    # Clean index-hoping (inter-library tag-jump)
+    project_data_clean <- clean_index_hoping(file_edna = rbind(project_data, other_data), 
+                                       file_blank = blank_data)[[1]]
+    project_data_blanks_discarded <- clean_index_hoping(file_edna = rbind(project_data, other_data), 
+                                                        file_blank = blank_data)[[2]]
+    
+    seuil <- clean_index_hoping(file_edna = rbind(project_data, other_data), 
+                                file_blank = blank_data)[[3]]
+    
+    message(paste0("The Blank threhsold for the ", project_i, " project is ", seuil$seuil_blank))
+    
+ 
+  
+  # Verifs - no NA values on the run
+  verif_metadata <- !is.na(project_data_clean$run)
+  if( length(verif_metadata[verif_metadata==FALSE]) > 0 ) stop(paste(" error: some samples do not have metadata fields"))
+  
+  # Verify NAs
+  les_na <- project_data_clean %>% filter(is.na(run))
+  
+  # Clean tag-jump (output is a list, using [[2]] will output the discarded reads)
+  project_data_tag <- clean_tag_jump(file_edna = project_data_clean, file_other = other_data)[[1]]
+  
+  # Add project column - normally not necessary as present in metadata but just in case 
+  project_data_tag$project_i <- project_i
+  
+  # Store in list 
+  list_read_step1[[i]] <- project_data_tag
+  list_clean_lot_discarded[[i]] <- project_data_blanks_discarded
+  
+  # Print
+  print(paste0(i, "_",  project_i))
+  
+}
+
+ save(list_read_step1, list_clean_lot_discarded, file = "Scripts_R/Rdata/all_df_step1.Rdata")
+# load("Rdata/all_df_step1.Rdata")
+
+# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- # 
+# Step 2: Clean and complete taxonomy
+# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- # 
+
+load("Scripts_R/Rdata/archive_class_ncbi.Rdata")
+
+# Remove null elements from list
+list_read_step1 <- list_read_step1[!sapply(list_read_step1,is.null)]
+
+# Create and/or update archive file 
+for(i in 1:length(list_read_step1)){
+  
+  file <- list_read_step1[[i]]
+  
+  # Filter out null object
+  if(is.null(file)){next}
+  
+  # Clean taxonomy 
+  file_taxo <- clean_taxonomy(file)
+  
+  # Add class name column 
+  list_output <- add_class_name_archive(file_taxo, archive_class_ncbi)
+  archive_class_ncbi <- list_output[[2]]
+}
+
+# Apply workflow
+list_read_step2 <- lapply(list_read_step1, function(file){
+  
+  # Filter out null object
+  if(is.null(file)){next}
+  
+  # Clean column names 
+  columns_to_remove <- c("amplicon", "family", "genus", "order", "species", "taxid", "OTU", "total", 
+                         "cloud", "length", "abundance", "spread", "identity", "taxonomy", "references")
+  
+  file_short <- file %>%
+    select(-one_of(columns_to_remove))
+  
+  # Clean taxonomy 
+  file_taxo <- clean_taxonomy(file_short)
+  
+  # Add class name column 
+  list_output <- add_class_name_archive(file_taxo, archive_class_ncbi)
+  file_taxo_all <- list_output[[1]]
+  archive_class_ncbi <- list_output[[2]]
+  
+  # output
+  return(file_taxo_all)
+})
+
+# Save the new archive file 
+save(archive_class_ncbi, file = "Scripts_R/Rdata/archive_class_ncbi.Rdata")
+
+# Save data
+save(list_read_step1, list_clean_lot_discarded, list_read_step2, file = "Scripts_R/Rdata/01_read_data.Rdata")
+
+
+
