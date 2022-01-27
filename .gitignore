@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+**/.DS_Store
+01_formating_data/01_eDNA/data_MOTUs/NouvelleCaledonie/*
+!01_formating_data/01_eDNA/data_MOTUs/NouvelleCaledonie/metadata/
+00_metadata/environmental/*
