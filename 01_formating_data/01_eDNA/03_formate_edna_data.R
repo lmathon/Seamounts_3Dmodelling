@@ -29,7 +29,7 @@ meta <- meta %>% distinct(Station, .keep_all=T)
 
 edna_motu_variables <- full_join(edna_motus, meta, by=c("code_explo"="Station"))
 edna_motu_variables <- left_join(edna_motu_variables, var, by=c("code_explo"="Station"))
-
+edna_motu_variables[is.na(edna_motu_variables)] <- 0
 
 # save csv and rdata
 write.csv(edna_motu_variables, "01_formating_data/01_eDNA/edna_motus_variables.csv", row.names = F)
