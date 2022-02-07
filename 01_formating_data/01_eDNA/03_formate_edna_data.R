@@ -21,16 +21,22 @@ edna_motus[,-1][edna_motus[,-1] >0] <- 1
 
 # Sum of total richness per station
 edna_motus$richness_tot <- rowSums(edna_motus[,c(2:442)])
+edna_motus$logrichness_tot <- log(edna_motus$richness_tot+1)
+names(edna_motus)[names(edna_motus)=="code_explo"] <- "Station"
 
 # join with metadata and variables
 meta <- read.csv("01_formating_data/01_eDNA/EdnaDataForLaetitia.csv", sep=";")
 meta <- meta[,c("Station", "Date", "Time", "Sampling_depth")]
 meta <- meta %>% distinct(Station, .keep_all=T)
 
-edna_motu_variables <- full_join(edna_motus, meta, by=c("code_explo"="Station"))
-edna_motu_variables <- left_join(edna_motu_variables, var, by=c("code_explo"="Station"))
+edna_motu_variables <- full_join(edna_motus, meta)
+edna_motu_variables <- left_join(edna_motu_variables, var)
 edna_motu_variables[is.na(edna_motu_variables)] <- 0
 
+# keep only richness and log
+edna_richness_tot <- edna_motu_variables[,-c(2:442)]
+
 # save csv and rdata
-write.csv(edna_motu_variables, "01_formating_data/01_eDNA/edna_motus_variables.csv", row.names = F)
+write.csv(edna_richness_tot, "01_formating_data/01_eDNA/edna_richness_tot.csv", row.names = F)
 save(edna_motu_variables, file = "01_formating_data/01_eDNA/Rdata/edna_motus_variables.rdata")
+save(edna_richness_tot, file = "01_formating_data/01_eDNA/Rdata/edna_richness_tot.rdata")
