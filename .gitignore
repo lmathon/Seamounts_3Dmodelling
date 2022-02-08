@@ -4,6 +4,8 @@
 .Ruserdata
 
 **/.DS_Store
-01_formating_data/01_eDNA/data_MOTUs/NouvelleCaledonie/*
-!01_formating_data/01_eDNA/data_MOTUs/NouvelleCaledonie/metadata/
+01_Raw_data/Clean_eDNA/data_MOTUs/NouvelleCaledonie/*
+!01_Raw_data/Clean_eDNA/data_MOTUs/NouvelleCaledonie/metadata/
 00_metadata/environmental/*
+00_metadata/biblio/*
+00_metadata/Seamounts_Alain/*
