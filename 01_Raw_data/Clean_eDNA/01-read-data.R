@@ -10,11 +10,11 @@ conflict_prefer("select", "dplyr")
 conflict_prefer("filter", "dplyr")
 
 # Source functions
-source("01_Raw_data/Clean_eDNA/01_eDNA/00_functions.R")
+source("01_Raw_data/Clean_eDNA/00_functions.R")
 load("01_Raw_data/Clean_eDNA/Rdata/archive_class_ncbi.Rdata")
 
 # List the directories 
-list_projects_dir <- list.dirs(path = "01_Raw_data/Clean_eDNA/Data_MOTUs", full.names = TRUE, recursive = F)
+list_projects_dir <- list.dirs(path = "01_Raw_data/Clean_eDNA/data_MOTUs", full.names = TRUE, recursive = F)
 
 
 # Create outputs list

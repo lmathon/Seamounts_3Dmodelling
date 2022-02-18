@@ -25,13 +25,13 @@ names(edna_motus)[names(edna_motus)=="code_explo"] <- "Station"
 
 # complete with stations with 0 MOTUs
 edna_motus <- full_join(edna_motus, var[,c("Station", "Site")])
-edna_motus <- edna_motus[, -403]
+edna_motus <- edna_motus[, -ncol(edna_motus)]
 edna_motus[is.na(edna_motus)] <- 0
 
 save(edna_motus, file="02_formating_data/01_Bottom/Rdata/edna_motus_matrix.rdata")
 
 # Sum of total richness per station
-edna_motus$richness_tot <- rowSums(edna_motus[,c(2:402)])
+edna_motus$richness_tot <- rowSums(edna_motus[,c(2:ncol(edna_motus))])
 edna_motus$logrichness_tot <- log(edna_motus$richness_tot+1)
 
 # keep only richness and log
