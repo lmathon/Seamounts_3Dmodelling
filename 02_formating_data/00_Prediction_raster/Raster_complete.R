@@ -14,16 +14,35 @@ if (!require("writexl")) install.packages("writexl")
 if (!require("geosphere")) install.packages("geosphere")
 
 
-
-
-
 ### load df seamounts et coast
 
-load("02_formating_data/00_Prediction_raster/df_seamounts.rdata")
+load("02_formating_data/00_Prediction_raster/Rdata/df_seamounts.rdata")
+load("02_formating_data/00_Prediction_raster/Rdata/df_islands.rdata")
+load("02_formating_data/00_Prediction_raster/Rdata/df_grandeterre.rdata")
 
-# bind rows
+### load rasters
+
+raster_seamounts <- brick("02_formating_data/00_Prediction_raster/raster_seamounts.tif")
+names(raster_seamounts) <- c("BottomDepth","Habitat","ValleyDepth","SummitDepth","Height","SummitAreaKm2","SummitRugosity")
+raster_islands <- brick("02_formating_data/00_Prediction_raster/raster_islands.tif")
+raster_grandeterre <- brick("02_formating_data/00_Prediction_raster/raster_grandeterre.tif")
+
+# bind all
+raster_list <- list(raster_grandeterre, raster_islands, raster_seamounts)
+
+raster_complete <- do.call(merge, raster_list)
+
+raster_complete <- rast(raster_complete)
+names(raster_complete) <- c("BottomDepth","Habitat","ValleyDepth","SummitDepth","Height","SummitAreaKm2","SummitRugosity")
+
+writeRaster(raster_complete, filename = "02_formating_data/00_Prediction_raster/raster_complete.tif")
+
+df_complete <- as.data.frame(raster_complete, xy=TRUE)
+
+save(df_complete, file="02_formating_data/00_Prediction_raster/Rdata/df_complete.rdata")
 
 
+####################################################################################################################################
 ### load ENVIRONMENT
 SSTmean1k=raster("00_metadata/environmental/GRHSST/SSTmean1k.tif")
 SSTmin1k=raster("00_metadata/environmental/GRHSST/SSTmin1k.tif")

@@ -182,59 +182,6 @@ plot(raster_bellona)
 
 save(df_bellona, file="02_formating_data/00_Prediction_raster/Rdata/df_bellona.rdata")
 
-######################################################################################################################################
-grandeterre=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_grande_terre.shp")
-
-buffer_grandeterre <- buffer(grandeterre, width=0.1)
-plot(buffer_grandeterre)
-
-raster_grandeterre <- mask(Bathy_100, buffer_grandeterre)
-raster_grandeterre <- trim(raster_grandeterre, values=NA)
-raster_grandeterre[raster_grandeterre > 0] <- NA
-plot(raster_grandeterre)
-
-grandeterre_SummitDepth=round(max(values(raster_grandeterre),na.rm=TRUE))
-grandeterre_ValleyDepth=round(min(values(raster_grandeterre),na.rm=TRUE))
-grandeterre_Height=grandeterre_SummitDepth-grandeterre_ValleyDepth
-
-
-grandeterre_Summit_Poly=raster_grandeterre
-values(grandeterre_Summit_Poly)[values(grandeterre_Summit_Poly) < -60] = NA
-plot(grandeterre_Summit_Poly)
-grandeterre_SummitRugosity=sd(values(grandeterre_Summit_Poly),na.rm=TRUE)
-grandeterre_SummitRugosity
-values(grandeterre_Summit_Poly)[!is.na(values(grandeterre_Summit_Poly))] <- 1
-plot(grandeterre_Summit_Poly)
-grandeterre_Summit_Poly=rasterToPolygons(grandeterre_Summit_Poly, dissolve=T)
-grandeterre_SummitArea=area(grandeterre_Summit_Poly)*1e-6
-
-
-raster_grandeterre <- mask(raster_grandeterre, grandeterre_Summit_Poly, inverse=T)
-plot(raster_grandeterre)
-
-names(raster_grandeterre) <- "BottomDepth"
-
-df_grandeterre <- as.data.frame(raster_grandeterre, xy=T)
-
-for (i in 1:nrow(df_grandeterre)) {
-  if (!is.na(df_grandeterre[i,"BottomDepth"])){
-    df_grandeterre[i,"Habitat"] <- 4
-    df_grandeterre[i,"ValleyDepth"] <- grandeterre_ValleyDepth
-    df_grandeterre[i,"SummitDepth"] <- grandeterre_SummitDepth
-    df_grandeterre[i,"Height"] <- grandeterre_Height
-    df_grandeterre[i,"SummitAreaKm2"] <- grandeterre_SummitArea
-    df_grandeterre[i,"SummitRugosity"] <- grandeterre_SummitRugosity
-  }
-}
-
-df <- df_grandeterre
-coordinates(df) <- ~x+y
-gridded(df) <- TRUE
-raster_grandeterre <- stack(df)
-plot(raster_grandeterre$BottomDepth)
-
-
-save(df_grandeterre, file="02_formating_data/00_Prediction_raster/Rdata/df_grandeterre.rdata")
 
 ######################################################################################################################################
 entrecasteaux1=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_entrecasteaux1.shp")
@@ -1126,3 +1073,65 @@ writeRaster(raster_islands, filename = "02_formating_data/00_Prediction_raster/r
 df_islands <- as.data.frame(raster_islands, xy=TRUE)
 
 save(df_islands, file="02_formating_data/00_Prediction_raster/Rdata/df_islands.rdata")
+
+
+######################################################################################################################################
+grandeterre=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_grande_terre.shp")
+
+buffer_grandeterre <- buffer(grandeterre, width=0.1)
+plot(buffer_grandeterre)
+
+raster_grandeterre <- mask(Bathy_100, buffer_grandeterre)
+raster_grandeterre <- trim(raster_grandeterre, values=NA)
+raster_grandeterre[raster_grandeterre > 0] <- NA
+plot(raster_grandeterre)
+
+grandeterre_SummitDepth=round(max(values(raster_grandeterre),na.rm=TRUE))
+grandeterre_ValleyDepth=round(min(values(raster_grandeterre),na.rm=TRUE))
+grandeterre_Height=grandeterre_SummitDepth-grandeterre_ValleyDepth
+
+
+grandeterre_Summit_Poly=raster_grandeterre
+values(grandeterre_Summit_Poly)[values(grandeterre_Summit_Poly) < -60] = NA
+plot(grandeterre_Summit_Poly)
+grandeterre_SummitRugosity=sd(values(grandeterre_Summit_Poly),na.rm=TRUE)
+grandeterre_SummitRugosity
+values(grandeterre_Summit_Poly)[!is.na(values(grandeterre_Summit_Poly))] <- 1
+plot(grandeterre_Summit_Poly)
+grandeterre_Summit_Poly=rasterToPolygons(grandeterre_Summit_Poly, dissolve=T)
+grandeterre_SummitArea=area(grandeterre_Summit_Poly)*1e-6
+
+
+raster_grandeterre <- mask(raster_grandeterre, grandeterre_Summit_Poly, inverse=T)
+plot(raster_grandeterre)
+
+names(raster_grandeterre) <- "BottomDepth"
+
+df_grandeterre <- as.data.frame(raster_grandeterre, xy=T)
+
+for (i in 1:nrow(df_grandeterre)) {
+  if (!is.na(df_grandeterre[i,"BottomDepth"])){
+    df_grandeterre[i,"Habitat"] <- 4
+    df_grandeterre[i,"ValleyDepth"] <- grandeterre_ValleyDepth
+    df_grandeterre[i,"SummitDepth"] <- grandeterre_SummitDepth
+    df_grandeterre[i,"Height"] <- grandeterre_Height
+    df_grandeterre[i,"SummitAreaKm2"] <- grandeterre_SummitArea
+    df_grandeterre[i,"SummitRugosity"] <- grandeterre_SummitRugosity
+  }
+}
+
+df <- df_grandeterre
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_grandeterre <- stack(df)
+plot(raster_grandeterre)
+
+raster_grandeterre <- rast(raster_grandeterre)
+names(raster_grandeterre) <- c("BottomDepth","Habitat","ValleyDepth","SummitDepth","Height","SummitAreaKm2","SummitRugosity")
+
+writeRaster(raster_grandeterre, filename = "02_formating_data/00_Prediction_raster/raster_grandeterre.tif")
+
+df_grandeterre <- as.data.frame(raster_grandeterre, xy=TRUE)
+
+save(df_grandeterre, file="02_formating_data/00_Prediction_raster/Rdata/df_grandeterre.rdata")
+
