@@ -28,24 +28,35 @@ edna_motus <- full_join(edna_motus, var[,c("Station", "Site")])
 edna_motus <- edna_motus[, -ncol(edna_motus)]
 edna_motus[is.na(edna_motus)] <- 0
 
-save(edna_motus, file="02_formating_data/02_pelagic/Rdata/edna_motus_matrix.rdata")
 
 # Sum of total richness per station
 edna_motus$richness_tot <- rowSums(edna_motus[,c(2:ncol(edna_motus))])
-edna_motus$logrichness_tot <- log(edna_motus$richness_tot+1)
+
 
 # keep only richness and log
-edna_richness_pelagic <- edna_motus[,c("Station", "richness_tot", "logrichness_tot")]
+edna_richness_pelagic <- edna_motus[,c("Station", "richness_tot")]
+
+edna_richness_pelagic$Station <- gsub("-", "_", edna_richness_pelagic$Station)
+edna_richness_pelagic$Depth <- sub(".*_", "", edna_richness_pelagic$Station)
+edna_richness_pelagic$Station <- sub("_.*", "", edna_richness_pelagic$Station)
+
+edna_richness_pelagic <- spread(edna_richness_pelagic, Depth, richness_tot)
+
 
 # save rdata
 save(edna_richness_pelagic, file = "02_formating_data/02_pelagic/Rdata/edna_richness_pelagic.rdata")
 
 # save explanatory variables
-edna_var <- read.csv("01_Raw_data/EdnaDataForLaetitia.csv", sep=";")
-edna_var <- edna_var[,c("Station", "Sampling_depth")]
-edna_var <- edna_var %>% distinct(Station, .keep_all=T)
-
-edna_var <- left_join(var, edna_var)
+var <- var %>%
+  mutate(Habitat = case_when(
+    Site %in% c("Noumea", "PoyaNepoui", "Poum", "GLN") ~ "DeepSlope",
+    Site %in% c("Antigonia", "Torche", "Capel", "Fairway") ~ "Summit50",
+    Site %in% c("JumeauWest", "Crypthelia", "KaimonMaru", "Argo", "Nova") ~ "Summit250",
+    Site %in% c("Stylaster", "IleDesPins", "Eponge") ~ "Summit500"
+  ))
+var$Station <- sub("_.*", "", var$Station)
+var$Station <- sub("-.*", "", var$Station)
+edna_var <- var %>% distinct(Station, .keep_all=T)
 
 save(edna_var, file="00_metadata/edna_explanatory_variables_pelagic.rdata")
 

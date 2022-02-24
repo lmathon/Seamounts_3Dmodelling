@@ -14,10 +14,8 @@ if (!require("stringr")) install.packages("stringr")
 if (!require("lubridate")) install.packages("lubridate")
 if (!require("dplyr")) install.packages("dplyr")
 if (!require("rgeos")) install.packages("rgeos")
-
 if (!require("readxl")) install.packages("readxl")
 if (!require("writexl")) install.packages("writexl")
-
 if (!require("geosphere")) install.packages("geosphere")
 
 
@@ -25,15 +23,15 @@ if (!require("geosphere")) install.packages("geosphere")
 ##read bathymetrie
 
 # World GEBCO Bathymetry at 500 m resolution (download 2021)
-Bathy_GEBCO=raster("data/environmental/Bathymetrie_GEBCO_2020_19_Jul_2021_56faf792d27a/gebco_2020_n-14.0_s-27.0_w155.0_e175.0.tif")
+Bathy_GEBCO=raster("00_metadata/environmental/Bathymetrie_GEBCO_2020_19_Jul_2021_56faf792d27a/gebco_2020_n-14.0_s-27.0_w155.0_e175.0.tif")
 Bathy_GEBCO
 
 # NC BATHYMETRY MNT at 500 m resolution (2009)
-Bathy_500_LatLong=raster("data/environmental/bathytopoMNT500m/Bathy_500_LatLong.tif")
+Bathy_500_LatLong=raster("00_metadata/environmental/bathytopoMNT500m/Bathy_500_LatLong.tif")
 Bathy_500_LatLong
 
 # NC Bathymetry at 100 m resolution (2020 - given by Jean Roger)
-Bathy_100=raster("data/environmental/bathytopoMNT100m/MNT-nettoye_v3_FINAL.tif")
+Bathy_100=raster("00_metadata/environmental/bathytopoMNT100m/MNT-nettoye_v3_FINAL.tif")
 Bathy_100
 
 plot(Bathy_500_LatLong)
@@ -119,40 +117,40 @@ plot(DNApoint,add=TRUE)
 
 ### ENVIRONMENT
 #SSTmean
-SSTmean1k=raster("data/environmental/GRHSST/SSTmean1k.tif")
+SSTmean1k=raster("00_metadata/environmental/GRHSST/SSTmean1k.tif")
 
 #SSTmin
-SSTmin1k=raster("data/environmental/GRHSST/SSTmin1k.tif")
+SSTmin1k=raster("00_metadata/environmental/GRHSST/SSTmin1k.tif")
 
 #SSTmax
-SSTmax1k=raster("data/environmental/GRHSST/SSTmax1k.tif")
+SSTmax1k=raster("00_metadata/environmental/GRHSST/SSTmax1k.tif")
 
 #SSTsd
-SSTsd1k=raster("data/environmental/GRHSST/SSTsd1k.tif")
+SSTsd1k=raster("00_metadata/environmental/GRHSST/SSTsd1k.tif")
 
 #ChlorA
-ChlorA=raster("data/environmental/ChlorA/ChlorAmean4k.tif")
+ChlorA=raster("00_metadata/environmental/ChlorA/ChlorAmean4k.tif")
 
 #EastwardVelocity
-EastwardVelocity=raster("data/environmental/EastwardVelocity/EastwardVelocity_Surface_mean_8k.tif")
+EastwardVelocity=raster("00_metadata/environmental/EastwardVelocity/EastwardVelocity_Surface_mean_8k.tif")
 
 #NorthwardVelocity
-NorthwardVelocity=raster("data/environmental/NorthwardVelocity/NorthwardVelocity_Surface_mean_8k.tif")
+NorthwardVelocity=raster("00_metadata/environmental/NorthwardVelocity/NorthwardVelocity_Surface_mean_8k.tif")
 
 #Salinity
-Salinity=raster("data/environmental/Salinity/Salinity_Surface_mean_8k.tif")
+Salinity=raster("00_metadata/environmental/Salinity/Salinity_Surface_mean_8k.tif")
 
 
 #SeaFloorPotentialTemperature
-SeaFloorPotentialTemperature=raster("data/environmental/SeaFloorPotentialTemperature/SeafloorTemp_Surface_mean_8k.tif")
+SeaFloorPotentialTemperature=raster("00_metadata/environmental/SeaFloorPotentialTemperature/SeafloorTemp_Surface_mean_8k.tif")
 
 
 #SuspendedParticulateMatter
-SuspendedParticulateMatter=raster("data/environmental/SuspendedParticulateMatter/SuspMattermean4k.tif")
+SuspendedParticulateMatter=raster("00_metadata/environmental/SuspendedParticulateMatter/SuspMattermean4k.tif")
 
 
 #Geomorphology (land and reef)
-Geomorphology=shapefile("data/environmental/NewCaledoniaMilleniumGeomorphology/NewCaledonia_v8.shp")
+Geomorphology=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/NewCaledonia_v8.shp")
 
 head(Geomorphology@data)
 unique(Geomorphology@data$REEF)
@@ -162,7 +160,7 @@ unique(Geomorphology@data$L1_ATTRIB)
 Reef <- Geomorphology[Geomorphology@data$REEF == 1, ]
 head(Reef@data)
 unique(Reef@data$REEF)
-#plot(Reef)
+plot(Reef)
 
 Land <- Geomorphology[Geomorphology@data$L1_CODE == 2, ]
 head(Land@data)
