@@ -170,6 +170,7 @@ clean_index_hoping <- function(file_edna, file_blank){
     filter(grepl(project_i, project, ignore.case = TRUE)) %>%
     select(-clean)
   
+  project_counts$discard[is.na(project_counts$discard)] <- "no"
   #
   table(project_counts$discard)
   

@@ -23,7 +23,6 @@ load("02_formating_data/00_Prediction_raster/Rdata/df_grandeterre.rdata")
 ### load rasters
 
 raster_seamounts <- brick("02_formating_data/00_Prediction_raster/raster_seamounts.tif")
-names(raster_seamounts) <- c("BottomDepth","Habitat","ValleyDepth","SummitDepth","Height","SummitAreaKm2","SummitRugosity")
 raster_islands <- brick("02_formating_data/00_Prediction_raster/raster_islands.tif")
 raster_grandeterre <- brick("02_formating_data/00_Prediction_raster/raster_grandeterre.tif")
 
@@ -35,7 +34,7 @@ raster_complete <- do.call(merge, raster_list)
 raster_complete <- rast(raster_complete)
 names(raster_complete) <- c("BottomDepth","Habitat","ValleyDepth","SummitDepth","Height","SummitAreaKm2","SummitRugosity")
 
-writeRaster(raster_complete, filename = "02_formating_data/00_Prediction_raster/raster_complete.tif")
+writeRaster(raster_complete, filename = "02_formating_data/00_Prediction_raster/raster_complete.tif", overwrite=T)
 
 df_complete <- as.data.frame(raster_complete, xy=TRUE)
 
@@ -55,50 +54,47 @@ Salinity=raster("00_metadata/environmental/Salinity/Salinity_Surface_mean_8k.tif
 SeaFloorPotentialTemperature=raster("00_metadata/environmental/SeaFloorPotentialTemperature/SeafloorTemp_Surface_mean_8k.tif")
 SuspendedParticulateMatter=raster("00_metadata/environmental/SuspendedParticulateMatter/SuspMattermean4k.tif")
 
-#Geomorphology (land and reef)
-Geomorphology=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/NewCaledonia_v8.shp")
-
-head(Geomorphology@data)
-unique(Geomorphology@data$REEF)
-unique(Geomorphology@data$L1_CODE)
-unique(Geomorphology@data$L1_ATTRIB)
-
-Reef <- Geomorphology[Geomorphology@data$REEF == 1, ]
-head(Reef@data)
-unique(Reef@data$REEF)
-plot(Reef)
-
-Land <- Geomorphology[Geomorphology@data$L1_CODE == 2, ]
-head(Land@data)
-unique(Land@data$L1_CODE)
-unique(Land@data$L1_ATTRIB)
 
 
 # assemble df and variables
 
-df$SSTmean1k=extract(SSTmean1k,df[c(1,2)])
-df$SSTmin1k=extract(SSTmin1k,df[c(1,2)])
-df$SSTmax1k=extract(SSTmax1k,df[c(1,2)])
-df$SSTsd1k=extract(SSTsd1k,df[c(1,2)])
-df$ChlorA=extract(ChlorA,df[c(1,2)])
-df$EastwardVelocity=extract(EastwardVelocity,df[c(1,2)])
-df$NorthwardVelocity=extract(NorthwardVelocity,df[c(1,2)])
-df$Salinity=extract(Salinity,df[c(1,2)])
-df$SeaFloorPotentialTemperature=extract(SeaFloorPotentialTemperature,df[c(1,2)])
-df$SuspendedParticulateMatter=extract(SuspendedParticulateMatter,df[c(1,2)])
-
-df_pnts=df[,c(1,2)]
-dist.Reef = geosphere::dist2Line(df_pnts, Reef)
-dist.Land = geosphere::dist2Line(df_pnts, Land)
-df$ShortestDistanceReef=dist.Reef[,1]
-df$ShortestDistanceLand=dist.Land[,1]
-
-# Calculate TravelTime
+df_complete$SSTmean=extract(SSTmean1k,df_complete[c(1,2)])
+df_complete$SSTmin=extract(SSTmin1k,df_complete[c(1,2)])
+df_complete$SSTmax=extract(SSTmax1k,df_complete[c(1,2)])
+df_complete$SSTsd=extract(SSTsd1k,df_complete[c(1,2)])
+df_complete$Chla=extract(ChlorA,df_complete[c(1,2)])
+df_complete$EastwardVelocity=extract(EastwardVelocity,df_complete[c(1,2)])
+df_complete$NorthwardVelocity=extract(NorthwardVelocity,df_complete[c(1,2)])
+df_complete$Salinity=extract(Salinity,df_complete[c(1,2)])
+df_complete$seafloorTemp=extract(SeaFloorPotentialTemperature,df_complete[c(1,2)])
+df_complete$SuspendedParticulateMatter=extract(SuspendedParticulateMatter,df_complete[c(1,2)])
 
 
 # transform df back to raster multi-layers
 
+df <- df_complete
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 
 raster_complete <- stack(df)
+
+plot(raster_complete)
+
+raster_complete <- rast(raster_complete)
+
+writeRaster(raster_complete, filename = "02_formating_data/00_Prediction_raster/raster_complete.tif", overwrite=T)
+
+
+# Transform Habitat into character in the df
+
+df_complete <- df_complete %>%
+  mutate(Habitat = case_when(
+    Habitat == 4 ~ "DeepSlope",
+    Habitat == 1 ~ "Summit50",
+    Habitat == 2 ~ "Summit250",
+    Habitat == 3 ~ "Summit500"
+  ))
+
+
+save(df_complete, file="02_formating_data/00_Prediction_raster/Rdata/df_complete.rdata")
+write.csv(df_complete, file="02_formating_data/00_Prediction_raster/df_prediction.csv", row.names = F)

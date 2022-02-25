@@ -88,14 +88,6 @@ load("00_metadata/edna_explanatory_variables_pelagic.rdata")
 colnames(edna_var)[24] <- "BottomDepth"
 colnames(edna_var)[22] <- "SummitAreaKm2"
 
-edna_var <- edna_var %>%
-  mutate(Habitat = case_when(
-    Site %in% c("Noumea", "PoyaNepoui", "Poum", "GrandLagonNord") ~ "DeepSlope",
-    Site %in% c("Antigonia", "Torche", "Capel", "Fairway") ~ "Summit50",
-    Site %in% c("JumeauWest", "Crypthelia", "KaimonMaru", "Argo", "Nova") ~ "Summit250",
-    Site %in% c("Stylaster", "IleDesPins", "Eponge") ~ "Summit500"
-  ))
-
 
 # change summit area and summit rugosity for deepslope
 for (i in 1:nrow(edna_var)) {

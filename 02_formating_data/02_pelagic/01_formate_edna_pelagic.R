@@ -49,7 +49,7 @@ save(edna_richness_pelagic, file = "02_formating_data/02_pelagic/Rdata/edna_rich
 # save explanatory variables
 var <- var %>%
   mutate(Habitat = case_when(
-    Site %in% c("Noumea", "PoyaNepoui", "Poum", "GLN") ~ "DeepSlope",
+    Site %in% c("Noumea", "PoyaNepoui", "Poum", "GrandLagonNord") ~ "DeepSlope",
     Site %in% c("Antigonia", "Torche", "Capel", "Fairway") ~ "Summit50",
     Site %in% c("JumeauWest", "Crypthelia", "KaimonMaru", "Argo", "Nova") ~ "Summit250",
     Site %in% c("Stylaster", "IleDesPins", "Eponge") ~ "Summit500"

@@ -18,7 +18,7 @@ if (!require("geosphere")) install.packages("geosphere")
 Bathy_100=raster("00_metadata/environmental/bathytopoMNT100m/MNT-nettoye_v3_FINAL.tif")
 Bathy_100
 
-#######!!! lagon > 60m !!!!########################################################################################################################
+##################################################################################################################################
 chesterfield=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_chesterfield.shp")
 
 buffer_chesterfield <- buffer(chesterfield, width=0.1)
@@ -34,9 +34,19 @@ chesterfield_SummitDepth=round(max(values(raster_chesterfield),na.rm=TRUE))
 chesterfield_ValleyDepth=round(min(values(raster_chesterfield),na.rm=TRUE))
 chesterfield_Height=chesterfield_SummitDepth-chesterfield_ValleyDepth
 
+lagoon <- shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_chesterfield_lagoon.shp")
+lagoon <- aggregate(lagoon, dissolve=T)
+buffer_lagoon <- buffer(lagoon, width=-0.01)
+
+
 chesterfield_Summit_Poly=raster_chesterfield
 values(chesterfield_Summit_Poly)[values(chesterfield_Summit_Poly) < -60] = NA
+
+chesterfield_Summit_Poly2=mask(Bathy_100, buffer_lagoon)
+chesterfield_Summit_Poly2 <- trim(chesterfield_Summit_Poly2, values=NA)
 plot(chesterfield_Summit_Poly)
+plot(chesterfield_Summit_Poly2, add=T)
+chesterfield_Summit_Poly <- merge(chesterfield_Summit_Poly, chesterfield_Summit_Poly2)
 chesterfield_SummitRugosity=sd(values(chesterfield_Summit_Poly),na.rm=TRUE)
 chesterfield_SummitRugosity
 values(chesterfield_Summit_Poly)[!is.na(values(chesterfield_Summit_Poly))] <- 1
@@ -72,7 +82,7 @@ raster_chesterfield <- stack(df)
 save(df_chesterfield, file="02_formating_data/00_Prediction_raster/Rdata/df_chesterfield.rdata")
 
 
-######################################################################################################################################
+##################################################################################################################################
 chesterfield2=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_chesterfield2.shp")
 
 buffer_chesterfield2 <- buffer(chesterfield2, width=0.08)
@@ -125,7 +135,7 @@ plot(raster_chesterfield2)
 
 save(df_chesterfield2, file="02_formating_data/00_Prediction_raster/Rdata/df_chesterfield2.rdata")
 
-#######!!! lagon > 60m !!!!########################################################################################################################
+##################################################################################################################################
 bellona=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_bellona.shp")
 
 buffer_bellona <- buffer(bellona, width=0.1)
@@ -136,16 +146,16 @@ raster_bellona <- trim(raster_bellona, values=NA)
 raster_bellona[raster_bellona > 0] <- NA
 plot(raster_bellona)
 
-new_extent <- extent(158.3462, 159.703, -22.01209, -20.38649)
-raster_bellona <- crop(raster_bellona, new_extent)
-
 bellona_SummitDepth=round(max(values(raster_bellona),na.rm=TRUE))
 bellona_ValleyDepth=round(min(values(raster_bellona),na.rm=TRUE))
 bellona_Height=bellona_SummitDepth-bellona_ValleyDepth
 
+lagoon <- shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_bellona_lagon.shp")
+lagoon <- aggregate(lagoon, dissolve=T)
+buffer_lagon <- buffer(lagoon, width=-0.05)
 
-bellona_Summit_Poly=raster_bellona
-values(bellona_Summit_Poly)[values(bellona_Summit_Poly) < -60] = NA
+bellona_Summit_Poly=mask(Bathy_100, buffer_lagon)
+bellona_Summit_Poly <- trim(bellona_Summit_Poly, values=NA)
 plot(bellona_Summit_Poly)
 bellona_SummitRugosity=sd(values(bellona_Summit_Poly),na.rm=TRUE)
 bellona_SummitRugosity
@@ -183,7 +193,7 @@ plot(raster_bellona)
 save(df_bellona, file="02_formating_data/00_Prediction_raster/Rdata/df_bellona.rdata")
 
 
-######################################################################################################################################
+##################################################################################################################################
 entrecasteaux1=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_entrecasteaux1.shp")
 
 buffer_entrecasteaux1 <- buffer(entrecasteaux1, width=0.07)
@@ -240,7 +250,7 @@ plot(raster_entrecasteaux1)
 
 save(df_entrecasteaux1, file="02_formating_data/00_Prediction_raster/Rdata/df_entrecasteaux1.rdata")
 
-######################################################################################################################################
+##################################################################################################################################
 entrecasteaux2=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_entrecasteaux2.shp")
 
 buffer_entrecasteaux2 <- buffer(entrecasteaux2, width=0.07)
@@ -297,7 +307,7 @@ plot(raster_entrecasteaux2)
 
 save(df_entrecasteaux2, file="02_formating_data/00_Prediction_raster/Rdata/df_entrecasteaux2.rdata")
 
-######################################################################################################################################
+##################################################################################################################################
 entrecasteaux3=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_entrecasteaux3.shp")
 
 buffer_entrecasteaux3 <- buffer(entrecasteaux3, width=0.07)
@@ -353,7 +363,7 @@ plot(raster_entrecasteaux3$BottomDepth)
 
 save(df_entrecasteaux3, file="02_formating_data/00_Prediction_raster/Rdata/df_entrecasteaux3.rdata")
 
-######################################################################################################################################
+##################################################################################################################################
 entrecasteaux4=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_entrecasteaux4.shp")
 
 buffer_entrecasteaux4 <- buffer(entrecasteaux4, width=0.08)
@@ -893,112 +903,6 @@ plot(raster_atoll2)
 
 save(df_atoll2, file="02_formating_data/00_Prediction_raster/Rdata/df_atoll2.rdata")
 
-######!!!Pas d'atoll !! ############################################################################################################################
-atoll3=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_atoll3.shp")
-
-buffer_atoll3 <- buffer(atoll3, width=0.1)
-plot(buffer_atoll3)
-
-raster_atoll3 <- mask(Bathy_100, buffer_atoll3)
-raster_atoll3 <- trim(raster_atoll3, values=NA)
-raster_atoll3[raster_atoll3 > 0] <- NA
-plot(raster_atoll3)
-
-atoll3_SummitDepth=round(max(values(raster_atoll3),na.rm=TRUE))
-atoll3_ValleyDepth=round(min(values(raster_atoll3),na.rm=TRUE))
-atoll3_Height=atoll3_SummitDepth-atoll3_ValleyDepth
-
-
-atoll3_Summit_Poly=raster_atoll3
-values(atoll3_Summit_Poly)[values(atoll3_Summit_Poly) < -60] = NA
-plot(atoll3_Summit_Poly)
-atoll3_SummitRugosity=sd(values(atoll3_Summit_Poly),na.rm=TRUE)
-atoll3_SummitRugosity
-values(atoll3_Summit_Poly)[!is.na(values(atoll3_Summit_Poly))] <- 1
-plot(atoll3_Summit_Poly)
-atoll3_Summit_Poly=rasterToPolygons(atoll3_Summit_Poly, dissolve=T)
-atoll3_SummitArea=area(atoll3_Summit_Poly)*1e-6
-
-
-raster_atoll3 <- mask(raster_atoll3, atoll3_Summit_Poly, inverse=T)
-plot(raster_atoll3)
-
-names(raster_atoll3) <- "BottomDepth"
-
-df_atoll3 <- as.data.frame(raster_atoll3, xy=T)
-
-for (i in 1:nrow(df_atoll3)) {
-  if (!is.na(df_atoll3[i,"BottomDepth"])){
-    df_atoll3[i,"Habitat"] <- 4
-    df_atoll3[i,"ValleyDepth"] <- atoll3_ValleyDepth
-    df_atoll3[i,"SummitDepth"] <- atoll3_SummitDepth
-    df_atoll3[i,"Height"] <- atoll3_Height
-    df_atoll3[i,"SummitAreaKm2"] <- atoll3_SummitArea
-    df_atoll3[i,"SummitRugosity"] <- atoll3_SummitRugosity
-  }
-}
-
-df <- df_atoll3
-coordinates(df) <- ~x+y
-gridded(df) <- TRUE
-raster_atoll3 <- stack(df)
-plot(raster_atoll3$BottomDepth)
-
-save(df_atoll3, file="02_formating_data/00_Prediction_raster/Rdata/df_atoll3.rdata")
-
-######!!!Pas d'atoll !!############################################################################################################################
-atoll4=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_atoll4.shp")
-
-buffer_atoll4 <- buffer(atoll4, width=0.1)
-plot(buffer_atoll4)
-
-raster_atoll4 <- mask(Bathy_100, buffer_atoll4)
-raster_atoll4 <- trim(raster_atoll4, values=NA)
-raster_atoll4[raster_atoll4 > 0] <- NA
-plot(raster_atoll4)
-
-atoll4_SummitDepth=round(max(values(raster_atoll4),na.rm=TRUE))
-atoll4_ValleyDepth=round(min(values(raster_atoll4),na.rm=TRUE))
-atoll4_Height=atoll4_SummitDepth-atoll4_ValleyDepth
-
-
-atoll4_Summit_Poly=raster_atoll4
-values(atoll4_Summit_Poly)[values(atoll4_Summit_Poly) < -60] = NA
-plot(atoll4_Summit_Poly)
-atoll4_SummitRugosity=sd(values(atoll4_Summit_Poly),na.rm=TRUE)
-atoll4_SummitRugosity
-values(atoll4_Summit_Poly)[!is.na(values(atoll4_Summit_Poly))] <- 1
-plot(atoll4_Summit_Poly)
-atoll4_Summit_Poly=rasterToPolygons(atoll4_Summit_Poly, dissolve=T)
-atoll4_SummitArea=area(atoll4_Summit_Poly)*1e-6
-
-
-raster_atoll4 <- mask(raster_atoll4, atoll4_Summit_Poly, inverse=T)
-plot(raster_atoll4)
-
-names(raster_atoll4) <- "BottomDepth"
-
-df_atoll4 <- as.data.frame(raster_atoll4, xy=T)
-
-for (i in 1:nrow(df_atoll4)) {
-  if (!is.na(df_atoll4[i,"BottomDepth"])){
-    df_atoll4[i,"Habitat"] <- 4
-    df_atoll4[i,"ValleyDepth"] <- atoll4_ValleyDepth
-    df_atoll4[i,"SummitDepth"] <- atoll4_SummitDepth
-    df_atoll4[i,"Height"] <- atoll4_Height
-    df_atoll4[i,"SummitAreaKm2"] <- atoll4_SummitArea
-    df_atoll4[i,"SummitRugosity"] <- atoll4_SummitRugosity
-  }
-}
-
-df <- df_atoll4
-coordinates(df) <- ~x+y
-gridded(df) <- TRUE
-raster_atoll4 <- stack(df)
-plot(raster_atoll4$BottomDepth)
-
-save(df_atoll4, file="02_formating_data/00_Prediction_raster/Rdata/df_atoll4.rdata")
-
 ##################################################################################################################################
 atoll5=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_atoll5.shp")
 
@@ -1054,7 +958,7 @@ save(df_atoll5, file="02_formating_data/00_Prediction_raster/Rdata/df_atoll5.rda
 
 
 
-##################################################################################################
+##################################################################################################################################
 ## merge all raster
 
 raster_list <- list(raster_ouvea, raster_atoll1, raster_atoll2, raster_atoll5, raster_bellona, raster_chesterfield,
@@ -1068,7 +972,7 @@ raster_islands <- do.call(merge, raster_list)
 raster_islands <- rast(raster_islands)
 names(raster_islands) <- c("BottomDepth","Habitat","ValleyDepth","SummitDepth","Height","SummitAreaKm2","SummitRugosity")
 
-writeRaster(raster_islands, filename = "02_formating_data/00_Prediction_raster/raster_islands.tif")
+writeRaster(raster_islands, filename = "02_formating_data/00_Prediction_raster/raster_islands.tif", overwrite=T)
 
 df_islands <- as.data.frame(raster_islands, xy=TRUE)
 
