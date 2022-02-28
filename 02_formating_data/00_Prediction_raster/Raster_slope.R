@@ -59,6 +59,8 @@ raster_chesterfield <- mask(raster_chesterfield, chesterfield_Summit_Poly, inver
 plot(raster_chesterfield)
 
 names(raster_chesterfield) <- "BottomDepth"
+raster_chesterfield <- aggregate(raster_chesterfield,fact=6,fun=mean)
+
 
 df_chesterfield <- as.data.frame(raster_chesterfield, xy=T)
 
@@ -112,6 +114,8 @@ raster_chesterfield2 <- mask(raster_chesterfield2, chesterfield2_Summit_Poly, in
 plot(raster_chesterfield2)
 
 names(raster_chesterfield2) <- "BottomDepth"
+raster_chesterfield2 <- aggregate(raster_chesterfield2,fact=6,fun=mean)
+
 
 df_chesterfield2 <- as.data.frame(raster_chesterfield2, xy=T)
 
@@ -169,6 +173,7 @@ raster_bellona <- mask(raster_bellona, bellona_Summit_Poly, inverse=T)
 plot(raster_bellona)
 
 names(raster_bellona) <- "BottomDepth"
+raster_bellona <- aggregate(raster_bellona,fact=6,fun=mean)
 
 df_bellona <- as.data.frame(raster_bellona, xy=T)
 
@@ -227,6 +232,8 @@ raster_entrecasteaux1 <- mask(raster_entrecasteaux1, entrecasteaux1_Summit_Poly,
 plot(raster_entrecasteaux1)
 
 names(raster_entrecasteaux1) <- "BottomDepth"
+raster_entrecasteaux1 <- aggregate(raster_entrecasteaux1,fact=6,fun=mean)
+
 
 df_entrecasteaux1 <- as.data.frame(raster_entrecasteaux1, xy=T)
 
@@ -285,6 +292,7 @@ raster_entrecasteaux2 <- mask(raster_entrecasteaux2, entrecasteaux2_Summit_Poly,
 plot(raster_entrecasteaux2)
 
 names(raster_entrecasteaux2) <- "BottomDepth"
+raster_entrecasteaux2 <- aggregate(raster_entrecasteaux2,fact=6,fun=mean)
 
 df_entrecasteaux2 <- as.data.frame(raster_entrecasteaux2, xy=T)
 
@@ -341,6 +349,7 @@ raster_entrecasteaux3 <- mask(raster_entrecasteaux3, entrecasteaux3_Summit_Poly,
 plot(raster_entrecasteaux3)
 
 names(raster_entrecasteaux3) <- "BottomDepth"
+raster_entrecasteaux3 <- aggregate(raster_entrecasteaux3,fact=6,fun=mean)
 
 df_entrecasteaux3 <- as.data.frame(raster_entrecasteaux3, xy=T)
 
@@ -397,6 +406,7 @@ raster_entrecasteaux4 <- mask(raster_entrecasteaux4, entrecasteaux4_Summit_Poly,
 plot(raster_entrecasteaux4)
 
 names(raster_entrecasteaux4) <- "BottomDepth"
+raster_entrecasteaux4 <- aggregate(raster_entrecasteaux4,fact=6,fun=mean)
 
 df_entrecasteaux4 <- as.data.frame(raster_entrecasteaux4, xy=T)
 
@@ -453,6 +463,7 @@ raster_entrecasteaux5 <- mask(raster_entrecasteaux5, entrecasteaux5_Summit_Poly,
 plot(raster_entrecasteaux5)
 
 names(raster_entrecasteaux5) <- "BottomDepth"
+raster_entrecasteaux5 <- aggregate(raster_entrecasteaux5,fact=6,fun=mean)
 
 df_entrecasteaux5 <- as.data.frame(raster_entrecasteaux5, xy=T)
 
@@ -509,6 +520,7 @@ raster_entrecasteaux6 <- mask(raster_entrecasteaux6, entrecasteaux6_Summit_Poly,
 plot(raster_entrecasteaux6)
 
 names(raster_entrecasteaux6) <- "BottomDepth"
+raster_entrecasteaux6 <- aggregate(raster_entrecasteaux6,fact=6,fun=mean)
 
 df_entrecasteaux6 <- as.data.frame(raster_entrecasteaux6, xy=T)
 
@@ -562,6 +574,7 @@ raster_iledespins <- mask(raster_iledespins, iledespins_Summit_Poly, inverse=T)
 plot(raster_iledespins)
 
 names(raster_iledespins) <- "BottomDepth"
+raster_iledespins <- aggregate(raster_iledespins,fact=6,fun=mean)
 
 df_iledespins <- as.data.frame(raster_iledespins, xy=T)
 
@@ -615,6 +628,7 @@ raster_lifou <- mask(raster_lifou, lifou_Summit_Poly, inverse=T)
 plot(raster_lifou)
 
 names(raster_lifou) <- "BottomDepth"
+raster_lifou <- aggregate(raster_lifou,fact=6,fun=mean)
 
 df_lifou <- as.data.frame(raster_lifou, xy=T)
 
@@ -668,6 +682,7 @@ raster_mare <- mask(raster_mare, mare_Summit_Poly, inverse=T)
 plot(raster_mare)
 
 names(raster_mare) <- "BottomDepth"
+raster_mare <- aggregate(raster_mare,fact=6,fun=mean)
 
 df_mare <- as.data.frame(raster_mare, xy=T)
 
@@ -721,6 +736,7 @@ raster_ouvea <- mask(raster_ouvea, ouvea_Summit_Poly, inverse=T)
 plot(raster_ouvea)
 
 names(raster_ouvea) <- "BottomDepth"
+raster_ouvea <- aggregate(raster_ouvea,fact=6,fun=mean)
 
 df_ouvea <- as.data.frame(raster_ouvea, xy=T)
 
@@ -775,6 +791,7 @@ raster_tiga <- mask(raster_tiga, tiga_Summit_Poly, inverse=T)
 plot(raster_tiga)
 
 names(raster_tiga) <- "BottomDepth"
+raster_tiga <- aggregate(raster_tiga,fact=6,fun=mean)
 
 df_tiga <- as.data.frame(raster_tiga, xy=T)
 
@@ -828,6 +845,7 @@ raster_atoll1 <- mask(raster_atoll1, atoll1_Summit_Poly, inverse=T)
 plot(raster_atoll1)
 
 names(raster_atoll1) <- "BottomDepth"
+raster_atoll1 <- aggregate(raster_atoll1,fact=6,fun=mean)
 
 df_atoll1 <- as.data.frame(raster_atoll1, xy=T)
 
@@ -881,6 +899,7 @@ raster_atoll2 <- mask(raster_atoll2, atoll2_Summit_Poly, inverse=T)
 plot(raster_atoll2)
 
 names(raster_atoll2) <- "BottomDepth"
+raster_atoll2 <- aggregate(raster_atoll2,fact=6,fun=mean)
 
 df_atoll2 <- as.data.frame(raster_atoll2, xy=T)
 
@@ -934,6 +953,7 @@ raster_atoll5 <- mask(raster_atoll5, atoll5_Summit_Poly, inverse=T)
 plot(raster_atoll5)
 
 names(raster_atoll5) <- "BottomDepth"
+raster_atoll5 <- aggregate(raster_atoll5,fact=6,fun=mean)
 
 df_atoll5 <- as.data.frame(raster_atoll5, xy=T)
 
@@ -966,6 +986,10 @@ raster_list <- list(raster_ouvea, raster_atoll1, raster_atoll2, raster_atoll5, r
                     raster_entrecasteaux4, raster_entrecasteaux5, raster_entrecasteaux6, raster_iledespins,
                     raster_lifou, raster_mare, raster_tiga)
 
+for (i in 1:length(raster_list)) {
+  origin(raster_list[[i]]) <- c(0,0)
+}
+
 raster_islands <- do.call(merge, raster_list)
 
 
@@ -981,6 +1005,8 @@ save(df_islands, file="02_formating_data/00_Prediction_raster/Rdata/df_islands.r
 
 ######################################################################################################################################
 grandeterre=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/Shapefiles_subparts/NC_grande_terre.shp")
+
+grandeterre <- aggregate(grandeterre, dissolve=T)
 
 buffer_grandeterre <- buffer(grandeterre, width=0.1)
 plot(buffer_grandeterre)
@@ -1010,6 +1036,7 @@ raster_grandeterre <- mask(raster_grandeterre, grandeterre_Summit_Poly, inverse=
 plot(raster_grandeterre)
 
 names(raster_grandeterre) <- "BottomDepth"
+raster_grandeterre <- aggregate(raster_grandeterre,fact=6,fun=mean)
 
 df_grandeterre <- as.data.frame(raster_grandeterre, xy=T)
 
@@ -1033,7 +1060,7 @@ plot(raster_grandeterre)
 raster_grandeterre <- rast(raster_grandeterre)
 names(raster_grandeterre) <- c("BottomDepth","Habitat","ValleyDepth","SummitDepth","Height","SummitAreaKm2","SummitRugosity")
 
-writeRaster(raster_grandeterre, filename = "02_formating_data/00_Prediction_raster/raster_grandeterre.tif")
+writeRaster(raster_grandeterre, filename = "02_formating_data/00_Prediction_raster/raster_grandeterre.tif", overwrite=T)
 
 df_grandeterre <- as.data.frame(raster_grandeterre, xy=TRUE)
 

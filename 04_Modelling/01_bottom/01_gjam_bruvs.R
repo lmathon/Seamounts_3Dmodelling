@@ -18,7 +18,7 @@ bruvs_data <- left_join(bruvs_data, bruvs_species)
 rownames(bruvs_data) <- bruvs_data$Station
 bruvs_data <- bruvs_data[,-1]
 
-load("00_metadata/bruvs_selected_variables.rdata")
+load("00_metadata/bruvs_explanatory_variables.rdata")
 
 bruvs_data_log <- bruvs_data[,-c(1,3)]
 bruvs_data <- bruvs_data[,-c(2,4)]
@@ -26,29 +26,38 @@ bruvs_data <- bruvs_data[,colSums(bruvs_data) > 0]
 bruvs_data_log <- bruvs_data_log[,colSums(bruvs_data_log) > 0]
 
 bruvs_var$Habitat <- as.factor(bruvs_var$Habitat)
+rownames(bruvs_var) <- bruvs_var$Station
 
 formula <- as.formula(~ Habitat+EastwardVelocity+NorthwardVelocity+Salinity+SuspendedParticulateMatter+
-                        SSTmean+SSTsd+seafloorTemp+Chla+TravelTime+ReefMinDist.m+Height+SummitAreasKm2+
-                        SummitRugosity+Depth)
+                        SSTmax+SSTmean+SSTmin+SSTsd+seafloorTemp+Chla+SummitDepth+ValleyDepth+SummitAreaKm2+
+                        SummitRugosity+BottomDepth)
 
 types <- c('DA','DA', rep('PA', 189))
-S <- 10
-n <- 1500
-ef <- list( columns = 1:S, values = round(runif(n,.5,5),1) )
+#S <- 10
+#n <- 1500
+#ef <- list( columns = 1:S, values = round(runif(n,.5,5),1) )
+types <- c('DA','DA', rep('PA', 8))
 ml <- list(ng = 2000, burnin = 500, typeNames = types)
 
-gjam <- gjam(formula = formula, xdata = bruvs_var, ydata = bruvs_data, modelList= ml )
+gjam <- gjam(formula = formula, xdata = bruvs_var, ydata = bruvs_data[,c(1:10)], modelList= ml )
 
 gjamPlot( output = gjam, plotPars = list(GRIDPLOTS=T) )
 
 
+load("02_formating_data/00_Prediction_raster/Rdata/df_seamount_islands.rdata")
 
-newdata <- list(xdata = xdata, effort=effort, nsim = 50 ) # effort unchanged
+test_df <- df_seamount_islands
+test_df$BottomDepth <- test_df$BottomDepth*(-1)
+test_df$SummitDepth <- test_df$SummitDepth*(-1)
+test_df$ValleyDepth <- test_df$ValleyDepth*(-1)
+test_df$Habitat <- as.factor(test_df$Habitat)
+test_df <- test_df %>% select(-Height)
+test_df <- test_df %>% filter(!is.na(BottomDepth))
+test_df <- test_df %>% filter(!is.na(EastwardVelocity))
+test_df <- test_df %>% filter(!is.na(Chla))
+
+newdata <- list(xdata=test_df, nsim=50)
 p1 <- gjamPredict(output = gjam, newdata = newdata)
 plot(bruvs_data[,types == 'DA'], p1$sdList$yMu[,types == 'DA'],ylab = 'Predicted',cex=.1)
 abline(0,1)
 
-newdata$effort$values <- effort$values*0 + 1 # predict for effort = 1
-p2 <- gjamPredict(output = gjam, newdata = newdata)
-points(bruvs_data[,types == 'DA'], p2$sdList$yMu[,types == 'DA'],col='orange',cex=.1)
-abline(0,1)

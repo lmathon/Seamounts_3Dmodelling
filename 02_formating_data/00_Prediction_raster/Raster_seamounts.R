@@ -23,7 +23,7 @@ if (!require("geosphere")) install.packages("geosphere")
 ##read bathymetrie
 # NC Bathymetry at 100 m resolution (2020 - given by Jean Roger)
 Bathy_100=raster("00_metadata/environmental/bathytopoMNT100m/MNT-nettoye_v3_FINAL.tif")
-Bathy_100
+
 
 #####################################################################################################################################
 # Antigonia
@@ -87,6 +87,8 @@ antigonia_extent <- mask(Bathy_100,buffer_antigonia)
 raster_antigonia <- trim(antigonia_extent, values=NA)
 plot(raster_antigonia)
 names(raster_antigonia) <- c("BottomDepth")
+raster_antigonia <- aggregate(raster_antigonia,fact=6,fun=mean)
+
 df_antigonia <- as.data.frame(raster_antigonia, xy=TRUE)
 
 for (i in 1:nrow(df_antigonia)) {
@@ -170,6 +172,8 @@ argo_extent <- mask(Bathy_100, buffer_argo)
 raster_argo <- trim(argo_extent, values=NA)
 plot(raster_argo)
 names(raster_argo) <- c("BottomDepth")
+raster_argo <- aggregate(raster_argo,fact=6,fun=mean)
+
 df_argo <- as.data.frame(raster_argo, xy=TRUE)
 
 for (i in 1:nrow(df_argo)) {
@@ -244,19 +248,17 @@ plot(Capel_Depth)
 contour(Capel_Depth,add=TRUE)
 plot(Capel_Slope_Poly,border="blue",lwd=3,add=TRUE)
 plot(Capel_Summit_Poly,border="magenta",lwd=3,add=TRUE)
-Capel_poly <- Capel_Slope_Poly+Capel_Summit_Poly
 
-buffer_capel <- buffer(Capel_poly, width=0.02)
+buffer_capel <- buffer(Capel_Summit_Poly, width=0.1)
 plot(buffer_capel, add=T)
 
 capel_extent <- mask(Bathy_100, buffer_capel)
 raster_capel <- trim(capel_extent, values=NA)
 plot(raster_capel)
 
-new_extent <- extent(159.1958,160.25,-25.81849,-24.55)
-raster_capel <- crop(raster_capel, new_extent)
-
 names(raster_capel) <- c("BottomDepth")
+raster_capel <- aggregate(raster_capel,fact=6,fun=mean)
+
 df_capel <- as.data.frame(raster_capel, xy=TRUE)
 
 for (i in 1:nrow(df_capel)) {
@@ -331,6 +333,8 @@ crypthelia_extent <- mask(Bathy_100, buffer_crypthelia)
 raster_crypthelia <- trim(crypthelia_extent, values=NA)
 plot(raster_crypthelia)
 names(raster_crypthelia) <- c("BottomDepth")
+raster_crypthelia <- aggregate(raster_crypthelia,fact=6,fun=mean)
+
 df_crypthelia <- as.data.frame(raster_crypthelia, xy=TRUE)
 
 for (i in 1:nrow(df_crypthelia)) {
@@ -407,6 +411,8 @@ eponge_extent <- mask(Bathy_100, buffer_eponge)
 raster_eponge <- trim(eponge_extent, values=NA)
 plot(raster_eponge)
 names(raster_eponge) <- c("BottomDepth")
+raster_eponge <- aggregate(raster_eponge,fact=6,fun=mean)
+
 df_eponge <- as.data.frame(raster_eponge, xy=TRUE)
 
 for (i in 1:nrow(df_eponge)) {
@@ -491,6 +497,8 @@ fairway_extent <- mask(Bathy_100, buffer_fairway)
 raster_fairway <- trim(fairway_extent, values=NA)
 plot(raster_fairway)
 names(raster_fairway) <- c("BottomDepth")
+raster_fairway <- aggregate(raster_fairway,fact=6,fun=mean)
+
 df_fairway <- as.data.frame(raster_fairway, xy=TRUE)
 
 for (i in 1:nrow(df_fairway)) {
@@ -564,6 +572,8 @@ iledespins_extent <- mask(Bathy_100, buffer_iledespins)
 raster_iledespins <- trim(iledespins_extent, values=NA)
 plot(raster_iledespins)
 names(raster_iledespins) <- c("BottomDepth")
+raster_iledespins <- aggregate(raster_iledespins,fact=6,fun=mean)
+
 df_iledespins <- as.data.frame(raster_iledespins, xy=TRUE)
 
 for (i in 1:nrow(df_iledespins)) {
@@ -637,6 +647,8 @@ jumeauouest_extent <- mask(Bathy_100, buffer_jumeauouest)
 raster_jumeauouest <- trim(jumeauouest_extent, values=NA)
 plot(raster_jumeauouest)
 names(raster_jumeauouest) <- c("BottomDepth")
+raster_jumeauouest <- aggregate(raster_jumeauouest,fact=6,fun=mean)
+
 df_jumeauouest <- as.data.frame(raster_jumeauouest, xy=TRUE)
 
 for (i in 1:nrow(df_jumeauouest)) {
@@ -711,6 +723,8 @@ kaimonmaru_extent <- mask(Bathy_100, buffer_kaimonmaru)
 raster_kaimonmaru <- trim(kaimonmaru_extent, values=NA)
 plot(raster_kaimonmaru)
 names(raster_kaimonmaru) <- c("BottomDepth")
+raster_kaimonmaru <- aggregate(raster_kaimonmaru,fact=6,fun=mean)
+
 df_kaimonmaru <- as.data.frame(raster_kaimonmaru, xy=TRUE)
 
 for (i in 1:nrow(df_kaimonmaru)) {
@@ -784,6 +798,8 @@ nova_extent <- mask(Bathy_100, buffer_nova)
 raster_nova <- trim(nova_extent, values=NA)
 plot(raster_nova)
 names(raster_nova) <- c("BottomDepth")
+raster_nova <- aggregate(raster_nova,fact=6,fun=mean)
+
 df_nova <- as.data.frame(raster_nova, xy=TRUE)
 
 for (i in 1:nrow(df_nova)) {
@@ -858,6 +874,8 @@ stylaster_extent <- mask(Bathy_100, buffer_stylaster)
 raster_stylaster <- trim(stylaster_extent, values=NA)
 plot(raster_stylaster)
 names(raster_stylaster) <- c("BottomDepth")
+raster_stylaster <- aggregate(raster_stylaster,fact=6,fun=mean)
+
 df_stylaster <- as.data.frame(raster_stylaster, xy=TRUE)
 
 for (i in 1:nrow(df_stylaster)) {
@@ -941,6 +959,8 @@ torche_extent <- mask(Bathy_100, buffer_torche)
 raster_torche <- trim(torche_extent, values=NA)
 plot(raster_torche)
 names(raster_torche) <- c("BottomDepth")
+raster_torche <- aggregate(raster_torche,fact=6,fun=mean)
+
 df_torche <- as.data.frame(raster_torche, xy=TRUE)
 
 for (i in 1:nrow(df_torche)) {
@@ -1023,6 +1043,8 @@ Chesterfield_extent <- mask(Bathy_100, buffer_Chesterfield)
 raster_Chesterfield <- trim(Chesterfield_extent, values=NA)
 plot(raster_Chesterfield)
 names(raster_Chesterfield) <- c("BottomDepth")
+raster_Chesterfield <- aggregate(raster_Chesterfield,fact=6,fun=mean)
+
 df_chesterfield <- as.data.frame(raster_Chesterfield, xy=TRUE)
 
 for (i in 1:nrow(df_chesterfield)) {
@@ -1097,6 +1119,8 @@ JumeauEst_extent <- mask(Bathy_100, buffer_JumeauEst)
 raster_JumeauEst <- trim(JumeauEst_extent, values=NA)
 plot(raster_JumeauEst)
 names(raster_JumeauEst) <- c("BottomDepth")
+raster_JumeauEst <- aggregate(raster_JumeauEst,fact=6,fun=mean)
+
 df_jumeauest <- as.data.frame(raster_JumeauEst, xy=TRUE)
 
 for (i in 1:nrow(df_jumeauest)) {
@@ -1180,6 +1204,8 @@ Seamount01_extent <- mask(Bathy_100, buffer_Seamount01)
 raster_Seamount01 <- trim(Seamount01_extent, values=NA)
 plot(raster_Seamount01)
 names(raster_Seamount01) <- c("BottomDepth")
+raster_Seamount01 <- aggregate(raster_Seamount01,fact=6,fun=mean)
+
 df_seamount01 <- as.data.frame(raster_Seamount01, xy=TRUE)
 
 for (i in 1:nrow(df_seamount01)) {
@@ -1255,6 +1281,8 @@ Seamount02_extent <- mask(Bathy_100, buffer_Seamount02)
 raster_Seamount02 <- trim(Seamount02_extent, values=NA)
 plot(raster_Seamount02)
 names(raster_Seamount02) <- c("BottomDepth")
+raster_Seamount02 <- aggregate(raster_Seamount02,fact=6,fun=mean)
+
 df_seamount02 <- as.data.frame(raster_Seamount02, xy=TRUE)
 
 for (i in 1:nrow(df_seamount02)) {
@@ -1327,6 +1355,8 @@ Seamount03_extent <- mask(Bathy_100, buffer_Seamount03)
 raster_Seamount03 <- trim(Seamount03_extent, values=NA)
 plot(raster_Seamount03)
 names(raster_Seamount03) <- c("BottomDepth")
+raster_Seamount03 <- aggregate(raster_Seamount03,fact=6,fun=mean)
+
 df_seamount03 <- as.data.frame(raster_Seamount03, xy=TRUE)
 
 for (i in 1:nrow(df_seamount03)) {
@@ -1398,6 +1428,8 @@ Seamount04_extent <- mask(Bathy_100, buffer_Seamount04)
 raster_Seamount04 <- trim(Seamount04_extent, values=NA)
 plot(raster_Seamount04)
 names(raster_Seamount04) <- c("BottomDepth")
+raster_Seamount04 <- aggregate(raster_Seamount04,fact=6,fun=mean)
+
 df_seamount04 <- as.data.frame(raster_Seamount04, xy=TRUE)
 
 for (i in 1:nrow(df_seamount04)) {
@@ -1470,6 +1502,8 @@ Introuvable_extent <- mask(Bathy_100, buffer_Introuvable)
 raster_Introuvable <- trim(Introuvable_extent, values=NA)
 plot(raster_Introuvable)
 names(raster_Introuvable) <- c("BottomDepth")
+raster_Introuvable <- aggregate(raster_Introuvable,fact=6,fun=mean)
+
 df_Introuvable <- as.data.frame(raster_Introuvable, xy=TRUE)
 
 for (i in 1:nrow(df_Introuvable)) {
@@ -1528,15 +1562,16 @@ plot(seamount05_Depth)
 contour(seamount05_Depth,add=TRUE)
 plot(seamount05_Slope_Poly,border="blue",lwd=3,add=TRUE)
 plot(seamount05_Summit_Poly,border="magenta",lwd=3,add=TRUE)
-seamount05_poly <- seamount05_Slope_Poly+seamount05_Summit_Poly
 
-buffer_seamount05 <- buffer(seamount05_poly, width=0.03)
+buffer_seamount05 <- buffer(seamount05_Summit_Poly, width=0.08)
 plot(buffer_seamount05, add=T)
 
 seamount05_extent <- mask(Bathy_100, buffer_seamount05)
 raster_seamount05 <- trim(seamount05_extent, values=NA)
 plot(raster_seamount05)
 names(raster_seamount05) <- c("BottomDepth")
+raster_seamount05 <- aggregate(raster_seamount05,fact=6,fun=mean)
+
 df_seamount05 <- as.data.frame(raster_seamount05, xy=TRUE)
 
 for (i in 1:nrow(df_seamount05)) {
@@ -1605,6 +1640,8 @@ seamount06_extent <- mask(Bathy_100, buffer_seamount06)
 raster_seamount06 <- trim(seamount06_extent, values=NA)
 plot(raster_seamount06)
 names(raster_seamount06) <- c("BottomDepth")
+raster_seamount06 <- aggregate(raster_seamount06,fact=6,fun=mean)
+
 df_seamount06 <- as.data.frame(raster_seamount06, xy=TRUE)
 
 for (i in 1:nrow(df_seamount06)) {
@@ -1672,6 +1709,8 @@ seamount07_extent <- mask(Bathy_100, buffer_seamount07)
 raster_seamount07 <- trim(seamount07_extent, values=NA)
 plot(raster_seamount07)
 names(raster_seamount07) <- c("BottomDepth")
+raster_seamount07 <- aggregate(raster_seamount07,fact=6,fun=mean)
+
 df_seamount07 <- as.data.frame(raster_seamount07, xy=TRUE)
 
 for (i in 1:nrow(df_seamount07)) {
@@ -1690,213 +1729,6 @@ coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 raster_seamount07 <- stack(df)
 plot(raster_seamount07)
-
-
-
-#####################################################################################################################################
-## seamount08
-
-seamount08_Extent=extent(156.212,156.486,-21.663,-21.417)
-seamount08_Depth=crop(Bathy_100,seamount08_Extent)
-
-plot(seamount08_Depth)
-contour(seamount08_Depth,add=TRUE)
-
-seamount08_SummitDepth=round(max(values(seamount08_Depth),na.rm=TRUE))
-seamount08_ValleyDepth=round(min(values(seamount08_Depth),na.rm=TRUE))
-seamount08_Height=seamount08_SummitDepth-seamount08_ValleyDepth
-
-####SUMMIT
-seamount08_Summit_Poly=seamount08_Depth
-values(seamount08_Summit_Poly)[values(seamount08_Summit_Poly) < seamount08_SummitDepth+30/100*seamount08_SummitDepth] = NA
-plot(seamount08_Summit_Poly)
-seamount08_SummitRugosity=sd(values(seamount08_Summit_Poly),na.rm=TRUE)
-seamount08_SummitRugosity
-values(seamount08_Summit_Poly)[!is.na(values(seamount08_Summit_Poly))] <- 1
-plot(seamount08_Summit_Poly)
-seamount08_Summit_Poly=rasterToPolygons(seamount08_Summit_Poly, dissolve=TRUE)
-seamount08_SummitAreaKm2=area(seamount08_Summit_Poly)*1e-6
-seamount08_SummitAreaKm2
-plot(seamount08_Depth)
-contour(seamount08_Depth,add=TRUE)
-plot(seamount08_Summit_Poly,border="magenta",lwd=3,add=TRUE)
-
-###SLOPE
-seamount08_Slope_Poly=seamount08_Depth
-values(seamount08_Slope_Poly)[values(seamount08_Slope_Poly) > seamount08_SummitDepth+30/100*seamount08_SummitDepth | values(seamount08_Slope_Poly) < seamount08_ValleyDepth-30/100*seamount08_ValleyDepth] = NA
-plot(seamount08_Slope_Poly)
-values(seamount08_Slope_Poly)[!is.na(values(seamount08_Slope_Poly))] <- 1
-plot(seamount08_Slope_Poly)
-seamount08_Slope_Poly=rasterToPolygons(seamount08_Slope_Poly, dissolve=TRUE)
-plot(seamount08_Depth)
-contour(seamount08_Depth,add=TRUE)
-plot(seamount08_Slope_Poly,border="blue",lwd=3,add=TRUE)
-plot(seamount08_Summit_Poly,border="magenta",lwd=3,add=TRUE)
-seamount08_poly <- seamount08_Slope_Poly+seamount08_Summit_Poly
-
-buffer_seamount08 <- buffer(seamount08_poly, width=0.02)
-plot(buffer_seamount08, add=T)
-
-seamount08_extent <- mask(Bathy_100, buffer_seamount08)
-raster_seamount08 <- trim(seamount08_extent, values=NA)
-plot(raster_seamount08)
-names(raster_seamount08) <- c("BottomDepth")
-df_seamount08 <- as.data.frame(raster_seamount08, xy=TRUE)
-
-for (i in 1:nrow(df_seamount08)) {
-  if (!is.na(df_seamount08[i,"BottomDepth"])){
-    df_seamount08[i,"Habitat"] <- 2
-    df_seamount08[i,"ValleyDepth"] <- seamount08_ValleyDepth
-    df_seamount08[i,"SummitDepth"] <- seamount08_SummitDepth
-    df_seamount08[i,"Height"] <- seamount08_Height
-    df_seamount08[i,"SummitAreaKm2"] <- seamount08_SummitAreaKm2
-    df_seamount08[i,"SummitRugosity"] <- seamount08_SummitRugosity
-  }
-}
-
-df <- df_seamount08
-coordinates(df) <- ~x+y
-gridded(df) <- TRUE
-raster_seamount08 <- stack(df)
-plot(raster_seamount08)
-
-
-
-#####################################################################################################################################
-## seamount09
-
-seamount09_Extent=extent(157.012,157.169,-21,-20.849)
-seamount09_Depth=crop(Bathy_100,seamount09_Extent)
-
-plot(seamount09_Depth)
-contour(seamount09_Depth,add=TRUE)
-
-seamount09_SummitDepth=round(max(values(seamount09_Depth),na.rm=TRUE))
-seamount09_ValleyDepth=round(min(values(seamount09_Depth),na.rm=TRUE))
-seamount09_Height=seamount09_SummitDepth-seamount09_ValleyDepth
-
-####SUMMIT
-seamount09_Summit_Poly=seamount09_Depth
-values(seamount09_Summit_Poly)[values(seamount09_Summit_Poly) < seamount09_SummitDepth+30/100*seamount09_SummitDepth] = NA
-plot(seamount09_Summit_Poly)
-seamount09_SummitRugosity=sd(values(seamount09_Summit_Poly),na.rm=TRUE)
-seamount09_SummitRugosity
-values(seamount09_Summit_Poly)[!is.na(values(seamount09_Summit_Poly))] <- 1
-plot(seamount09_Summit_Poly)
-seamount09_Summit_Poly=rasterToPolygons(seamount09_Summit_Poly, dissolve=TRUE)
-seamount09_SummitAreaKm2=area(seamount09_Summit_Poly)*1e-6
-seamount09_SummitAreaKm2
-plot(seamount09_Depth)
-contour(seamount09_Depth,add=TRUE)
-plot(seamount09_Summit_Poly,border="magenta",lwd=3,add=TRUE)
-
-###SLOPE
-seamount09_Slope_Poly=seamount09_Depth
-values(seamount09_Slope_Poly)[values(seamount09_Slope_Poly) > seamount09_SummitDepth+30/100*seamount09_SummitDepth | values(seamount09_Slope_Poly) < seamount09_ValleyDepth-30/100*seamount09_ValleyDepth] = NA
-plot(seamount09_Slope_Poly)
-values(seamount09_Slope_Poly)[!is.na(values(seamount09_Slope_Poly))] <- 1
-plot(seamount09_Slope_Poly)
-seamount09_Slope_Poly=rasterToPolygons(seamount09_Slope_Poly, dissolve=TRUE)
-plot(seamount09_Depth)
-contour(seamount09_Depth,add=TRUE)
-plot(seamount09_Slope_Poly,border="blue",lwd=3,add=TRUE)
-plot(seamount09_Summit_Poly,border="magenta",lwd=3,add=TRUE)
-seamount09_poly <- seamount09_Slope_Poly+seamount09_Summit_Poly
-
-buffer_seamount09 <- buffer(seamount09_poly, width=0.03)
-plot(buffer_seamount09, add=T)
-
-seamount09_extent <- mask(Bathy_100, buffer_seamount09)
-raster_seamount09 <- trim(seamount09_extent, values=NA)
-plot(raster_seamount09)
-names(raster_seamount09) <- c("BottomDepth")
-df_seamount09 <- as.data.frame(raster_seamount09, xy=TRUE)
-
-for (i in 1:nrow(df_seamount09)) {
-  if (!is.na(df_seamount09[i,"BottomDepth"])){
-    df_seamount09[i,"Habitat"] <- 2
-    df_seamount09[i,"ValleyDepth"] <- seamount09_ValleyDepth
-    df_seamount09[i,"SummitDepth"] <- seamount09_SummitDepth
-    df_seamount09[i,"Height"] <- seamount09_Height
-    df_seamount09[i,"SummitAreaKm2"] <- seamount09_SummitAreaKm2
-    df_seamount09[i,"SummitRugosity"] <- seamount09_SummitRugosity
-  }
-}
-
-df <- df_seamount09
-coordinates(df) <- ~x+y
-gridded(df) <- TRUE
-raster_seamount09 <- stack(df)
-plot(raster_seamount09)
-
-
-
-#####################################################################################################################################
-## seamount10
-
-seamount10_Extent=extent(156.602,156.780,-22.128,-21.92)
-seamount10_Depth=crop(Bathy_100,seamount10_Extent)
-
-plot(seamount10_Depth)
-contour(seamount10_Depth,add=TRUE)
-
-seamount10_SummitDepth=round(max(values(seamount10_Depth),na.rm=TRUE))
-seamount10_ValleyDepth=round(min(values(seamount10_Depth),na.rm=TRUE))
-seamount10_Height=seamount10_SummitDepth-seamount10_ValleyDepth
-
-####SUMMIT
-seamount10_Summit_Poly=seamount10_Depth
-values(seamount10_Summit_Poly)[values(seamount10_Summit_Poly) < seamount10_SummitDepth+30/100*seamount10_SummitDepth] = NA
-plot(seamount10_Summit_Poly)
-seamount10_SummitRugosity=sd(values(seamount10_Summit_Poly),na.rm=TRUE)
-seamount10_SummitRugosity
-values(seamount10_Summit_Poly)[!is.na(values(seamount10_Summit_Poly))] <- 1
-plot(seamount10_Summit_Poly)
-seamount10_Summit_Poly=rasterToPolygons(seamount10_Summit_Poly, dissolve=TRUE)
-seamount10_SummitAreaKm2=area(seamount10_Summit_Poly)*1e-6
-seamount10_SummitAreaKm2
-plot(seamount10_Depth)
-contour(seamount10_Depth,add=TRUE)
-plot(seamount10_Summit_Poly,border="magenta",lwd=3,add=TRUE)
-
-###SLOPE
-seamount10_Slope_Poly=seamount10_Depth
-values(seamount10_Slope_Poly)[values(seamount10_Slope_Poly) > seamount10_SummitDepth+30/100*seamount10_SummitDepth | values(seamount10_Slope_Poly) < seamount10_ValleyDepth-30/100*seamount10_ValleyDepth] = NA
-plot(seamount10_Slope_Poly)
-values(seamount10_Slope_Poly)[!is.na(values(seamount10_Slope_Poly))] <- 1
-plot(seamount10_Slope_Poly)
-seamount10_Slope_Poly=rasterToPolygons(seamount10_Slope_Poly, dissolve=TRUE)
-plot(seamount10_Depth)
-contour(seamount10_Depth,add=TRUE)
-plot(seamount10_Slope_Poly,border="blue",lwd=3,add=TRUE)
-plot(seamount10_Summit_Poly,border="magenta",lwd=3,add=TRUE)
-seamount10_poly <- seamount10_Slope_Poly+seamount10_Summit_Poly
-
-buffer_seamount10 <- buffer(seamount10_poly, width=0.03)
-plot(buffer_seamount10, add=T)
-
-seamount10_extent <- mask(Bathy_100, buffer_seamount10)
-raster_seamount10 <- trim(seamount10_extent, values=NA)
-plot(raster_seamount10)
-names(raster_seamount10) <- c("BottomDepth")
-df_seamount10 <- as.data.frame(raster_seamount10, xy=TRUE)
-
-for (i in 1:nrow(df_seamount10)) {
-  if (!is.na(df_seamount10[i,"BottomDepth"])){
-    df_seamount10[i,"Habitat"] <- 2
-    df_seamount10[i,"ValleyDepth"] <- seamount10_ValleyDepth
-    df_seamount10[i,"SummitDepth"] <- seamount10_SummitDepth
-    df_seamount10[i,"Height"] <- seamount10_Height
-    df_seamount10[i,"SummitAreaKm2"] <- seamount10_SummitAreaKm2
-    df_seamount10[i,"SummitRugosity"] <- seamount10_SummitRugosity
-  }
-}
-
-df <- df_seamount10
-coordinates(df) <- ~x+y
-gridded(df) <- TRUE
-raster_seamount10 <- stack(df)
-plot(raster_seamount10)
 
 
 
@@ -1939,15 +1771,16 @@ plot(seamount11_Depth)
 contour(seamount11_Depth,add=TRUE)
 plot(seamount11_Slope_Poly,border="blue",lwd=3,add=TRUE)
 plot(seamount11_Summit_Poly,border="magenta",lwd=3,add=TRUE)
-seamount11_poly <- seamount11_Slope_Poly+seamount11_Summit_Poly
 
-buffer_seamount11 <- buffer(seamount11_poly, width=0.03)
+buffer_seamount11 <- buffer(seamount11_Summit_Poly, width=0.12)
 plot(buffer_seamount11, add=T)
 
 seamount11_extent <- mask(Bathy_100, buffer_seamount11)
 raster_seamount11 <- trim(seamount11_extent, values=NA)
 plot(raster_seamount11)
 names(raster_seamount11) <- c("BottomDepth")
+raster_seamount11 <- aggregate(raster_seamount11,fact=6,fun=mean)
+
 df_seamount11 <- as.data.frame(raster_seamount11, xy=TRUE)
 
 for (i in 1:nrow(df_seamount11)) {
@@ -2017,6 +1850,8 @@ seamount12_extent <- mask(Bathy_100, buffer_seamount12)
 raster_seamount12 <- trim(seamount12_extent, values=NA)
 plot(raster_seamount12)
 names(raster_seamount12) <- c("BottomDepth")
+raster_seamount12 <- aggregate(raster_seamount12,fact=6,fun=mean)
+
 df_seamount12 <- as.data.frame(raster_seamount12, xy=TRUE)
 
 for (i in 1:nrow(df_seamount12)) {
@@ -2044,8 +1879,11 @@ plot(raster_seamount12)
 raster_list <- list(raster_antigonia, raster_argo, raster_capel, raster_Chesterfield, raster_crypthelia, raster_eponge, raster_fairway,
                     raster_iledespins, raster_Introuvable, raster_JumeauEst, raster_jumeauouest, raster_kaimonmaru, raster_nova,
                     raster_Seamount01, raster_Seamount02, raster_Seamount03, raster_Seamount04, raster_stylaster, raster_torche,
-                    raster_seamount05, raster_seamount06, raster_seamount07, raster_seamount08, raster_seamount09,raster_seamount10,
-                    raster_seamount11, raster_seamount12)
+                    raster_seamount05, raster_seamount06, raster_seamount07, raster_seamount11, raster_seamount12)
+
+for (i in 1:length(raster_list)) {
+  origin(raster_list[[i]]) <- c(0,0)
+}
 
 raster_seamounts <- do.call(merge, raster_list)
 names(raster_seamounts) <- c("BottomDepth","Habitat","ValleyDepth","SummitDepth","Height","SummitAreaKm2","SummitRugosity")
