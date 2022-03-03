@@ -27,8 +27,6 @@ raster_seamount_islands <- do.call(merge, raster_list)
 raster_seamount_islands <- rast(raster_seamount_islands)
 names(raster_seamount_islands) <- c("BottomDepth","Habitat","ValleyDepth","SummitDepth","Height","SummitAreaKm2","SummitRugosity")
 
-writeRaster(raster_seamount_islands, filename = "02_formating_data/00_Prediction_raster/raster_seamount_islands.tif", overwrite=T)
-
 df_seamount_islands <- as.data.frame(raster_seamount_islands, xy=TRUE)
 
 

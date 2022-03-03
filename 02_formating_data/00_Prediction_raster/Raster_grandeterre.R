@@ -53,6 +53,7 @@ df_grandeterre2$SuspendedParticulateMatter=extract(SuspendedParticulateMatter,df
 Geomorphology=shapefile("00_metadata/environmental/NewCaledoniaMilleniumGeomorphology/NewCaledonia_v8.shp")
 
 Reef <- Geomorphology[Geomorphology@data$REEF == 1, ]
+Reef <- aggregate(Reef)
 
 Land <- Geomorphology[Geomorphology@data$L1_CODE == 2, ]
 
