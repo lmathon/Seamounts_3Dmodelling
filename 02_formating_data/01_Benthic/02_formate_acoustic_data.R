@@ -46,7 +46,7 @@ colnames(acoustic_var) <- c("Longitude","Latitude","Site","Habitat","SummitDepth
 
 
 
-save(acoustic_var, file="00_metadata/acoustic_explanatory_variables.rdata")
+save(acoustic_var, file="00_metadata/acoustic_explanatory_variables_benthic.rdata")
 
 #------------------------------------------------------------------------------------------------------------------------------------
 ### Benthic acoustic
@@ -69,4 +69,4 @@ colnames(Acoustic)[colnames(Acoustic) == "y"] <- "Latitude"
 acoustic_fond <- Acoustic[,c("Longitude", "Latitude", "AcousticFond")]
 
 # save rdata
-save(acoustic_fond, file="02_formating_data/01_Benthic/Rdata/acoustic_fond.rdata")
+save(acoustic_fond, file="02_formating_data/01_Benthic/Rdata/acoustic_benthic.rdata")

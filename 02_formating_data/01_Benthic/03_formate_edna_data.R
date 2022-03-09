@@ -27,20 +27,20 @@ edna_motus <- full_join(edna_motus, var[,c("Station", "Site")])
 edna_motus <- edna_motus[, -ncol(edna_motus)]
 edna_motus[is.na(edna_motus)] <- 0
 
-rownames(edna_motus) <- edna_motus$Station
-edna_motus <- edna_motus[,-1]
 
-save(edna_motus, file="02_formating_data/01_Benthic/Rdata/edna_motus_matrix.rdata")
-
+edna_richness_benthic <- edna_motus[,c("Station")]
 # Sum of total richness per station
-edna_motus$richness_tot <- rowSums(edna_motus)
-edna_motus$logrichness_tot <- log(edna_motus$richness_tot+1)
+edna_richness_benthic$reads_tot <- rowSums(edna_motus[,-1])
 
-# keep only richness and log
-edna_richness_fond <- edna_motus[,c("richness_tot", "logrichness_tot")]
+
+edna_motus <- edna_motus[,-1]
+rownames(edna_motus) <- edna_richness_benthic$Station
+
 
 # save rdata
-save(edna_richness_fond, file = "02_formating_data/01_Benthic/Rdata/edna_richness_fond.rdata")
+save(edna_motus, file="02_formating_data/01_Benthic/Rdata/edna_motus_matrix_benthic.rdata")
+save(edna_richness_benthic, file = "02_formating_data/01_Benthic/Rdata/edna_richness_benthic.rdata")
+
 
 
 #--------------------------------------------------------------------------------------------------------------------------------------
@@ -84,5 +84,5 @@ colnames(edna_var) <- c("Station","Site","Longitude","Latitude","Habitat","Eastw
                         "SummitDepth","ValleyDepth","Height", "SummitAreaKm2","SummitRugosity","BottomDepth","ReefMinDist","LandMinDist")
 
 
-save(edna_var, file="00_metadata/edna_explanatory_variables_fond.rdata")
+save(edna_var, file="00_metadata/edna_explanatory_variables_benthic.rdata")
 

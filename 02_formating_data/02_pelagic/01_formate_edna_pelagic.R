@@ -20,7 +20,6 @@ edna_motus <- edna_motus %>%
 # One column per MOTU
 edna_motus <- pivot_wider(edna_motus, names_from="definition", values_from="n_reads", values_fill=NA)
 edna_motus[is.na(edna_motus)] <- 0
-edna_motus[,-1][edna_motus[,-1] >0] <- 1
 names(edna_motus)[names(edna_motus)=="code_explo"] <- "Station"
 
 # complete with stations with 0 MOTUs
@@ -28,35 +27,46 @@ edna_motus <- full_join(edna_motus, var[,c("Station", "Site")])
 edna_motus <- edna_motus[, -ncol(edna_motus)]
 edna_motus[is.na(edna_motus)] <- 0
 
+edna_motus$Station <- gsub("-", "_", edna_motus$Station)
 
+
+edna_richness_pelagic <- edna_motus[,c("Station")]
 # Sum of total richness per station
-edna_motus$richness_tot <- rowSums(edna_motus[,c(2:ncol(edna_motus))])
+edna_richness_pelagic$reads_tot <- rowSums(edna_motus[,-1])
+edna_richness_pelagic$Sampling_Depth <- sub(".*_", "", edna_richness_pelagic$Station)
 
 
-# keep only richness and log
-edna_richness_pelagic <- edna_motus[,c("Station", "richness_tot")]
-
-edna_richness_pelagic$Station <- gsub("-", "_", edna_richness_pelagic$Station)
-edna_richness_pelagic$Depth <- sub(".*_", "", edna_richness_pelagic$Station)
-edna_richness_pelagic$Station <- sub("_.*", "", edna_richness_pelagic$Station)
-
-edna_richness_pelagic <- spread(edna_richness_pelagic, Depth, richness_tot)
+edna_motus <- edna_motus[,-1]
+rownames(edna_motus) <- edna_richness_pelagic$Station
 
 
 # save rdata
+save(edna_motus, file="02_formating_data/02_pelagic/Rdata/edna_motu_matrix_pelagic.rdata")
 save(edna_richness_pelagic, file = "02_formating_data/02_pelagic/Rdata/edna_richness_pelagic.rdata")
 
 # save explanatory variables
-var <- var %>%
+edna_var <- var %>%
   mutate(Habitat = case_when(
     Site %in% c("Noumea", "PoyaNepoui", "Poum", "GrandLagonNord") ~ "DeepSlope",
-    Site %in% c("Antigonia", "Torche", "Capel", "Fairway") ~ "Summit50",
-    Site %in% c("JumeauWest", "Crypthelia", "KaimonMaru", "Argo", "Nova") ~ "Summit250",
-    Site %in% c("Stylaster", "IleDesPins", "Eponge") ~ "Summit500"
+    Site %in% c("Antigonia", "Torche", "Capel", "Fairway","JumeauWest", "Crypthelia", "KaimonMaru", "Argo", "Nova","Stylaster", "IleDesPins", "Eponge") ~ "Seamount"
   ))
-var$Station <- sub("_.*", "", var$Station)
-var$Station <- sub("-.*", "", var$Station)
-edna_var <- var %>% distinct(Station, .keep_all=T)
+
+edna_var$Station <- gsub("-", "_", edna_var$Station)
+#  transform travel time in hours
+edna_var$TravelTime=edna_var$TravelTime / 3600
+
+# transform distances in km
+edna_var$ReefMinDist=edna_var$ReefMinDist.m/1000
+edna_var$LandMinDist=edna_var$LandMinDist.m/1000
+edna_var <- edna_var[-c(17,18)]
+
+edna_var$Sampling_Depth <- sub(".*_", "", edna_var$Station)
+
+colnames(edna_var) <- c("Station","Site","Latitude","Longitude","Habitat","EastwardVelocity","NorthwardVelocity","Salinity",
+                        "SuspendedParticulateMatter","SSTmax","SSTmean","SSTmin","SSTsd","seafloorTemp","Chla","TravelTime",
+                        "SummitDepth","ValleyDepth","Height", "SummitAreaKm2","SummitRugosity","BottomDepth","ReefMinDist",
+                        "LandMinDist", "Sampling_Depth")
+
 
 save(edna_var, file="00_metadata/edna_explanatory_variables_pelagic.rdata")
 
