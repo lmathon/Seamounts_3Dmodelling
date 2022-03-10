@@ -80,13 +80,17 @@ writeRaster(raster_grandeterre2, filename = "02_formating_data/00_Prediction_ras
 
 # Transform Habitat into character in the df
 
-df_grandeterre2 <- df_grandeterre2 %>%
-  mutate(Habitat = case_when(
-    Habitat == 4 ~ "DeepSlope",
-    Habitat == 1 ~ "Summit50",
-    Habitat == 2 ~ "Summit250",
-    Habitat == 3 ~ "Summit500"
-  ))
+df_grandeterre2$Habitat <- "DeepSlope"
 
 
 save(df_grandeterre2, file="02_formating_data/00_Prediction_raster/Rdata/df_grandeterre2.rdata")
+
+#############################################################################################################################
+# Load df and extract travel time
+
+
+# transform distances in km
+df_grandeterre2$ReefMinDist=df_grandeterre2$ReefMinDist.m/1000
+df_grandeterre2$LandMinDist=df_grandeterre2$LandMinDist.m/1000
+
+df_grandeterre2 <- df_grandeterre2[,-c(20,21)]
