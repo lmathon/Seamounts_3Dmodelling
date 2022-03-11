@@ -1,18 +1,13 @@
 library(gjam)
 library(tidyverse)
+library(ecodist)
+library(modelr)
 
 
 ########################################################################################################################################
-## Model on abundances
-load("02_formating_data/01_Benthic/Rdata/bruvs_species_matrix.rdata")
+## Load abundance data
+load("03_preliminary_analyses/bruvs_species_selected.rdata")
 
-
-rownames(bruvs_species) <- bruvs_species$Station
-
-bruvs_species <- bruvs_species[,-1]
-bruvs_species <- bruvs_species[,colSums(bruvs_species) > 0]
-
-bruvs_species <- as.data.frame(gjamTrimY(bruvs_species[,1:ncol(bruvs_species)], maxCols = 50)$y)
 
 # load predictors
 load("00_metadata/bruvs_explanatory_variables.rdata")
@@ -20,13 +15,14 @@ load("00_metadata/bruvs_explanatory_variables.rdata")
 bruvs_var$Habitat <- as.factor(bruvs_var$Habitat)
 rownames(bruvs_var) <- bruvs_var$Station
 
-# define model
+
+######################################################################################################################################
+# Full  model
 formula <- as.formula(~ Habitat+Salinity +SuspendedParticulateMatter + EastwardVelocity + 
-                        NorthwardVelocity + SSTmean + seafloorTemp + Chla + SummitDepth + 
-                        ValleyDepth + SummitAreaKm2 + SummitRugosity + BottomDepth + 
-                        TravelTime + ReefMinDist + LandMinDist)
+                        NorthwardVelocity + SSTmean + Chla+ BottomDepth + 
+                        TravelTime + ReefMinDist)
 
-types <- c(rep('DA', 51))
+types <- c(rep('DA', ncol(bruvs_species)))
 ml <- list(ng = 500, burnin = 50, typeNames = types)
 
 # fit model
@@ -37,22 +33,40 @@ plotPars = list(GRIDPLOTS=T, SAVEPLOTS = T)
 gjamPlot( output = gjam,  plotPars = plotPars)
 
 gjam$fit$DIC
+gjam[["inputs"]][["designTable"]]
+gjam[["parameters"]][["sensTable"]]
 
+yobs <- gjam[["inputs"]][["y"]]
+ypred <- gjam[["prediction"]][["ypredMu"]]
 
+# compute correlation between ypred and yobs (removing "other")
 
-## DIC = 19460.44
+df <- data.frame(obs=as.vector(yobs), pred=as.vector(ypred))
+cor.test(df$pred, df$obs, method = "pearson")
+
+plot(df$pred ~ df$obs)
+
+lm <- lm(df$pred ~ df$obs)
+rsq(lm)
+rmse(lm, df)
+
+## DIC = 20253.97
 ## xPred pretty good
-## yPred could be better
+## pearson r = 0.51
+## R² = 0.26
+## RMSE = 0.82
 ## 4 species clusters
-## sensitivity high for Habitat, SummitArea, SummitDepth, ValleyDepth, BottomDepth, SSTmean, ReefMinDist, NorthwardVelocity, LandMinDist
 
 
+######################################################################################################################################
+# Full  model + Quadratic
+formula <- as.formula(~ Habitat+Salinity +SuspendedParticulateMatter + EastwardVelocity + 
+                        NorthwardVelocity + SSTmean + Chla+ BottomDepth + 
+                        TravelTime + ReefMinDist + I(Salinity^2) + I(SuspendedParticulateMatter^2) + I(EastwardVelocity^2) + 
+                        I(NorthwardVelocity^2) + I(SSTmean^2) + I(Chla^2) + I(BottomDepth^2) + 
+                        I(TravelTime^2) + I(ReefMinDist^2))
 
-formula <- as.formula(~ Habitat + NorthwardVelocity + SSTmean +SummitDepth + 
-                        ValleyDepth + SummitAreaKm2 + BottomDepth + 
-                        TravelTime + ReefMinDist + LandMinDist)
-
-types <- c(rep('DA', 51))
+types <- c(rep('DA', ncol(bruvs_species)))
 ml <- list(ng = 500, burnin = 50, typeNames = types)
 
 # fit model
@@ -63,15 +77,115 @@ plotPars = list(GRIDPLOTS=T, SAVEPLOTS = T)
 gjamPlot( output = gjam,  plotPars = plotPars)
 
 gjam$fit$DIC
+gjam[["inputs"]][["designTable"]]
+gjam[["parameters"]][["sensTable"]]
+
+yobs <- gjam[["inputs"]][["y"]]
+ypred <- gjam[["prediction"]][["ypredMu"]]
+
+# compute correlation between ypred and yobs (removing "other")
+
+df <- data.frame(obs=as.vector(yobs), pred=as.vector(ypred))
+cor.test(df$pred, df$obs, method = "pearson")
+
+plot(df$pred ~ df$obs)
+
+lm <- lm(df$pred ~ df$obs)
+rsq(lm)
+rmse(lm, df)
+
+## DIC = 20253.97
+## xPred pretty good
+## pearson r = 0.62
+## R² = 0.38
+## RMSE = 0.91
+## 4 species clusters
 
 
+######################################################################################################################################
+# Full  model + selected Quadratic
+formula <- as.formula(~ Habitat+Salinity +SuspendedParticulateMatter + EastwardVelocity + 
+                        NorthwardVelocity + SSTmean + Chla+ BottomDepth + 
+                        TravelTime + ReefMinDist + I(NorthwardVelocity^2) + I(SSTmean^2) + 
+                        I(TravelTime^2))
+
+types <- c(rep('DA', ncol(bruvs_species)))
+ml <- list(ng = 500, burnin = 50, typeNames = types)
+
+# fit model
+gjam <- gjam(formula = formula, xdata = bruvs_var, ydata = bruvs_species, modelList= ml )
+
+# outputs model
+plotPars = list(GRIDPLOTS=T, SAVEPLOTS = T)
+gjamPlot( output = gjam,  plotPars = plotPars)
+
+gjam$fit$DIC
+gjam[["inputs"]][["designTable"]]
+gjam[["parameters"]][["sensTable"]]
+
+yobs <- gjam[["inputs"]][["y"]]
+ypred <- gjam[["prediction"]][["ypredMu"]]
+
+# compute correlation between ypred and yobs (removing "other")
+
+df <- data.frame(obs=as.vector(yobs), pred=as.vector(ypred))
+cor.test(df$pred, df$obs, method = "pearson")
+
+plot(df$pred ~ df$obs)
+
+lm <- lm(df$pred ~ df$obs)
+rsq(lm)
+rmse(lm, df)
+
+## DIC = 20646.54
+## xPred pretty good
+## pearson r = 0.54
+## R² = 0.29
+## RMSE = 0.86
+## 4 species clusters
 
 
+######################################################################################################################################
+# Full  Full model + Full Quadratic
+formula <- as.formula(~ Habitat+Salinity +SuspendedParticulateMatter + EastwardVelocity + seafloorTemp +
+                        NorthwardVelocity + SSTmean + Chla+ BottomDepth + SummitDepth + SummitRugosity + SummitAreaKm2 +
+                        TravelTime + ReefMinDist + I(NorthwardVelocity^2) + I(SSTmean^2) + I(seafloorTemp^2) +
+                        I(TravelTime^2) + I(SummitDepth^2) + I(SummitRugosity^2))
 
+types <- c(rep('DA', ncol(bruvs_species)))
+ml <- list(ng = 500, burnin = 50, typeNames = types)
 
+# fit model
+gjam <- gjam(formula = formula, xdata = bruvs_var, ydata = bruvs_species, modelList= ml )
 
+# outputs model
+plotPars = list(GRIDPLOTS=T, SAVEPLOTS = T)
+gjamPlot( output = gjam,  plotPars = plotPars)
 
+gjam$fit$DIC
+gjam[["inputs"]][["designTable"]]
+gjam[["parameters"]][["sensTable"]]
 
+yobs <- gjam[["inputs"]][["y"]]
+ypred <- gjam[["prediction"]][["ypredMu"]]
+
+# compute correlation between ypred and yobs (removing "other")
+
+df <- data.frame(obs=as.vector(yobs), pred=as.vector(ypred))
+cor.test(df$pred, df$obs, method = "pearson")
+
+plot(df$pred ~ df$obs)
+
+lm <- lm(df$pred ~ df$obs)
+rsq(lm)
+rmse(lm, df)
+
+## DIC = 20000
+## xPred pretty good
+## pearson r = 0.64
+## R² = 0.41
+## RMSE = 0.93
+## 4 species clusters
 
 ##########################################################################################
 # load new data for predictions
@@ -89,8 +203,8 @@ test_df <- test_df %>%
   ))
 
 new_df <- test_df %>%
-  select(Habitat,EastwardVelocity,NorthwardVelocity,SSTmean,SSTsd,seafloorTemp,
-         Chla,SummitDepth,ValleyDepth,SummitAreaKm2,BottomDepth,TravelTime)
+  select(Habitat,Salinity,SuspendedParticulateMatter,EastwardVelocity,NorthwardVelocity,SSTmean,Chla,BottomDepth, 
+           TravelTime,ReefMinDist)
 
 new_data1 <- list(xdata=new_df, nsim=50)
 # predict on new data 

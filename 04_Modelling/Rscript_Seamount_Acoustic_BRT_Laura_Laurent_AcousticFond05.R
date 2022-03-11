@@ -18,19 +18,10 @@ if (!require("doParallel")) install.packages("doParallel")
 if (!require("dplyr")) install.packages("dplyr")
 if (!require("here")) install.packages("here")
 
-
-####### VOIR LA BIBLIO ICI
-###############    https://rspatial.org/raster/sdm/9_sdm_brt.html
-
-
-############################################
-
 # creer un repertoire de sortie
 
 dir.exists("03_BRT/03_Acoustic/BRT_Output")
 dir.create("03_BRT/03_Acoustic/BRT_Output")
-
-
 
 # charger les fonctions BRT necessaires
 source("03_BRT/ScriptR_Functions_BRT_Laura_Laurent.R")

@@ -5,7 +5,6 @@ library(tidyverse)
 ########################################################################################################################################
 ## Model on abundances
 load("02_formating_data/01_Benthic/Rdata/edna_motus_matrix_benthic.rdata")
-load("02_formating_data/01_Benthic/Rdata/edna_richness_benthic.rdata")
 
 edna_motus <- edna_motus[,colSums(edna_motus) > 0]
 
@@ -20,8 +19,9 @@ edna_var$BottomDepth <- as.numeric(edna_var$BottomDepth)
 
 
 # define model
-formula <- as.formula(~ Habitat+EastwardVelocity+NorthwardVelocity+SSTmean+SSTsd+seafloorTemp+
-                        Chla+SummitDepth+ValleyDepth+SummitAreaKm2+BottomDepth+TravelTime) # + ReefMinDist
+formula <- as.formula(~ Habitat+Salinity +SuspendedParticulateMatter + EastwardVelocity + 
+                        NorthwardVelocity + SSTmean + Chla+ BottomDepth + 
+                        TravelTime + ReefMinDist)
 
 types <- c(rep('CC', ncol(edna_motus)))
 
@@ -39,21 +39,26 @@ gjamPlot( output = gjam,  plotPars = plotPars)
 
 gjam$fit$DIC
 
-gjam$parameters$betaMu         # S by M coefficient matrix unstandardized
-gjam$parameters$betaSe         # S by M coefficient SE
-gjam$parameters$betaStandXmu   # S by M standardized for X
-gjam$parameters$betaStandXWmu  # (S-F) by M standardized for W/X, centered factors
+gjam[["inputs"]][["designTable"]]
+gjam[["parameters"]][["sensTable"]]
 
-gjam$parameters$betaTable        # SM by stats posterior summary
-gjam$parameters$betaStandXTable  # SM by stats posterior summary
-gjam$parameters$betaStandXWTable # (S-F)M by stats posterior summary
+yobs <- gjam[["inputs"]][["y"]]
+ypred <- gjam[["prediction"]][["ypredMu"]]
 
-gjam$parameters$sensBeta         # sensitivity to response variables
-gjam$parameters$sensTable        # sensitivity to predictor variables
+# compute correlation between ypred and yobs 
 
-gjam$parameters$sigMu            # S by S covariance matrix omega
+df <- data.frame(obs=as.vector(yobs), pred=as.vector(ypred))
+cor.test(df$pred, df$obs, method = "pearson")
+
+plot(df$pred ~ df$obs)
+
+lm <- lm(df$pred ~ df$obs)
+rsq(lm)
+rmse(lm, df)
 
 
+
+####################################################################################################################################
 # load new data for predictions
 load("02_formating_data/00_Prediction_raster/Rdata/df_seamount_islands.rdata")
 
@@ -66,12 +71,12 @@ test_df <- test_df %>%
     Habitat == 2 ~ "Seamount",
     Habitat == 3 ~ "Seamount"
   ))
-# sample 500 rows fo test dataset
+# sample 500 rows for test dataset
 test_df <- test_df[sample(1:nrow(test_df), 500), ]
 
 new_df <- test_df %>%
-  select(Habitat,EastwardVelocity,NorthwardVelocity,SSTmean,SSTsd,seafloorTemp,
-         Chla,SummitDepth,ValleyDepth,SummitAreaKm2,BottomDepth,TravelTime)
+  select(Habitat,Salinity,SuspendedParticulateMatter,EastwardVelocity,NorthwardVelocity,SSTmean,Chla,BottomDepth, 
+         TravelTime,ReefMinDist)
 
 new_data1 <- list(xdata=new_df, nsim=50)
 # predict on new data 

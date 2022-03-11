@@ -78,38 +78,3 @@ bruvs <- cbind(bruvs, bruvs3)
 
 cor_full <- cor(bruvs)
 
-lm_null <- glm(abundance_tot ~ 1, bruvs_abundance_all, family = "poisson")
-glm_full <- glm(abundance_tot ~ ., bruvs, family = "poisson", na.action = na.fail)
-lm_full <- glm(abundance_tot ~ Salinity +
-                SuspendedParticulateMatter + EastwardVelocity + NorthwardVelocity + SSTmax + SSTmean + SSTmin + 
-                SSTsd + seafloorTemp + Chla + SummitDepth + ValleyDepth + 
-                SummitAreaKm2 + SummitRugosity + BottomDepth + TravelTime + 
-                ReefMinDist + I(EastwardVelocity^2) + I(NorthwardVelocity^2) + I(Salinity^2) + 
-                I(SuspendedParticulateMatter^2) + I(SSTmax^2) + I(SSTmean^2) + I(SSTmin^2) + 
-                I(SSTsd^2) + I(seafloorTemp^2) + I(Chla^2) + I(SummitDepth^2) + I(ValleyDepth^2) + 
-                I(SummitAreaKm2^2) + I(SummitRugosity^2) + I(BottomDepth^2) + I(TravelTime^2) + 
-                I(ReefMinDist^2) + I(EastwardVelocity^3) + I(NorthwardVelocity^3) + I(Salinity^3) + 
-                I(SuspendedParticulateMatter^3) + I(SSTmax^3) + I(SSTmean^3) + I(SSTmin^3) + 
-                I(SSTsd^3) + I(seafloorTemp^3) + I(Chla^3) + I(SummitDepth^3) + I(ValleyDepth^3) + 
-                I(SummitAreaKm2^3) + I(SummitRugosity^3) + I(BottomDepth^3) + I(TravelTime^3) + 
-                I(ReefMinDist^3), bruvs, family = "poisson")
-
-anova(lm_null, lm_full)
-summary(lm_full)
-AIC(lm_full)
-RsqGLM(lm_full)
-
-imp <- dredge(glm_full)
-
-lm1 <- glm(abundance_tot ~ EastwardVelocity, bruvs, family = "poisson")
-AIC(lm1)
-RsqGLM(lm1)
-anova(lm_null, lm1)
-
-lm2 <- glm(abundance_tot ~ EastwardVelocity+NorthwardVelocity+BottomDepth+Chla+I(SSTmean^2)+
-            ReefMinDist+I(TravelTime^2), bruvs, family = "poisson")
-
-AIC(lm2)
-RsqGLM(lm2)
-anova(lm_null, lm2)
-
