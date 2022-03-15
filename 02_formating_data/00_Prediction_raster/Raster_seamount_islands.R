@@ -1,18 +1,13 @@
-if (!require("raster")) install.packages("raster")
-if (!require("rgdal")) install.packages("rgdal")
-if (!require("sp")) install.packages("sp")
-if (!require("sf")) install.packages("sf")
-if (!require("ncdf4")) install.packages("ncdf4")
-if (!require("rasterVis")) install.packages("rasterVis")
-if (!require("RColorBrewer")) install.packages("RColorBrewer")
-if (!require("stringr")) install.packages("stringr")
-if (!require("lubridate")) install.packages("lubridate")
-if (!require("dplyr")) install.packages("dplyr")
-if (!require("rgeos")) install.packages("rgeos")
-if (!require("readxl")) install.packages("readxl")
-if (!require("writexl")) install.packages("writexl")
-if (!require("geosphere")) install.packages("geosphere")
-
+library(raster)
+library(rgdal)
+library(sp)
+library(ncdf4)
+library(rasterVis)
+library(stringr)
+library(dplyr)
+library(rgeos)
+library(geosphere)
+library(terra)
 
 ### load rasters
 
@@ -89,6 +84,29 @@ df_seamount_islands$ReefMinDist.m=ReefMinDist.m[,1]
 df_seamount_islands$LandMinDist.m=LandMinDist.m[,1]
 
 
+# transform distances in km
+df_seamount_islands$ReefMinDist=df_seamount_islands$ReefMinDist.m/1000
+df_seamount_islands$LandMinDist=df_seamount_islands$LandMinDist.m/1000
+df_seamount_islands <- df_seamount_islands[,-c(21,22)]
+
+# Transform Habitat into character in the df
+df_seamount_islands <- df_seamount_islands %>%
+  mutate(Habitat = case_when(
+    Habitat == 4 ~ "DeepSlope",
+    Habitat == 1 ~ "Seamount",
+    Habitat == 2 ~ "Seamount",
+    Habitat == 3 ~ "Seamount"
+  ))
+
+
+# remove values > 60m for DeepSlope
+df_seamount <- df_seamount_islands %>%
+  filter(Habitat=="Seamount")
+df_slope <- df_seamount_islands %>%
+  filter(Habitat=="DeepSlope"& BottomDepth > 60)
+
+df_seamount_islands <- rbind(df_seamount, df_slope)
+
 # transform df back to raster multi-layers
 
 df <- df_seamount_islands
@@ -101,18 +119,7 @@ plot(raster_seamount_islands)
 
 raster_seamount_islands <- rast(raster_seamount_islands)
 
-writeRaster(raster_seamount_islands, filename = "02_formating_data/00_Prediction_raster/raster_seamount_islands.tif", overwrite=T)
-
-
-# Transform Habitat into character in the df
-
-df_seamount_islands <- df_seamount_islands %>%
-  mutate(Habitat = case_when(
-    Habitat == 4 ~ "DeepSlope",
-    Habitat == 1 ~ "Summit50",
-    Habitat == 2 ~ "Summit250",
-    Habitat == 3 ~ "Summit500"
-  ))
+writeRaster(raster_seamount_islands, filename = "02_formating_data/00_Prediction_raster/rasters/raster_seamount_islands.tif", overwrite=T)
 
 
 save(df_seamount_islands, file="02_formating_data/00_Prediction_raster/Rdata/df_seamount_islands.rdata")

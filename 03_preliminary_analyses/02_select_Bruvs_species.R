@@ -29,7 +29,7 @@ bruvs_SM250 <- bruvs_species[rownames(bruvs_species) %in% SM250$Station,]
 bruvs_SM500 <- bruvs_species[rownames(bruvs_species) %in% SM500$Station,]
 
 
-Percenttrim=20
+Percenttrim=40
 bruvs_SM50=gjamTrimY(bruvs_SM50, minObs =
                          round(dim(bruvs_SM50)[1]*Percenttrim/100),OTHER = FALSE)
 bruvs_DP=gjamTrimY(bruvs_DP, minObs =
