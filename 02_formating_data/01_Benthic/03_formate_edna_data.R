@@ -28,13 +28,18 @@ edna_motus <- edna_motus[, -ncol(edna_motus)]
 edna_motus[is.na(edna_motus)] <- 0
 
 
-edna_richness_benthic <- edna_motus[,c("Station")]
+
 # Sum of total richness per station
-edna_richness_benthic$reads_tot <- rowSums(edna_motus[,-1])
-
-
+edna_richness_benthic <- edna_motus[,c("Station")]
 edna_motus <- edna_motus[,-1]
 rownames(edna_motus) <- edna_richness_benthic$Station
+
+edna_pa <- edna_motus
+edna_pa[edna_pa>1] <- 1
+
+edna_richness_benthic$richness_tot <- rowSums(edna_pa)
+
+
 
 
 # save rdata

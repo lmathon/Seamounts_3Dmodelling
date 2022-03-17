@@ -61,17 +61,29 @@ save(bruvs_species, file="02_formating_data/01_Benthic/Rdata/bruvs_species_matri
 #### Abundance all species ####
 # --------------------------------------------------------------------------------------
 
+
 # Sum of total abundance per station
-bruvs_species$abundance_tot <- rowSums(bruvs_species)
+bruvs_abundance_all <- as.data.frame(rowSums(bruvs_species))
+colnames(bruvs_abundance_all) <- "abundance_tot"
 
 # transform abundance data in log(x+1)
-bruvs_species$Logabundance_tot=log(bruvs_species$abundance_tot + 1)
+bruvs_abundance_all$Logabundance_tot=log(bruvs_abundance_all$abundance_tot + 1)
 
 
-# select only columns abundance and log(abundance)
-bruvs_abundance_all <- bruvs_species[,c("abundance_tot", "Logabundance_tot")]
+save(bruvs_abundance_all, file="02_formating_data/01_Benthic/Rdata/bruvs_abundance_all.rdata")
 
-save(bruvs_abundance_all, file="02_formating_data/01_Bottom/Rdata/bruvs_abundance_all.rdata")
+# --------------------------------------------------------------------------------------
+#### Richness all species ####
+# --------------------------------------------------------------------------------------
+
+bruvs_pa <- bruvs_species
+bruvs_pa[bruvs_pa>1] <- 1
+
+# Sum of total abundance per station
+bruvs_richness_all <- as.data.frame(rowSums(bruvs_pa))
+colnames(bruvs_richness_all) <- "richness_tot"
+
+save(bruvs_richness_all, file="02_formating_data/01_Benthic/Rdata/bruvs_richness_all.rdata")
 
 
 # ------------------------------------------------------------------------------------
