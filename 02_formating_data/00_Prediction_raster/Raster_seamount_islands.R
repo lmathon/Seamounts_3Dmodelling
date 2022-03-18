@@ -103,7 +103,9 @@ df_seamount_islands <- df_seamount_islands %>%
 df_seamount <- df_seamount_islands %>%
   filter(Habitat=="Seamount")
 df_slope <- df_seamount_islands %>%
-  filter(Habitat=="DeepSlope"& BottomDepth > 60)
+  filter(Habitat=="DeepSlope")
+df_slope <- df_slope %>%
+  filter(BottomDepth > 60)
 
 df_seamount_islands <- rbind(df_seamount, df_slope)
 
