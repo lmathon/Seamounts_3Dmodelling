@@ -1,6 +1,7 @@
 library(tidyverse)
 library(taxonomizr)
 library(naniar)
+library(reshape2)
 
 ## read acoustic file
 Acoustic= read.csv("01_Raw_data/Acoustic_Data_All_Site_Cut_10m.csv", sep=";")
@@ -60,6 +61,7 @@ acoustic_pelagic=acoustic_pelagic[,-c(83,101,102,105)]
 
 # melt acoustic data in one column + column sampling depth
 acoustic_pelagic <- melt(acoustic_pelagic, id=c(80:102), variable.name = "Sampling_Depth", value.name = "sA")
+acoustic_pelagic$Sampling_Depth <- gsub("Depth_", "", acoustic_pelagic$Sampling_Depth)
 
 colnames(acoustic_pelagic) <- c("Longitude","Latitude","Site","Habitat","SummitDepth","ValleyDepth","Height",                      
                             "SummitAreaKm2","SummitRugosity","BottomDepth","SSTmean","SSTmin","SSTmax","SSTsd","Chla",

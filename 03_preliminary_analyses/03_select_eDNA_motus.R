@@ -29,7 +29,7 @@ edna_SM250 <- edna_motus[rownames(edna_motus) %in% SM250$Station,]
 edna_SM500 <- edna_motus[rownames(edna_motus) %in% SM500$Station,]
 
 
-Percenttrim=20
+Percenttrim=25
 edna_SM50=gjamTrimY(edna_SM50, minObs =
                        round(dim(edna_SM50)[1]*Percenttrim/100),OTHER = FALSE)
 edna_DP=gjamTrimY(edna_DP, minObs =

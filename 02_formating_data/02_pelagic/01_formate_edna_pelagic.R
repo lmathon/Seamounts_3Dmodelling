@@ -31,13 +31,18 @@ edna_motus$Station <- gsub("-", "_", edna_motus$Station)
 
 
 edna_richness_pelagic <- edna_motus[,c("Station")]
-# Sum of total richness per station
-edna_richness_pelagic$reads_tot <- rowSums(edna_motus[,-1])
 edna_richness_pelagic$Sampling_Depth <- sub(".*_", "", edna_richness_pelagic$Station)
-
 
 edna_motus <- edna_motus[,-1]
 rownames(edna_motus) <- edna_richness_pelagic$Station
+
+# Sum of total richness per station
+edna_pa <- edna_motus
+edna_pa[edna_pa>1] <- 1
+
+edna_richness_pelagic$richness_tot <- rowSums(edna_pa)
+
+
 
 
 # save rdata
