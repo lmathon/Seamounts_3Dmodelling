@@ -45,7 +45,7 @@ df <- data.frame(obs=as.vector(yobs), pred=as.vector(ypred))
 cor.test(df$pred, df$obs, method = "pearson")
 
 
-
+save(gjam, file="04_Modelling/01_benthic/02_eDNA/GJAM_Output_edna/gjam_model.rdata")
 
 ####################################################################################################################################
 # load new data for predictions

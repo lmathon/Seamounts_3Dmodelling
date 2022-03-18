@@ -32,7 +32,7 @@ source("04_Modelling/01_benthic/01_BRUVs/00_Functions_BRT.R")
 # definir le jeu de donnee, les variables "reponse" (Y) si on voulait analyser plus qu'une variable reponse, et les variables predicteur (X)
 load("02_formating_data/01_Benthic/Rdata/bruvs_richness_all.rdata")
 load("00_metadata/bruvs_explanatory_variables.rdata")
-bruvs_var$richness_tot<- bruvs_richness_all$richness_tot
+bruvs_var$richness_tot <- bruvs_richness_all$richness_tot
 
 myData <- bruvs_var
 
@@ -41,9 +41,8 @@ myData$Habitat <- as.factor(myData$Habitat)
 
 myResponse=c("richness_tot")
 
-myPredictor=c("Habitat","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
-              "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
-              "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist")
+myPredictor=c("SummitRugosity","BottomDepth", "TravelTime",
+              "SSTmean","Chla", "Salinity", "seafloorTemp")
 
 myPredictorNumeric=c("SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
                      "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
@@ -138,10 +137,10 @@ mod_best_fixed_reduced$contributions
 mod_best_fixed_reduced$var.names
 
 # Make plot of variable contributions reduced model
-make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "poisson")
+make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "gaussian")
 
 # Partial dependance plots reduced model
-partial_dependance_plots3(mod_best_fixed_reduced, responseName, "poisson")
+partial_dependance_plots3(mod_best_fixed_reduced, responseName, "gaussian")
 
 # Refit a gbmStep after dropping predictors with contributions < 5%
 mod_best_gbmStep_reduced = fit_best_reduced_gaussian_brt_gbmStep(myData, responseName, best_parameters,

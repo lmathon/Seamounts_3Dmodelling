@@ -32,7 +32,7 @@ source("04_Modelling/01_benthic/02_eDNA/00_Functions_BRT.R")
 # definir le jeu de donnee, les variables "reponse" (Y) si on voulait analyser plus qu'une variable reponse, et les variables predicteur (X)
 load("02_formating_data/01_Benthic/Rdata/edna_richness_benthic.rdata")
 load("00_metadata/edna_explanatory_variables_benthic.rdata")
-edna_var$richness_tot<- edna_richness_benthic$richness_tot
+edna_var$log_richness<- log(edna_richness_benthic$richness_tot+1)
 edna_var$BottomDepth <- as.numeric(edna_var$BottomDepth)
 
 myData <- edna_var
@@ -40,11 +40,11 @@ myData <- edna_var
 myData$Habitat <- as.factor(myData$Habitat)
 
 
-myResponse=c("richness_tot")
+myResponse=c("log_richness")
 
-myPredictor=c("Habitat","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
-              "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
-              "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist")
+myPredictor=c("BottomDepth", "TravelTime",
+              "SSTmean", "EastwardVelocity", "NorthwardVelocity", "Chla",
+              "Salinity", "seafloorTemp")
 
 myPredictorNumeric=c("SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
                      "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
@@ -106,7 +106,7 @@ par_output =  foreach(i = tree.complexity, .packages=c("foreach")) %dopar% {
 
 
 # extract best brts parameters
-best_parameters = extract_best_parameters_par(par_output, responseName, "poisson")
+best_parameters = extract_best_parameters_par(par_output, responseName, "gaussian")
 best_parameters
 
 
@@ -120,7 +120,7 @@ names(mod_best_fixed)
 mod_best_fixed$contributions
 
 # Make plot of variable contributions best fixed model
-make_contribution_reduced_plot(mod_best_fixed, responseName, "poisson")
+make_contribution_reduced_plot(mod_best_fixed, responseName, "gaussian")
 
 
 # Get variables with contributions > 5%
@@ -139,10 +139,10 @@ mod_best_fixed_reduced$contributions
 mod_best_fixed_reduced$var.names
 
 # Make plot of variable contributions reduced model
-make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "poisson")
+make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "gaussian")
 
 # Partial dependance plots reduced model
-partial_dependance_plots3(mod_best_fixed_reduced, responseName, "poisson")
+partial_dependance_plots3(mod_best_fixed_reduced, responseName, "gaussian")
 
 # Refit a gbmStep after dropping predictors with contributions < 5%
 mod_best_gbmStep_reduced = fit_best_reduced_gaussian_brt_gbmStep(myData, responseName, best_parameters,
@@ -166,8 +166,8 @@ find.int$rank.list
 png(paste0("04_Modelling/01_benthic/02_eDNA/BRT_Output_edna/", "InteractionPlotsBestModel.png"), width = 1200, height = 600)
 
 par(mfrow=c(1,2))
-dismo::gbm.perspec(mod_best_gbmStep_reduced, 5, 2, z.range=c(0,2))
-dismo::gbm.perspec(mod_best_gbmStep_reduced, 1, 3, z.range=c(1,3.5))
+dismo::gbm.perspec(mod_best_gbmStep_reduced, 1, 2, z.range=c(0,2))
+dismo::gbm.perspec(mod_best_gbmStep_reduced, 4, 2, z.range=c(1,3.5))
 
 dev.off()
 
@@ -186,7 +186,7 @@ dev.off()
 
 
 gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1))
-gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,6),level.plot=FALSE)
+gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,2),level.plot=FALSE)
 
 
 

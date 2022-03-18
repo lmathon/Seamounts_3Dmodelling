@@ -54,7 +54,7 @@ cor.test(df$pred, df$obs, method = "pearson")
 ## pearson r = 0.68
 
 
-
+save(gjam, file="04_Modelling/01_benthic/01_BRUVs/GJAM_Output_bruvs/gjam_model.rdata")
 
 
 
