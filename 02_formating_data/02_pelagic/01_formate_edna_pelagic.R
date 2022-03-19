@@ -72,6 +72,8 @@ colnames(edna_var) <- c("Station","Site","Latitude","Longitude","Habitat","Eastw
                         "SummitDepth","ValleyDepth","Height", "SummitAreaKm2","SummitRugosity","BottomDepth","ReefMinDist",
                         "LandMinDist", "Sampling_Depth")
 
+edna_var$BottomDepth <- gsub(">", "", edna_var$BottomDepth)
+edna_var$BottomDepth <- gsub("sondeur éteint", "1950", edna_var$BottomDepth)
 
 save(edna_var, file="00_metadata/edna_explanatory_variables_pelagic.rdata")
 

@@ -16,7 +16,7 @@ Acoustic <- Acoustic %>%
 acoustic_pelagic <- Acoustic[,c(3:81)]
 
 # replace values > 100 with 0 
-acoustic_pelagic[acoustic_pelagic > 100] <- 0
+acoustic_pelagic[acoustic_pelagic > 100] <- 100
 
 # remove acoustic values in the last 20m before bottom
 
@@ -57,13 +57,13 @@ acoustic_pelagic$ShortestDistanceReef=acoustic_pelagic$ShortestDistanceReef/1000
 acoustic_pelagic$TravelTime=acoustic_pelagic$TravelTime.seconds / 3600
 
 # remove unwanted variables
-acoustic_pelagic=acoustic_pelagic[,-c(83,101,102,105)] 
+acoustic_pelagic=acoustic_pelagic[,-c(101,102,105)] 
 
 # melt acoustic data in one column + column sampling depth
-acoustic_pelagic <- melt(acoustic_pelagic, id=c(80:102), variable.name = "Sampling_Depth", value.name = "sA")
+acoustic_pelagic <- melt(acoustic_pelagic, id=c(80:103), variable.name = "Sampling_Depth", value.name = "sA")
 acoustic_pelagic$Sampling_Depth <- gsub("Depth_", "", acoustic_pelagic$Sampling_Depth)
 
-colnames(acoustic_pelagic) <- c("Longitude","Latitude","Site","Habitat","SummitDepth","ValleyDepth","Height",                      
+colnames(acoustic_pelagic) <- c("Longitude","Latitude","Site","Day","Habitat","SummitDepth","ValleyDepth","Height",                      
                             "SummitAreaKm2","SummitRugosity","BottomDepth","SSTmean","SSTmin","SSTmax","SSTsd","Chla",
                             "EastwardVelocity","NorthwardVelocity","Salinity","seafloorTemp",
                             "SuspendedParticulateMatter","ReefMinDist","LandMinDist","TravelTime", "Sampling_Depth", "sA")

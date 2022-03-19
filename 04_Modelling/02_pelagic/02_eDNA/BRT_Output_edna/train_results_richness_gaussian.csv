@@ -1,0 +1,2 @@
+"","df.model","df.TC","df.LR","df.n.trees","df.dev","df.cv.dev","df.cv.se","df.corr","df.corr.se","df.bag.fract"
+"4","Model_richness_tc_1_lr_0.001_bf_0.75",1,0.001,950,37.658,43.282,9.998,0.209,0.093,0.75

@@ -37,9 +37,8 @@ acoustic_var=acoustic_var[-c(24)] # remove variable travel time in second
 acoustic_var$ShortestDistanceLand=acoustic_var$ShortestDistanceLand/1000
 acoustic_var$ShortestDistanceReef=acoustic_var$ShortestDistanceReef/1000
 
-acoustic_var <- acoustic_var[,-4]
 
-colnames(acoustic_var) <- c("Longitude","Latitude","Site","Habitat","SummitDepth","ValleyDepth","Height",                      
+colnames(acoustic_var) <- c("Longitude","Latitude","Site","Day","Habitat","SummitDepth","ValleyDepth","Height",                      
                             "SummitAreaKm2","SummitRugosity","BottomDepth","SSTmean","SSTmin","SSTmax","SSTsd","Chla",
                             "EastwardVelocity","NorthwardVelocity","Salinity","seafloorTemp",
                             "SuspendedParticulateMatter","ReefMinDist","LandMinDist","TravelTime")
@@ -56,7 +55,7 @@ save(acoustic_var, file="00_metadata/acoustic_explanatory_variables_benthic.rdat
 # replace values > 100 with NA in AcousticFond
 hist(Acoustic$AcousticFond) 
 summary(Acoustic$AcousticFond)
-Acoustic$AcousticFond[Acoustic$AcousticFond > 100] <- NA
+Acoustic$AcousticFond[Acoustic$AcousticFond > 100] <- 100
 hist(Acoustic$AcousticFond) 
 
 

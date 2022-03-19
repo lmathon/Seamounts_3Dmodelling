@@ -32,18 +32,17 @@ source("04_Modelling/01_benthic/03_acoustic/00_Functions_BRT.R")
 # definir le jeu de donnee, les variables "reponse" (Y) si on voulait analyser plus qu'une variable reponse, et les variables predicteur (X)
 load("02_formating_data/01_Benthic/Rdata/acoustic_benthic.rdata")
 load("00_metadata/acoustic_explanatory_variables_benthic.rdata")
-acoustic_var$AcousticFond <- acoustic_fond$AcousticFond
+acoustic_var$logAcousticFond <- log(acoustic_fond$AcousticFond+1)
 
 myData <- acoustic_var
 
 myData$Habitat <- as.factor(myData$Habitat)
 
 
-myResponse=c("AcousticFond")
+myResponse=c("logAcousticFond")
 
-myPredictor=c("Habitat","SummitDepth", "SummitRugosity","BottomDepth",
-              "SSTmean", "EastwardVelocity", "NorthwardVelocity",
-              "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist")
+myPredictor=c("BottomDepth","SSTmean", "EastwardVelocity", "NorthwardVelocity",
+              "Chla", "Day", "LandMinDist")
 
 myPredictorNumeric=c("SummitDepth", "SummitRugosity","BottomDepth",
                      "SSTmean", "EastwardVelocity", "NorthwardVelocity",
@@ -164,8 +163,8 @@ responseName=myResponse # in case there is only one response variable
   png(paste0("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/", "InteractionPlotsBestModel.png"), width = 1200, height = 600)
   
   par(mfrow=c(1,2))
-  dismo::gbm.perspec(mod_best_gbmStep_reduced, 5, 2, z.range=c(0,2))
-  dismo::gbm.perspec(mod_best_gbmStep_reduced, 1, 3, z.range=c(1,3.5))
+  dismo::gbm.perspec(mod_best_gbmStep_reduced, 1, 2, z.range=c(0,2))
+  dismo::gbm.perspec(mod_best_gbmStep_reduced, 3, 3, z.range=c(1,3.5))
   
   dev.off()
   
@@ -184,7 +183,7 @@ responseName=myResponse # in case there is only one response variable
  
   
   gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1))
-  gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,6),level.plot=FALSE)
+  gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(3,2),level.plot=FALSE)
   
   
   
