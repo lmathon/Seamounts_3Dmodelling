@@ -39,12 +39,12 @@ edna_var$richness <- edna_richness_pelagic$richness_tot
 myData <- edna_var
 
 myData$Habitat <- as.factor(myData$Habitat)
+myData$Sampling_Depth <- as.numeric(myData$Sampling_Depth)
 
+myResponse=c("richness")
 
-myResponse=c("log_richness")
-
-myPredictor=c("SummitAreaKm2", "SummitRugosity","BottomDepth",
-              "EastwardVelocity", "NorthwardVelocity",
+myPredictor=c("SummitRugosity","BottomDepth",
+              "EastwardVelocity", "NorthwardVelocity", "Sampling_Depth",
               "Salinity", "seafloorTemp", "LandMinDist")
 
 myPredictorNumeric=c("SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
@@ -107,7 +107,7 @@ par_output =  foreach(i = tree.complexity, .packages=c("foreach")) %dopar% {
 
 
 # extract best brts parameters
-best_parameters = extract_best_parameters_par(par_output, responseName, "gaussian")
+best_parameters = extract_best_parameters_par(par_output, responseName, "poisson")
 best_parameters
 
 
@@ -121,7 +121,7 @@ names(mod_best_fixed)
 mod_best_fixed$contributions
 
 # Make plot of variable contributions best fixed model
-make_contribution_reduced_plot(mod_best_fixed, responseName, "gaussian")
+make_contribution_reduced_plot(mod_best_fixed, responseName, "poisson")
 
 
 # Get variables with contributions > 5%
@@ -140,10 +140,10 @@ mod_best_fixed_reduced$contributions
 mod_best_fixed_reduced$var.names
 
 # Make plot of variable contributions reduced model
-make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "gaussian")
+make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "poisson")
 
 # Partial dependance plots reduced model
-partial_dependance_plots3(mod_best_fixed_reduced, responseName, "gaussian")
+partial_dependance_plots3(mod_best_fixed_reduced, responseName, "poisson")
 
 # Refit a gbmStep after dropping predictors with contributions < 5%
 mod_best_gbmStep_reduced = fit_best_reduced_gaussian_brt_gbmStep(myData, responseName, best_parameters,

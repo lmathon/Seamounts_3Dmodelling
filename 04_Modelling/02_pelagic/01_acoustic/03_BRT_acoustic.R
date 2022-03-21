@@ -37,13 +37,14 @@ acoustic_var$acoustic <- acoustic_pelagic$sA
 myData <- acoustic_var
 
 myData$Habitat <- as.factor(myData$Habitat)
+myData$Sampling_Depth <- as.numeric(myData$Sampling_Depth)
+
 
 
 myResponse=c("acoustic")
 
-myPredictor=c("Habitat","SummitDepth", "SummitRugosity","BottomDepth",
-              "SSTmean", "EastwardVelocity", "NorthwardVelocity",
-              "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist")
+myPredictor=c("BottomDepth","TravelTime", "SSTmean","NorthwardVelocity", "Chla",
+              "Salinity","SuspendedParticulateMatter", "Sampling_Depth")
 
 myPredictorNumeric=c("SummitDepth", "SummitRugosity","BottomDepth",
                      "SSTmean", "EastwardVelocity", "NorthwardVelocity",

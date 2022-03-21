@@ -1,3 +1,2 @@
 "","df.model","df.TC","df.LR","df.n.trees","df.dev","df.cv.dev","df.cv.se","df.corr","df.corr.se","df.bag.fract"
-"4","Model_log_richness_tc_1_lr_0.001_bf_0.5",1,0.001,1250,0.558,0.661,0.124,0.215,0.099,0.5
-"5","Model_log_richness_tc_1_lr_0.001_bf_0.75",1,0.001,1075,0.566,0.664,0.121,0.205,0.099,0.75
+"4","Model_log_richness_tc_1_lr_0.001_bf_0.75",1,0.001,875,0.577,0.666,0.119,0.199,0.099,0.75

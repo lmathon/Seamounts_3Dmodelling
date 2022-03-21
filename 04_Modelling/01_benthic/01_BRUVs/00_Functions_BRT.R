@@ -323,7 +323,11 @@ make_contribution_reduced_plot <- function(model, responseName_brts, distrib){
     ylab("Relative contribution (%)") +
     xlab("") +
     coord_flip()+
-    theme(axis.text=element_text(size=14))
+    theme_bw()+
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(), 
+          panel.background = element_blank(),
+          axis.text=element_text(size=14))
   
   #ggplot2::ggsave(paste0("BRT_Output/", "contributions_reduced_", responseName_brts,"_", distrib , ".png"), plot, width = 6, height = 7)
   ggplot2::ggsave(paste0("04_Modelling/01_benthic/01_BRUVs/BRT_Output_bruvs/", deparse(substitute(model)),"_", responseName_brts,"_", distrib , ".png"), plot, width = 6, height = 7)

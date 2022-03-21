@@ -3,6 +3,7 @@ library(rsq)
 library(tidyverse)
 library(ecodist)
 library(modelr)
+library(raster)
 
 
 ########################################################################################################################################
@@ -39,7 +40,7 @@ gjamPlot( output = gjam,  plotPars = plotPars)
 
 gjam$fit$DIC
 gjam[["inputs"]][["designTable"]]
-gjam[["parameters"]][["sensTable"]]
+sens <- gjam[["parameters"]][["sensTable"]]
 
 yobs <- gjam[["inputs"]][["y"]]
 ypred <- gjam[["prediction"]][["ypredMu"]]
@@ -56,31 +57,66 @@ cor.test(df$pred, df$obs, method = "pearson")
 
 save(gjam, file="04_Modelling/01_benthic/01_BRUVs/GJAM_Output_bruvs/gjam_model.rdata")
 
+sens$variable <- rownames(sens)
+sens <- sens[-14,]
+sens$variable <- gsub("HabitatDeepSlope", "Habitat", sens$variable)
+sens$group <- c(1,1,2,2,3,3,4,4,5,5,6,7,8)
+
+total <- sens %>%
+  select(group, Estimate) %>%
+  group_by(group) %>%
+  summarise_all(funs(sum)) 
+names(total) <- c("group", "total")
+sens_tot <- left_join(total, sens[,c("group", "variable")])
+sens_tot <- sens_tot %>% distinct(group, .keep_all=T)
+
+plot_sens <- ggplot(sens_tot, aes(reorder(variable, total), total))+
+  geom_bar(stat = "identity", width = 0.5)+
+  ylab("Sensitivity") +
+  xlab("") +
+  theme_bw()+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank())+
+  coord_flip()
+
+
+ggsave(plot_sens, file="04_Modelling/01_benthic/01_BRUVs/GJAM_Output_bruvs/gjamOutput/plot_sens.png", width=6, height = 5)
+
 
 
 ##########################################################################################
 # load new data for predictions
-load("02_formating_data/00_Prediction_raster/Rdata/df_seamount_islands.rdata")
+load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_benthic.rdata")
 
-test_df <- df_seamount_islands
-test_df <- test_df %>% select(-Height)
-test_df <- test_df %>% filter(BottomDepth < 600)
-test_df <- test_df %>%
-  mutate(Habitat = case_when(
-    Habitat == 4 ~ "DeepSlope",
-    Habitat == 1 ~ "Seamount",
-    Habitat == 2 ~ "Seamount",
-    Habitat == 3 ~ "Seamount"
-  ))
+df_benthic <- na.omit(df_benthic)
 
-new_df <- test_df %>%
-  select(Habitat,Salinity,SuspendedParticulateMatter,EastwardVelocity,NorthwardVelocity,SSTmean,Chla,BottomDepth, 
-         TravelTime,ReefMinDist)
+new_df <- df_benthic %>%
+  select(x, y, Habitat,Salinity,EastwardVelocity,NorthwardVelocity,SSTmax,Chla,BottomDepth, 
+         ReefMinDist)
 
-new_data1 <- list(xdata=new_df, nsim=50)
+new_df$Habitat <- as.factor(new_df$Habitat)
+
+new_df$`I(Salinity^2)` <- (new_df$Salinity)^2
+new_df$`I(BottomDepth^2)` <- (new_df$BottomDepth)^2
+new_df$`I(ReefMinDist^2)` <- (new_df$ReefMinDist)^2
+new_df$`I(EastwardVelocity^3)` <- (new_df$EastwardVelocity)^3
+new_df$`I(SSTmax^3)` <- (new_df$SSTmax)^3
+
+
+new_data1 <- list(xdata=new_df, nsim=500)
+
 # predict on new data 
-p1 <- gjamPredict(output = gjam, newdata = new_data1, FULL = TRUE)
+p1 <- gjamPredict(output = gjam, newdata = new_data1)
 predictions <- as.data.frame(p1$sdList$yMu)
-predictions <- cbind(predictions, test_df)
-save(predictions, file="gjamOutput/predictions.rdata")
+predictions <- cbind(predictions, df_benthic)
+save(predictions, file="04_Modelling/01_benthic/01_BRUVs/GJAM_Output_bruvs/predictions.rdata")
 
+
+raster_predict_abundance <- predictions[,1:17]
+
+coordinates(raster_predict_abundance) <- ~x+y
+gridded(raster_predict_abundance) <- TRUE
+raster_predict_abundance <- stack(raster_predict_abundance)
+
+plot(raster_predict_abundance)

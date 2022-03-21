@@ -116,7 +116,7 @@ extract_best_parameters_par <- function(output, responseName_brts, distrib){
   
   #write results
   #write.table(df, paste0("BRT_Output/", "train_results_", responseName_brts, "_", distrib, ".txt"), row.names = FALSE)
-  write.csv(list(df = df),file=paste0("04_Modelling/02_pelagic/01_acousticBRT_Output_acoustic/", "train_results_", responseName_brts, "_", distrib, ".csv"))
+  write.csv(list(df = df),file=paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", "train_results_", responseName_brts, "_", distrib, ".csv"))
   
   # extract best parameters
   best_parameters = df[1,]
@@ -160,7 +160,7 @@ fit_best_gaussian_brt_fixed <- function(data_brts, responseName_brts, best_param
                            bag.fraction = as.numeric(best_params[,10]),
                            n.trees = as.numeric(best_params[,4]))
   
-  save(tbmod, file = paste0("04_Modelling/02_pelagic/01_acousticBRT_Output_acoustic/", "best_fixed_gaussian_brt_", responseName_brts, ".RData"))
+  save(tbmod, file = paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", "best_fixed_gaussian_brt_", responseName_brts, ".RData"))
   
   return(tbmod)
 }
@@ -224,7 +224,7 @@ fit_best_reduced_gaussian_brt_fixed <- function(data_brts, responseName_brts,  b
                            bag.fraction = as.numeric(best_params[,10]),
                            n.trees = as.numeric(best_params[,4]))
   
-  save(tbmod, file = paste0("04_Modelling/02_pelagic/01_acousticBRT_Output_acoustic/", "best_fixed_reduced_gaussian_brt_", responseName_brts, ".RData"))
+  save(tbmod, file = paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", "best_fixed_reduced_gaussian_brt_", responseName_brts, ".RData"))
   
   return(tbmod)
 }
@@ -292,8 +292,8 @@ fit_best_reduced_gaussian_brt_gbmStep <- function(data_brts, responseName_brts, 
                               tbmod$cv.statistics$correlation.se))
  
 
-  write.csv(list(BestModel = k.out),file=paste0("04_Modelling/02_pelagic/01_acousticBRT_Output_acoustic/", "final_results_mod_best_gbmStep_reduced_", responseName_brts, "_Gaussian_", ".csv"))
-  save(tbmod, file = paste0("04_Modelling/02_pelagic/01_acousticBRT_Output_acoustic/", "best_gbmStep_reduced_gaussian_brt_", responseName_brts, ".RData"))
+  write.csv(list(BestModel = k.out),file=paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", "final_results_mod_best_gbmStep_reduced_", responseName_brts, "_Gaussian_", ".csv"))
+  save(tbmod, file = paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", "best_gbmStep_reduced_gaussian_brt_", responseName_brts, ".RData"))
   
   return(tbmod)
 }
@@ -323,12 +323,16 @@ make_contribution_reduced_plot <- function(model, responseName_brts, distrib){
     ylab("Relative contribution (%)") +
     xlab("") +
     coord_flip()+
-    theme(axis.text=element_text(size=14))
+    theme_bw()+
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(), 
+          panel.background = element_blank(),
+          axis.text=element_text(size=14))
   
   #ggplot2::ggsave(paste0("BRT_Output/", "contributions_reduced_", responseName_brts,"_", distrib , ".png"), plot, width = 6, height = 7)
-  ggplot2::ggsave(paste0("04_Modelling/02_pelagic/01_acousticBRT_Output_acoustic/", deparse(substitute(model)),"_", responseName_brts,"_", distrib , ".png"), plot, width = 6, height = 7)
-  #write_csv(list(contrib = contrib),file=paste0("04_Modelling/02_pelagic/01_acousticBRT_Output_acoustic/", "contrib_",deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".csv"))
-  write_xlsx(list(contrib = contrib),path=paste0("04_Modelling/02_pelagic/01_acousticBRT_Output_acoustic/", "contrib_",deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".xlsx"))
+  ggplot2::ggsave(paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", deparse(substitute(model)),"_", responseName_brts,"_", distrib , ".png"), plot, width = 6, height = 7)
+  #write_csv(list(contrib = contrib),file=paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", "contrib_",deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".csv"))
+  write_xlsx(list(contrib = contrib),path=paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", "contrib_",deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".xlsx"))
   
 }
 
@@ -371,7 +375,7 @@ partial_dependance_plots3 <- function(model, responseName_brts, distrib){
   }
   
   #png(paste0("BRT_Output/", "partial_plots3_", responseName_brts, "_", distrib, ".png"), width = width, height = height)
-  png(paste0("04_Modelling/02_pelagic/01_acousticBRT_Output_acoustic/", "partial_plots3_", deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".png"), width = width, height = height)
+  png(paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", "partial_plots3_", deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".png"), width = width, height = height)
   
   
   if (length(predictors)>=7){
@@ -449,9 +453,9 @@ predict_brt <- function(model, distrib, species, preds, shp_rast){
   
   # Write raster
   if (distrib == "poisson"){
-    raster::writeRaster(p, here::here(paste0("04_Modelling/02_pelagic/01_acousticBRT_Output_acoustic/", distrib, "_predictions_", species, ".grd")), overwrite=TRUE)
+    raster::writeRaster(p, here::here(paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", distrib, "_predictions_", species, ".grd")), overwrite=TRUE)
   } else { #exp transformation of predictions
-    raster::writeRaster(exp(p), here::here(paste0("04_Modelling/02_pelagic/01_acousticBRT_Output_acoustic/", distrib, "_predictions_", species, ".grd")), overwrite=TRUE)
+    raster::writeRaster(exp(p), here::here(paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", distrib, "_predictions_", species, ".grd")), overwrite=TRUE)
   }
   
   return(p)
@@ -471,7 +475,7 @@ predict_brt <- function(model, distrib, species, preds, shp_rast){
 
 map_brt_prediction <- function(prediction, species, distrib){
   
-  png(here::here(paste0("04_Modelling/02_pelagic/01_acousticBRT_Output_acoustic/", distrib, "_map_brt_prediction_", species,".png")), width = 960, height = 480)
+  png(here::here(paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", distrib, "_map_brt_prediction_", species,".png")), width = 960, height = 480)
   if (distrib == "gaussian"){
     raster::plot(prediction, main=paste0('BRT prediction ', species, ' (LOG biomass (kg))'), col = viridisLite::viridis(10))
     }else{
