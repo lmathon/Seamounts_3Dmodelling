@@ -103,7 +103,7 @@ predictions <- cbind(predictions, df_benthic)
 save(predictions, file="04_Modelling/01_benthic/02_eDNA/GJAM_Output_edna/predictions.rdata")
 
 
-raster_predict_motus <- predictions[,1:17]
+raster_predict_motus <- predictions[,1:16]
 
 coordinates(raster_predict_motus) <- ~x+y
 gridded(raster_predict_motus) <- TRUE

@@ -99,7 +99,6 @@ extract_best_parameters_par <- function(output, responseName_brts, distrib){
   names(df) = c("model", "TC", "LR", "n.trees", "dev", "cv.dev", "cv.se", "corr", "corr.se")
   
   # change column class
-  #df[,2:9] <- lapply(df[,2:9], as.numeric) # Laurent: as.numeric(as.character(df$X9))
   df[,1:9] <- lapply(df[,1:9], as.character) # laurent
   df[,2:9] <- lapply(df[,2:9], as.numeric) # laurent
   
@@ -115,7 +114,6 @@ extract_best_parameters_par <- function(output, responseName_brts, distrib){
     dplyr::mutate(bag.fract = as.numeric(substr(df$model, nchar(as.character(df$model))-2, nchar(as.character(df$model))))) -> df
   
   #write results
-  #write.table(df, paste0("BRT_Output/", "train_results_", responseName_brts, "_", distrib, ".txt"), row.names = FALSE)
   write.csv(list(df = df),file=paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", "train_results_", responseName_brts, "_", distrib, ".csv"))
   
   # extract best parameters
@@ -319,7 +317,7 @@ make_contribution_reduced_plot <- function(model, responseName_brts, distrib){
   contrib = summary(model)
   
   plot = ggplot(data = contrib, aes(x = reorder(var, rel.inf), y = rel.inf))+
-    geom_bar(stat="identity") +
+    geom_bar(stat="identity", width=0.5) +
     ylab("Relative contribution (%)") +
     xlab("") +
     coord_flip()+
@@ -329,9 +327,7 @@ make_contribution_reduced_plot <- function(model, responseName_brts, distrib){
           panel.background = element_blank(),
           axis.text=element_text(size=14))
   
-  #ggplot2::ggsave(paste0("BRT_Output/", "contributions_reduced_", responseName_brts,"_", distrib , ".png"), plot, width = 6, height = 7)
   ggplot2::ggsave(paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", deparse(substitute(model)),"_", responseName_brts,"_", distrib , ".png"), plot, width = 6, height = 7)
-  #write_csv(list(contrib = contrib),file=paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", "contrib_",deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".csv"))
   write_xlsx(list(contrib = contrib),path=paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", "contrib_",deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".xlsx"))
   
 }
@@ -374,7 +370,6 @@ partial_dependance_plots3 <- function(model, responseName_brts, distrib){
     height = 300
   }
   
-  #png(paste0("BRT_Output/", "partial_plots3_", responseName_brts, "_", distrib, ".png"), width = width, height = height)
   png(paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", "partial_plots3_", deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".png"), width = width, height = height)
   
   
@@ -421,12 +416,6 @@ partial_dependance_plots3 <- function(model, responseName_brts, distrib){
 #########################################################################################################
 
 
-
-
-### CES AUTRES FONCTIONS NONT PAS ENCORE ETE REVUES PAR LAURENT POUR ACOUSTIQUE
-### ELLES SERONT UTILES POUR PREDICTIONS SPATIALES
-
-
 #' Predict brt on study area
 #'
 #' @param model
@@ -447,9 +436,6 @@ predict_brt <- function(model, distrib, species, preds, shp_rast){
   # predict with selected predictors (preds)
   p = dismo::predict(rast[[preds]], model, n.trees = model$gbm.call$best.trees, type = "response")
   #unit of predictions = nb of fish in 1 x 1 km cell
-  
-  #mask with study area raster (to avoid predictions on land0)
-  #p = raster::mask(p, shp_rast, inverse=T)
   
   # Write raster
   if (distrib == "poisson"){
@@ -484,146 +470,5 @@ map_brt_prediction <- function(prediction, species, distrib){
   dev.off()
   
 }
-
-
-##################################################################################################################################################
-## NOT USED 
-##################################################################################################################################################
-#' Map BRT prediction after exp transformation for uvcs
-#'
-#' @param prediction
-#' @param species
-#' @param distrib
-#'
-#' @return
-#' @export
-#'
-
-map_brt_prediction_exp_transf <- function(prediction, species, distrib){
-  
-  #read NC land and reproject
-  shp = rgdal::readOGR(here::here("data/nc_land/NOUVELLE_CALEDONIE.shp"))
-  raster::crs(shp) <- sp::CRS('+init=EPSG:3163') ## lambert new caledonia
-  shp2 = sp::spTransform(shp, "+init=epsg:4326")
-  
-  #crop to extent
-  prediction = raster::crop(prediction, raster::extent(-158, 168.5, -23.2, -17.8))
-  
-  png(here::here(paste0("/outputs/brts/", distrib, "/map_brt_prediction_exp_transf_", species, "_", distrib,".png")), width = 960, height = 480)
-  raster::plot(exp(prediction), main=paste0('BRT prediction ', species, ' biomass (kg)'), col = viridisLite::viridis(10))
-  sp::plot(shp2, add=T)
-  dev.off()
-}
-
-
-
-
-
-#' Map BRT prediction quantile color scale
-#'
-#' @param prediction
-#' @param species
-#' @param distrib
-#' @param fivebreaks
-#'
-#' @return
-#' @export
-#'
-
-map_brt_prediction_quantile_cols <- function(prediction, species, distrib){
-  
-  #read NC land and reproject
-  shp = rgdal::readOGR(here::here("data/nc_land/NOUVELLE_CALEDONIE.shp"))
-  raster::crs(shp) <- sp::CRS('+init=EPSG:3163') ## lambert new caledonia
-  shp2 = sp::spTransform(shp, "+init=epsg:4326")
-  
-  #crop to extent
-  prediction = raster::crop(prediction, raster::extent(-158, 168.5, -23.2, -17.8))
-  
-  png(here::here(paste0("/outputs/brts/", distrib, "/map_brt_prediction_quantiles_cols_", species, "_", distrib,".png")), width = 960, height = 480)
-  if (distrib == "gaussian"){
-    prediction = exp(prediction)
-    q1 = round(quantile(raster::values(prediction), 0.20, na.rm=T),3)
-    q2 = round(quantile(raster::values(prediction), 0.40, na.rm=T),3)
-    q3 = round(quantile(raster::values(prediction), 0.60, na.rm=T),3)
-    q4 = round(quantile(raster::values(prediction), 0.80, na.rm=T),3)
-    q5 = round(quantile(raster::values(prediction), 1, na.rm=T),3)
-    raster::plot(prediction, breaks = c(0, q1, q2, q3, q4, q5), main=paste0('BRT prediction ', species, ' biomass (kg)'), col = c(viridisLite::viridis(5)),
-                 legend.args = list(text='kg', side=4, line=2.5),
-                 axis.args =  list(cex.axis=0.8))
-    sp::plot(shp2, add=T)
-  }else{
-    q1 = round(quantile(raster::values(prediction), 0.20, na.rm=T),1)
-    q2 = round(quantile(raster::values(prediction), 0.40, na.rm=T),1)
-    q3 = round(quantile(raster::values(prediction), 0.60, na.rm=T),1)
-    q4 = round(quantile(raster::values(prediction), 0.80, na.rm=T),1)
-    q5 = round(quantile(raster::values(prediction), 1, na.rm=T),1)
-    raster::plot(prediction, breaks = c(0, q1, q2, q3, q4, q5), main=paste0('BRT prediction ', species, ' (nb individuals)'), col = c(viridisLite::viridis(5)),
-                 legend = F)
-    raster::plot(prediction, legend.only= T, breaks = c(0, 10, 20, 30, 40, 50), col = c(viridisLite::viridis(5)),
-                 lab.breaks = c(0, q1, q2, q3, q4, q5),
-                 legend.args = list(text='Individuals', side=4, line=2.5), legend.shrink=1, zlim=c(0, 50),
-                 axis.args =  list(cex.axis=0.8))
-    sp::plot(shp2, add=T)
-  }
-  dev.off()
-  
-}
-
-
-#' Extract best brts parameters
-#'
-#' @param output
-#' @param species
-#' @param distrib
-#'
-#' @return
-#' @export
-#'
-
-extract_best_parameters <- function(output, species, distrib){
-  
-  # convert matrix to dataframe
-  df <- na.omit(data.frame(matrix(unlist(output), ncol = 9, byrow = F)))
-  
-  # Change column names
-  names(df) = c("model", "TC", "LR", "n.trees", "dev", "cv.dev", "cv.se", "corr", "corr.se")
-  
-  # change column class
-  df[,2:9] <- lapply(df[,2:9], as.numeric)
-  
-  # Round columns
-  df[,5:9]  =  round(df[,5:9],digits=3)
-  
-  # Sort by cv.dev and cv.se (used to assess the model, the lowest the better)
-  #nb low cv.dev corresponds to high corr
-  df  =  df[order(df$cv.dev, df$cv.se),]
-  
-  # add bag fraction
-  df %>%
-    dplyr::mutate(bag.fract = as.numeric(substr(df$model, nchar(df$model)-2, nchar(df$model)))) -> df
-  
-  #write results
-  write.table(df, here::here(paste0("/outputs/brts/", distrib, "/train_results_", species, "_", distrib, ".txt")), row.names = FALSE)
-  
-  # extract best parameters
-  best_parameters = df[1,]
-  
-  return(best_parameters)
-  
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

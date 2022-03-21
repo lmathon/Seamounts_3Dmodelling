@@ -192,14 +192,13 @@ gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,2),level.plot=FALSE)
 
 
 ### Predict REDUCED BRT on study area
-load("02_formating_data/00_Prediction_raster/Rdata/df_seamount_islands.rdata")
-df_seamount_islands$Latitude <- df_seamount_islands$y
-df_seamount_islands$Longitude <- df_seamount_islands$x
-df <- df_seamount_islands
+load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_benthic.rdata")
+df <- df_benthic
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
-
 rast <- stack(df)
+
+rast2 <- brick("02_formating_data/00_Prediction_raster/Raster_df_predictions/raster_benthic.tif")
 
 
 # Predict based on reduced model

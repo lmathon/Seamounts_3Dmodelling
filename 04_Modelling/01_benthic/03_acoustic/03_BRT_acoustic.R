@@ -189,31 +189,38 @@ responseName=myResponse # in case there is only one response variable
   
   
   ### Predict REDUCED BRT on study area
-  load("02_formating_data/00_Prediction_raster/Rdata/df_seamount_islands.rdata")
-  df_seamount_islands$Latitude <- df_seamount_islands$y
-  df_seamount_islands$Longitude <- df_seamount_islands$x
-  df <- df_seamount_islands
-  coordinates(df) <- ~x+y
-  gridded(df) <- TRUE
+load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_benthic.rdata")
+df_benthic <- na.omit(df_benthic)
   
-  rast <- stack(df)
+df <- df_benthic
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+rast <- stack(df)
+  
+rast2 <- brick("02_formating_data/00_Prediction_raster/Raster_df_predictions/raster_benthic.tif")
   
   
   # Predict based on reduced model
-  pred_fish = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
+pred_fish = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
                           preds = var_sup5_best_fixed, rast)
   
-  plot(pred_fish)
+plot(pred_fish)
   
-  # Map prediction
-  map_brt_prediction(pred_fish, responseName, "gaussian")
+benthic_acoustic_predict <- as.data.frame(pred_fish, xy=TRUE)
   
-  map_brt_prediction_exp_transf(pred_fish, responseName, "gaussian")
-  
-  map_brt_prediction_quantile_cols(pred_fish, responseName, "gaussian")
-  
- # } ### BOUCLE de FOR
+benthic_acoustic_predict <- benthic_acoustic_predict %>% filter(!is.na(layer))
+
+names(benthic_acoustic_predict) <- c("x", "y", "acoustic_predict")
+
+benthic_acoustic_predict$acoustic_predict <- exp(benthic_acoustic_predict$acoustic_predict)-1 
+
+save(benthic_acoustic_predict, file="04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/benthic_acoustic_predict.rdata")   
 
 
-#Stop cluster
-stopCluster(cl)
+df <- benthic_acoustic_predict
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_benthic_acoustic_predict <- stack(df)
+plot(raster_benthic_acoustic_predict)
+
+writeRaster(raster_benthic_acoustic_predict, filename = "04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/raster_benthic_acoustic_predict.tif")

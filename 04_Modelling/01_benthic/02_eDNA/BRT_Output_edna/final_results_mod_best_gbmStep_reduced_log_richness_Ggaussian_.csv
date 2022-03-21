@@ -2,8 +2,8 @@
 "1","TreeComplexity",3
 "2","LearningRate",0.001
 "3","n.trees",2675
-"4","deviance",0.616565519232656
-"5","cv.deviance.mean",0.890503340970765
-"6","cv.deviance.se",0.108138822399363
-"7","cv.correlation.mean",0.485908456067573
-"8","cv.correlation.se",0.0886325234973543
+"4","deviance",0.616834086155382
+"5","cv.deviance.mean",0.890417891445602
+"6","cv.deviance.se",0.108147043980023
+"7","cv.correlation.mean",0.485943580590819
+"8","cv.correlation.se",0.0886570869128221
