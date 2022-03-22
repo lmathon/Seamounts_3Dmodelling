@@ -162,7 +162,7 @@ coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 raster_0_200 <- stack(df)
 
-writeRaster(raster_0_200, filename = "05_Marine_Spatial_Planning/01_formating_prediction_layers/0-200/raster_0_200.tif")
+writeRaster(raster_0_200, filename = "05_Marine_Spatial_Planning/01_formating_prediction_layers/0-200/raster_0_200.tif", overwrite=TRUE)
 save(df_0_200, file = "05_Marine_Spatial_Planning/01_formating_prediction_layers/0-200/df_0_200.rdata")
 
 
@@ -176,19 +176,19 @@ coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 raster_200_400 <- stack(df)
 
-writeRaster(raster_200_400, filename = "05_Marine_Spatial_Planning/01_formating_prediction_layers/200-400/raster_200_400.tif")
+writeRaster(raster_200_400, filename = "05_Marine_Spatial_Planning/01_formating_prediction_layers/200-400/raster_200_400.tif", overwrite=TRUE)
 save(df_200_400, file = "05_Marine_Spatial_Planning/01_formating_prediction_layers/200-400/df_200_400.rdata")
 
 
 ################################################################################################################################################
 ## Raster 400-600
 
-df_400_600 <- cbind(abund_400_600[,1:17], reads_400_600[,1:14], benthic_acoustic_400_600[,3:4])
+df_400_600 <- cbind(abund_400_600[,1:17], reads_400_600[,1:14], benthic_acoustic_400_600[,3])
 
 df <- df_400_600
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 raster_400_600 <- stack(df)
 
-writeRaster(raster_400_600, filename = "05_Marine_Spatial_Planning/01_formating_prediction_layers/400-600/raster_400_600.tif")
+writeRaster(raster_400_600, filename = "05_Marine_Spatial_Planning/01_formating_prediction_layers/400-600/raster_400_600.tif", overwrite=TRUE)
 save(df_400_600, file = "05_Marine_Spatial_Planning/01_formating_prediction_layers/400-600/df_400_600.rdata")
