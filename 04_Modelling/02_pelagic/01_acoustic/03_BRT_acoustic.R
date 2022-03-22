@@ -191,14 +191,9 @@ responseName=myResponse # in case there is only one response variable
   
   
   ### Predict REDUCED BRT on study area
-  load("02_formating_data/00_Prediction_raster/Rdata/df_seamount_islands.rdata")
-  df_seamount_islands$Latitude <- df_seamount_islands$y
-  df_seamount_islands$Longitude <- df_seamount_islands$x
-  df <- df_seamount_islands
-  coordinates(df) <- ~x+y
-  gridded(df) <- TRUE
+  load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_pelagic.rdata")
   
-  rast <- stack(df)
+  rast <- df_pelagic
   
   
   # Predict based on reduced model

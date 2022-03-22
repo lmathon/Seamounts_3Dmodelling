@@ -214,6 +214,8 @@ names(benthic_acoustic_predict) <- c("x", "y", "acoustic_predict")
 
 benthic_acoustic_predict$acoustic_predict <- exp(benthic_acoustic_predict$acoustic_predict)-1 
 
+benthic_acoustic_predict <- cbind(benthic_acoustic_predict, df_benthic[,-c(1,2)])
+
 save(benthic_acoustic_predict, file="04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/benthic_acoustic_predict.rdata")   
 
 
