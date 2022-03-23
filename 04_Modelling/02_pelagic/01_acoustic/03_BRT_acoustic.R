@@ -32,7 +32,7 @@ source("04_Modelling/02_pelagic/01_acoustic/00_Functions_BRT.R")
 # definir le jeu de donnee, les variables "reponse" (Y) si on voulait analyser plus qu'une variable reponse, et les variables predicteur (X)
 load("02_formating_data/02_pelagic/Rdata/acoustic_pelagic.rdata")
 load("00_metadata/acoustic_explanatory_variables_pelagic.rdata")
-acoustic_var$acoustic <- acoustic_pelagic$sA
+acoustic_var$log_acoustic <- log(acoustic_pelagic$sA+1)
 
 myData <- acoustic_var
 
@@ -41,7 +41,7 @@ myData$Sampling_Depth <- as.numeric(myData$Sampling_Depth)
 
 
 
-myResponse=c("acoustic")
+myResponse=c("log_acoustic")
 
 myPredictor=c("BottomDepth","TravelTime", "SSTmean","NorthwardVelocity", "Chla",
               "Salinity","SuspendedParticulateMatter", "Sampling_Depth")

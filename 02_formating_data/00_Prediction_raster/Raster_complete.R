@@ -79,8 +79,8 @@ df_pelagic <- df_all %>%
 
 df_pelagic <- df_pelagic[,-21]
 
-sampling_depth <- seq(20, 800, by=20)
-list_pelagic <- vector("list", 40)
+sampling_depth <- seq(20, 600, by=20)
+list_pelagic <- vector("list", 30)
 
 for (i in 1:length(sampling_depth)) {
   list_pelagic[[i]] <- df_pelagic

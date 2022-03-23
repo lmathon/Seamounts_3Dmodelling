@@ -1,11 +1,17 @@
 library(tidyverse)
 library(raster)
+library(scales)
 
 
 ##################################################################################################################################################
 ## BRUVS abundances species
 
 load("04_Modelling/01_benthic/01_BRUVs/GJAM_Output_bruvs/predictions.rdata")
+
+for (i in 1:15) {
+  predictions[,i] <- rescale(predictions[,i])
+  
+}
 
 # 0-200
 abund_0_200 <- predictions %>%
@@ -31,6 +37,11 @@ abund_400_600 <- abund_400_600 %>% dplyr::select(x,y,1:15)
 ## eDNA reads MOTUs
 
 load("04_Modelling/01_benthic/02_eDNA/GJAM_Output_edna/predictions.rdata")
+
+for (i in 1:14) {
+  predictions[,i] <- rescale(predictions[,i])
+  
+}
 
 # 0-200
 reads_0_200 <- predictions %>%
@@ -58,6 +69,7 @@ reads_400_600 <- reads_400_600 %>% dplyr::select(x,y,1:14)
 ## acoustic benthic
 
 load("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/benthic_acoustic_predict.rdata")
+benthic_acoustic_predict$acoustic_predict <- rescale(benthic_acoustic_predict$acoustic_predict)
 
 # 0-200
 benthic_acoustic_0_200 <- benthic_acoustic_predict %>%
