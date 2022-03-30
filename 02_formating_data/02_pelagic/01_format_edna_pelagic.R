@@ -1,7 +1,7 @@
 library(tidyverse)
 
 load("01_Raw_data/Clean_eDNA/Rdata/02-clean-data.Rdata")
-var <- read.csv("01_Raw_data/eDNA_Environmental_Variables_SEAMOUNTS_November2021.csv", sep=",")
+var <- read.csv("01_Raw_data/eDNA_Environmental_Variables_SEAMOUNTS_November2021.csv", sep=";")
 
 var <- var %>%
   filter(Habitat == "Pelagic")

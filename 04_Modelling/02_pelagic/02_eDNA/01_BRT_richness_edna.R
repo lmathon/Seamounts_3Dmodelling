@@ -41,7 +41,7 @@ myData <- edna_var
 myData$Habitat <- as.factor(myData$Habitat)
 myData$Sampling_Depth <- as.numeric(myData$Sampling_Depth)
 
-myResponse=c("richness")
+myResponse=c("log_richness")
 
 myPredictor=c("SummitRugosity","BottomDepth",
               "EastwardVelocity", "NorthwardVelocity", "Sampling_Depth",
@@ -107,7 +107,7 @@ par_output =  foreach(i = tree.complexity, .packages=c("foreach")) %dopar% {
 
 
 # extract best brts parameters
-best_parameters = extract_best_parameters_par(par_output, responseName, "poisson")
+best_parameters = extract_best_parameters_par(par_output, responseName, "gaussian")
 best_parameters
 
 
@@ -121,7 +121,7 @@ names(mod_best_fixed)
 mod_best_fixed$contributions
 
 # Make plot of variable contributions best fixed model
-make_contribution_reduced_plot(mod_best_fixed, responseName, "poisson")
+make_contribution_reduced_plot(mod_best_fixed, responseName, "gaussian")
 
 
 # Get variables with contributions > 5%
@@ -140,10 +140,10 @@ mod_best_fixed_reduced$contributions
 mod_best_fixed_reduced$var.names
 
 # Make plot of variable contributions reduced model
-make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "poisson")
+make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "gaussian")
 
 # Partial dependance plots reduced model
-partial_dependance_plots3(mod_best_fixed_reduced, responseName, "poisson")
+partial_dependance_plots3(mod_best_fixed_reduced, responseName, "gaussian")
 
 # Refit a gbmStep after dropping predictors with contributions < 5%
 mod_best_gbmStep_reduced = fit_best_reduced_gaussian_brt_gbmStep(myData, responseName, best_parameters,
@@ -167,7 +167,7 @@ find.int$rank.list
 png(paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", "InteractionPlotsBestModel.png"), width = 1200, height = 600)
 
 par(mfrow=c(1,2))
-dismo::gbm.perspec(mod_best_gbmStep_reduced, 1, 2, z.range=c(0,2))
+dismo::gbm.perspec(mod_best_gbmStep_reduced, 1, 3, z.range=c(0,2))
 dismo::gbm.perspec(mod_best_gbmStep_reduced, 4, 2, z.range=c(1,3.5))
 
 dev.off()
@@ -180,7 +180,7 @@ stopCluster(cl)
 
 png(paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", "InteractionPlotsBestModelDismo.png"), width = 1200, height = 600)
 
-dismo::gbm.plot(mod_best_gbmStep_reduced, n.plots=5, plot.layout=c(3, 2), write.title = FALSE)
+dismo::gbm.plot(mod_best_gbmStep_reduced, n.plots=5, plot.layout=c(4, 2), write.title = FALSE)
 
 dev.off()
 
@@ -193,30 +193,54 @@ gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,2),level.plot=FALSE)
 
 
 ### Predict REDUCED BRT on study area
-load("02_formating_data/00_Prediction_raster/Rdata/df_seamount_islands.rdata")
-df_seamount_islands$Latitude <- df_seamount_islands$y
-df_seamount_islands$Longitude <- df_seamount_islands$x
-df <- df_seamount_islands
-coordinates(df) <- ~x+y
-gridded(df) <- TRUE
+load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_pelagic.rdata")
 
-rast <- stack(df)
+for (i in 1:nrow(df_pelagic)) {
+  if (df_pelagic[i,"BottomDepth"] < (df_pelagic[i,"Sampling_Depth"]-19.99)){
+    df_pelagic[i,"Sampling_Depth"] <- NA
+  }
+}
+na <- df_pelagic %>%
+  filter(is.na(Sampling_Depth))
+
+df_pelagic <- df_pelagic %>%
+  filter(!is.na(Sampling_Depth))
+
+list_df <- split(df_pelagic, df_pelagic$Sampling_Depth)
+depth <- unique(df_pelagic$Sampling_Depth)
+
+pred_fish <- vector("list", 30)
+pred_df <- vector("list", 30)
+ 
+pelagic_motu_predict <- list_df[[1]][,1:3]
+pelagic_motu_predict$x <- as.factor(pelagic_motu_predict$x)
+pelagic_motu_predict$y <- as.factor(pelagic_motu_predict$y)
 
 
-# Predict based on reduced model
-pred_fish = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
-                        preds = var_sup5_best_fixed, rast)
+for (i in 1:length(list_df)) {
+  df <- list_df[[i]]
+  coordinates(df) <- ~x+y
+  gridded(df) <- TRUE
+  rast <- stack(df)
+  
+  # Predict based on reduced model
+  pred_fish[[i]] = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
+                          preds = var_sup5_best_fixed, rast)
+ 
+  
+  
+  pred_df[[i]] <- as.data.frame(pred_fish[[i]], xy=TRUE) 
+  pred_df[[i]] <- pred_df[[i]] %>% filter(!is.na(layer))
+  pred_df[[i]]$layer <- exp(pred_df[[i]]$layer)-1
+  names(pred_df[[i]]) <- c("x", "y", paste("depth_", depth[[i]], sep=""))
+  
+  pred_df[[i]]$x <- as.factor(pred_df[[i]]$x)
+  pred_df[[i]]$y <- as.factor(pred_df[[i]]$y)
+  
+  pelagic_motu_predict <- left_join(pelagic_motu_predict, pred_df[[i]], by=c("x","y"))
+}
 
-plot(pred_fish)
-
-# Map prediction
-map_brt_prediction(pred_fish, responseName, "gaussian")
-
-map_brt_prediction_exp_transf(pred_fish, responseName, "gaussian")
-
-map_brt_prediction_quantile_cols(pred_fish, responseName, "gaussian")
-
-# } ### BOUCLE de FOR
+save(pelagic_motu_predict, file="04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/pelagic_motu_predict.rdata")
 
 
 #Stop cluster

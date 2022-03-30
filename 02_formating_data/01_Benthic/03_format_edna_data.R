@@ -84,7 +84,7 @@ edna_var$Habitat <- gsub("Summit50", "Seamount", edna_var$Habitat)
 
 edna_var <- edna_var[-c(17,18,25)]
 
-colnames(edna_var) <- c("Station","Site","Longitude","Latitude","Habitat","EastwardVelocity","NorthwardVelocity","Salinity",
+colnames(edna_var) <- c("Station","Site","Latitude","Longitude","Habitat","EastwardVelocity","NorthwardVelocity","Salinity",
                         "SuspendedParticulateMatter","SSTmax","SSTmean","SSTmin","SSTsd","seafloorTemp","Chla","TravelTime",
                         "SummitDepth","ValleyDepth","Height", "SummitAreaKm2","SummitRugosity","BottomDepth","ReefMinDist","LandMinDist")
 

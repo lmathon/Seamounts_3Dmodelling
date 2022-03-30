@@ -69,7 +69,7 @@ for(i in 1:length(list_projects_dir)){
   # Modif here to take only the double combination of ncbi and custom database
   project_taxo <- fread(
     paste0(dir_i, "/", grep(paste0(
-      project_i, "(.*)ecotag_customref"), files_i, value=T, ignore.case = TRUE)),
+      project_i, "(.*)ecotag_ncbiref"), files_i, value=T, ignore.case = TRUE)),
     sep="\t", stringsAsFactors = F, h=T)
   
   # -------- # For the other files
@@ -79,7 +79,7 @@ for(i in 1:length(list_projects_dir)){
   
     # Other 
       other_table <- fread(paste0(dir_i, "/", grep("Other(.*)table", files_i, value=T)), sep="\t", stringsAsFactors = F, h=T)
-      other_taxo <- fread(paste0(dir_i, "/", grep("Other(.*)ecotag_customref", files_i, value=T)), sep="\t", stringsAsFactors = F, h=T) # Modif here to take only the double combination of ncbi and custom database
+      other_taxo <- fread(paste0(dir_i, "/", grep("Other(.*)ecotag_ncbiref", files_i, value=T)), sep="\t", stringsAsFactors = F, h=T) # Modif here to take only the double combination of ncbi and custom database
       
       # Assemble
       other_data <- assemble_data(table_otu = other_table, taxo_otu = other_taxo) %>%
@@ -115,7 +115,7 @@ for(i in 1:length(list_projects_dir)){
     
     # Read 
     blank_table <- try(fread(paste0(dir_i, "/", grep("Blank(.*)table", files_i, value=T)), sep="\t", stringsAsFactors = F, h=T))
-    blank_taxo <- try(fread(paste0(dir_i, "/", grep("Blank(.*)ecotag_custom", files_i, value=T)), sep="\t", stringsAsFactors = F, h=T))
+    blank_taxo <- try(fread(paste0(dir_i, "/", grep("Blank(.*)ecotag_ncbi", files_i, value=T)), sep="\t", stringsAsFactors = F, h=T))
     
     # Assemble
     blank_data <- assemble_data(table_otu = blank_table, taxo_otu = blank_taxo) %>%
@@ -195,7 +195,7 @@ list_read_step2 <- lapply(list_read_step1, function(file){
   
   # Clean column names 
   columns_to_remove <- c("amplicon", "family", "genus", "order", "species", "taxid", "OTU", "total", 
-                         "cloud", "length", "abundance", "spread", "identity", "taxonomy", "references")
+                         "cloud", "length", "abundance", "spread", "quality","identity", "taxonomy", "references")
   
   file_short <- file %>%
     select(-one_of(columns_to_remove))

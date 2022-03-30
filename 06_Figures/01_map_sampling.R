@@ -48,9 +48,7 @@ sites$coords <- st_as_sf(sites[,c("Longitude", "Latitude")], coords = c("Longitu
 
 # sampling data 
 
-edna_var <- edna_var[,c(1,4,3)]
-colnames(edna_var) <- c("Station", "Longitude", "Latitude")
-edna <- rbind(edna_var, edna_var_pelagic[,c(1,3:4)])
+edna <- rbind(edna_var[,c(1,3:4)], edna_var_pelagic[,c(1,3:4)])
 edna$coords <- st_as_sf(edna[,c("Longitude", "Latitude")], coords = c("Longitude", "Latitude"), crs=4326)
 
 bruvs <- bruvs_var[,c(1,3:4)]

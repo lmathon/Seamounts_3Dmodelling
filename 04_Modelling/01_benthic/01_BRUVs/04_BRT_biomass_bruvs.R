@@ -205,6 +205,19 @@ pred_fish = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
 
 plot(pred_fish)
 
+bruvs_biomass_predict <- as.data.frame(pred_fish, xy=TRUE)
+
+bruvs_biomass_predict <- bruvs_biomass_predict %>% filter(!is.na(layer))
+
+names(bruvs_biomass_predict) <- c("x", "y", "biomass_predict")
+
+bruvs_biomass_predict$biomass_predict <- exp(bruvs_biomass_predict$biomass_predict)-1 
+
+bruvs_biomass_predict <- cbind(bruvs_biomass_predict, df_benthic[,-c(1,2)])
+
+save(bruvs_biomass_predict, file="04_Modelling/01_benthic/01_BRUVs/BRT_Output_bruvs/bruvs_biomass_predict.rdata")   
+
+
 # Map prediction
 map_brt_prediction(pred_fish, responseName, "gaussian")
 
