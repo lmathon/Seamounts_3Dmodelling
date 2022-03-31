@@ -3,6 +3,7 @@ library(prioritizr)
 library(raster)
 library(plyr)
 library(dplyr)
+library(sf)
 
 ###################################################################################################################################################
 ## Formate planning unit template 
@@ -65,7 +66,7 @@ pu_3 <- pu_3[,4:6]
 
 pu_data <- rbind(pu_1, pu_2, pu_3)
 pu_data$id <- c(1:nrow(pu_data))
-pu_data <- pu_data %>% select(id, id_2d, id_depth, cost)
+pu_data <- pu_data %>% dplyr::select(id, id_2d, id_depth, cost)
 
 
 save(pu_data, file="05_Marine_Spatial_Planning/02_formating_MSP3D_inputs/Rdata/pu_data.rdata")
@@ -79,37 +80,37 @@ load("05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_0_200.r
 load("05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_200_400.rdata")
 load("05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_400_600.rdata")
 
-# each depth to full spatial extent
-df1 <- left_join(df_pelagic[,1:2], df_0_200, by=c("x", "y"))
-df2 <- left_join(df_pelagic[,1:2], df_200_400, by=c("x", "y"))
-df3 <- left_join(df_pelagic[,1:2], df_400_600, by=c("x", "y"))
+df_0_200$x <- df_pelagic$x
+df_0_200$y <- df_pelagic$y
 
-colnames(df1)[colnames(df1) == "benthic_acoustic_0_200[, 3]"] <- "benthic_acoustic"
-colnames(df2)[colnames(df2) == "benthic_acoustic_200_400[, 3]"] <- "benthic_acoustic"
-colnames(df3)[colnames(df3) == "benthic_acoustic_400_600[, 3]"] <- "benthic_acoustic"
+df_200_400$x <- df_pelagic$x
+df_200_400$y <- df_pelagic$y
+
+df_400_600$x <- df_pelagic$x
+df_400_600$y <- df_pelagic$y
 
 # transform each depth to raster
 
-df <- df1
+df <- df_0_200
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 depth_1 <- stack(df)
 projection(depth_1) <- "+proj=longlat +datum=WGS84 +no_defs"
-depth_1 <- clamp(depth_1, lower = 1e-6, useValues = TRUE)
+#depth_1 <- clamp(depth_1, lower = 1e-6, useValues = TRUE)
 
-df <- df2
+df <- df_200_400
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 depth_2 <- stack(df)
 projection(depth_2) <- "+proj=longlat +datum=WGS84 +no_defs"
-depth_2 <- clamp(depth_2, lower = 1e-6, useValues = TRUE)
+#depth_2 <- clamp(depth_2, lower = 1e-6, useValues = TRUE)
 
-df <- df3
+df <- df_400_600
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 depth_3 <- stack(df)
 projection(depth_3) <- "+proj=longlat +datum=WGS84 +no_defs"
-depth_3 <- clamp(depth_3, lower = 1e-6, useValues = TRUE)
+#depth_3 <- clamp(depth_3, lower = 1e-6, useValues = TRUE)
 
 features_depth <- list(depth_1, depth_2, depth_3)
 names(features_depth) <-
@@ -209,7 +210,7 @@ bound_data <-
   ungroup()
 
 
-
+save(bound_data, file="05_Marine_Spatial_Planning/02_formating_MSP3D_inputs/Rdata/bound_data.rdata")
 
 
 
@@ -220,6 +221,7 @@ p <-
   problem(pu_data$cost, features = feat_data, rij_matrix = rij_data) %>%
   add_min_set_objective() %>%
   add_relative_targets(0.1) %>%
+  add_boundary_penalties(50,1,data=bound_data) %>%
   add_binary_decisions()
 print(p)
 

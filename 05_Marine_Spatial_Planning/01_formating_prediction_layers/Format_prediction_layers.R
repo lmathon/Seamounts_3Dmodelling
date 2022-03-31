@@ -18,6 +18,8 @@ abund_0_200 <- predictions %>%
   filter(BottomDepth <= 200)
 
 abund_0_200 <- abund_0_200 %>% dplyr::select(x,y,1:15)
+abund_0_200$x <- as.factor(abund_0_200$x)
+abund_0_200$y <- as.factor(abund_0_200$y)
 
 # 200-400
 abund_200_400 <- predictions %>%
@@ -25,12 +27,16 @@ abund_200_400 <- predictions %>%
   filter(BottomDepth > 200)
 
 abund_200_400 <- abund_200_400 %>% dplyr::select(x,y,1:15)
+abund_200_400$x <- as.factor(abund_200_400$x)
+abund_200_400$y <- as.factor(abund_200_400$y)
 
 # 400-600
 abund_400_600 <- predictions %>%
   filter(BottomDepth > 400)
 
 abund_400_600 <- abund_400_600 %>% dplyr::select(x,y,1:15)
+abund_400_600$x <- as.factor(abund_400_600$x)
+abund_400_600$y <- as.factor(abund_400_600$y)
 
 
 ##################################################################################################################################################
@@ -48,6 +54,8 @@ reads_0_200 <- predictions %>%
   filter(BottomDepth <= 200)
 
 reads_0_200 <- reads_0_200 %>% dplyr::select(x,y,1:14)
+reads_0_200$x <- as.factor(reads_0_200$x)
+reads_0_200$y <- as.factor(reads_0_200$y)
 
 
 # 200-400
@@ -56,6 +64,8 @@ reads_200_400 <- predictions %>%
   filter(BottomDepth > 200)
 
 reads_200_400 <- reads_200_400 %>% dplyr::select(x,y,1:14)
+reads_200_400$x <- as.factor(reads_200_400$x)
+reads_200_400$y <- as.factor(reads_200_400$y)
 
 
 # 400-600
@@ -63,6 +73,8 @@ reads_400_600 <- predictions %>%
   filter(BottomDepth > 400)
 
 reads_400_600 <- reads_400_600 %>% dplyr::select(x,y,1:14)
+reads_400_600$x <- as.factor(reads_400_600$x)
+reads_400_600$y <- as.factor(reads_400_600$y)
 
 
 ##################################################################################################################################################
@@ -76,7 +88,9 @@ benthic_acoustic_0_200 <- benthic_acoustic_predict %>%
   filter(BottomDepth <= 200)
 
 benthic_acoustic_0_200 <- benthic_acoustic_0_200 %>% dplyr::select(x,y,acoustic_predict)
-
+benthic_acoustic_0_200$x <- as.factor(benthic_acoustic_0_200$x)
+benthic_acoustic_0_200$y <- as.factor(benthic_acoustic_0_200$y)
+names(benthic_acoustic_0_200) <- c("x","y", "pelagic_acoustic")
 
 # 200-400
 benthic_acoustic_200_400 <- benthic_acoustic_predict %>%
@@ -84,13 +98,18 @@ benthic_acoustic_200_400 <- benthic_acoustic_predict %>%
   filter(BottomDepth > 200)
 
 benthic_acoustic_200_400 <- benthic_acoustic_200_400 %>% dplyr::select(x,y,acoustic_predict)
+benthic_acoustic_200_400$x <- as.factor(benthic_acoustic_200_400$x)
+benthic_acoustic_200_400$y <- as.factor(benthic_acoustic_200_400$y)
+names(benthic_acoustic_200_400) <- c("x","y", "pelagic_acoustic")
 
 # 400-600
 benthic_acoustic_400_600 <- benthic_acoustic_predict %>%
   filter(BottomDepth > 400)
 
 benthic_acoustic_400_600 <- benthic_acoustic_400_600 %>% dplyr::select(x,y,acoustic_predict)
-
+benthic_acoustic_400_600$x <- as.factor(benthic_acoustic_400_600$x)
+benthic_acoustic_400_600$y <- as.factor(benthic_acoustic_400_600$y)
+names(benthic_acoustic_400_600) <- c("x","y", "pelagic_acoustic")
 
 ##################################################################################################################################################
 ## BRUVs species richness
@@ -106,6 +125,33 @@ benthic_acoustic_400_600 <- benthic_acoustic_400_600 %>% dplyr::select(x,y,acous
 
 load("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/pelagic_motu_predict.rdata")
 
+# 0_200
+pelagic_motu_0_200 <- pelagic_motu_predict[,c(1,2,4:13)]
+pelagic_motu_0_200$pelagic_motus <- rowMeans(pelagic_motu_0_200[,3:12], na.rm=TRUE)
+
+pelagic_motu_0_200 <- pelagic_motu_0_200 %>% dplyr::select(x,y,pelagic_motus)
+pelagic_motu_0_200$pelagic_motus <- rescale(pelagic_motu_0_200$pelagic_motus)
+pelagic_motu_0_200$x <- as.factor(pelagic_motu_0_200$x)
+pelagic_motu_0_200$y <- as.factor(pelagic_motu_0_200$y)
+
+# 200_400
+pelagic_motu_200_400 <- pelagic_motu_predict[,c(1,2,14:23)]
+pelagic_motu_200_400$pelagic_motus <- rowMeans(pelagic_motu_200_400[,3:12], na.rm=TRUE)
+
+pelagic_motu_200_400 <- pelagic_motu_200_400 %>% dplyr::select(x,y,pelagic_motus)
+pelagic_motu_200_400$pelagic_motus <- rescale(pelagic_motu_200_400$pelagic_motus)
+pelagic_motu_200_400$x <- as.factor(pelagic_motu_200_400$x)
+pelagic_motu_200_400$y <- as.factor(pelagic_motu_200_400$y)
+
+# 400_600
+pelagic_motu_400_600 <- pelagic_motu_predict[,c(1,2,24:33)]
+pelagic_motu_400_600$pelagic_motus <- rowMeans(pelagic_motu_400_600[,3:12], na.rm=TRUE)
+
+pelagic_motu_400_600 <- pelagic_motu_400_600 %>% dplyr::select(x,y,pelagic_motus)
+pelagic_motu_400_600$pelagic_motus <- rescale(pelagic_motu_400_600$pelagic_motus)
+pelagic_motu_400_600$x <- as.factor(pelagic_motu_400_600$x)
+pelagic_motu_400_600$y <- as.factor(pelagic_motu_400_600$y)
+
 ##################################################################################################################################################
 ## acoustic pelagic
 
@@ -113,42 +159,35 @@ load("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/pelagic_motu_predict.rdata
 
 
 ################################################################################################################################################
-## Raster 0-200
+## df 0-200
 
-df_0_200 <- cbind(abund_0_200[,1:17], reads_0_200[,3:16], benthic_acoustic_0_200[,3])
+df_0_200 <- left_join(pelagic_motu_0_200, abund_0_200, by=c("x","y"))
+df_0_200 <- left_join(df_0_200, reads_0_200, by=c("x","y"))
+df_0_200 <- left_join(df_0_200, benthic_acoustic_0_200, by=c("x","y"))
 
-df <- df_0_200
-coordinates(df) <- ~x+y
-gridded(df) <- TRUE
-raster_0_200 <- stack(df)
+df_0_200[is.na(df_0_200)] <- 0
 
-writeRaster(raster_0_200, filename = "05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/raster_0_200.tif", overwrite=TRUE)
 save(df_0_200, file = "05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_0_200.rdata")
 
 
 ################################################################################################################################################
-## Raster 200-400
+## df 200-400
 
-df_200_400 <- cbind(abund_200_400[,1:17], reads_200_400[,3:16], benthic_acoustic_200_400[,3])
+df_200_400 <- left_join(pelagic_motu_200_400, abund_200_400, by=c("x","y"))
+df_200_400 <- left_join(df_200_400, reads_200_400, by=c("x","y"))
+df_200_400 <- left_join(df_200_400, benthic_acoustic_200_400, by=c("x","y"))
 
-df <- df_200_400
-coordinates(df) <- ~x+y
-gridded(df) <- TRUE
-raster_200_400 <- stack(df)
+df_200_400[is.na(df_200_400)] <- 0
 
-writeRaster(raster_200_400, filename = "05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/raster_200_400.tif", overwrite=TRUE)
 save(df_200_400, file = "05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_200_400.rdata")
 
-
 ################################################################################################################################################
-## Raster 400-600
+## df 400-600
 
-df_400_600 <- cbind(abund_400_600[,1:17], reads_400_600[,3:16], benthic_acoustic_400_600[,3])
+df_400_600 <- left_join(pelagic_motu_400_600, abund_400_600, by=c("x","y"))
+df_400_600 <- left_join(df_400_600, reads_400_600, by=c("x","y"))
+df_400_600 <- left_join(df_400_600, benthic_acoustic_400_600, by=c("x","y"))
 
-df <- df_400_600
-coordinates(df) <- ~x+y
-gridded(df) <- TRUE
-raster_400_600 <- stack(df)
+df_400_600[is.na(df_400_600)] <- 0
 
-writeRaster(raster_400_600, filename = "05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/raster_400_600.tif", overwrite=TRUE)
 save(df_400_600, file = "05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_400_600.rdata")
