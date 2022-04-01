@@ -56,7 +56,7 @@ df_all$BottomDepth <- as.numeric(df_all$BottomDepth)
 df_benthic <- df_all %>%
   filter(BottomDepth<600)
 
-df_benthic <- df_benthic[,-21]
+df_benthic <- df_benthic[,-22]
 
 df <- df_benthic
 coordinates(df) <- ~x+y
@@ -77,7 +77,7 @@ save(df_benthic, file="02_formating_data/00_Prediction_raster/Raster_df_predicti
 df_pelagic <- df_all %>%
   filter(BottomDepth<2175)
 
-df_pelagic <- df_pelagic[,-21]
+df_pelagic <- df_pelagic[,-22]
 
 sampling_depth <- seq(20, 600, by=20)
 list_pelagic <- vector("list", 30)

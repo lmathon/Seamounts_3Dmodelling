@@ -1,9 +1,9 @@
 "","BestModel.BestGbmStep","BestModel.Value"
-"1","TreeComplexity",3
+"1","TreeComplexity",2
 "2","LearningRate",0.001
-"3","n.trees",2675
-"4","deviance",0.616834086155382
-"5","cv.deviance.mean",0.890417891445602
-"6","cv.deviance.se",0.108147043980023
-"7","cv.correlation.mean",0.485943580590819
-"8","cv.correlation.se",0.0886570869128221
+"3","n.trees",1100
+"4","deviance",0.743624935137543
+"5","cv.deviance.mean",0.840339214679488
+"6","cv.deviance.se",0.113488168467911
+"7","cv.correlation.mean",0.387479795989406
+"8","cv.correlation.se",0.0419322150065713

@@ -114,11 +114,104 @@ names(benthic_acoustic_400_600) <- c("x","y", "pelagic_acoustic")
 ##################################################################################################################################################
 ## BRUVs species richness
 
+load("04_Modelling/01_benthic/01_BRUVs/BRT_Output_bruvs/bruvs_richness_predict.rdata")
+bruvs_richness_predict$bruvs_richness <- rescale(bruvs_richness_predict$bruvs_richness)
+
+# 0-200
+bruvs_richness_0_200 <- bruvs_richness_predict %>%
+  filter(BottomDepth <= 200)
+
+bruvs_richness_0_200 <- bruvs_richness_0_200 %>% dplyr::select(x,y,bruvs_richness)
+bruvs_richness_0_200$x <- as.factor(bruvs_richness_0_200$x)
+bruvs_richness_0_200$y <- as.factor(bruvs_richness_0_200$y)
+names(bruvs_richness_0_200) <- c("x","y", "bruvs_richness")
+
+# 200-400
+bruvs_richness_200_400 <- bruvs_richness_predict %>%
+  filter(BottomDepth <= 400) %>%
+  filter(BottomDepth > 200)
+
+bruvs_richness_200_400 <- bruvs_richness_200_400 %>% dplyr::select(x,y,bruvs_richness)
+bruvs_richness_200_400$x <- as.factor(bruvs_richness_200_400$x)
+bruvs_richness_200_400$y <- as.factor(bruvs_richness_200_400$y)
+names(bruvs_richness_200_400) <- c("x","y", "bruvs_richness")
+
+# 400-600
+bruvs_richness_400_600 <- bruvs_richness_predict %>%
+  filter(BottomDepth > 400)
+
+bruvs_richness_400_600 <- bruvs_richness_400_600 %>% dplyr::select(x,y,bruvs_richness)
+bruvs_richness_400_600$x <- as.factor(bruvs_richness_400_600$x)
+bruvs_richness_400_600$y <- as.factor(bruvs_richness_400_600$y)
+names(bruvs_richness_400_600) <- c("x","y", "bruvs_richness")
+
 ##################################################################################################################################################
 ## BRUVs biomass
 
+load("04_Modelling/01_benthic/01_BRUVs/BRT_Output_bruvs/bruvs_biomass_predict.rdata")
+bruvs_biomass_predict$bruvs_biomass <- rescale(bruvs_biomass_predict$bruvs_biomass)
+
+# 0-200
+bruvs_biomass_0_200 <- bruvs_biomass_predict %>%
+  filter(BottomDepth <= 200)
+
+bruvs_biomass_0_200 <- bruvs_biomass_0_200 %>% dplyr::select(x,y,bruvs_biomass)
+bruvs_biomass_0_200$x <- as.factor(bruvs_biomass_0_200$x)
+bruvs_biomass_0_200$y <- as.factor(bruvs_biomass_0_200$y)
+names(bruvs_biomass_0_200) <- c("x","y", "bruvs_biomass")
+
+# 200-400
+bruvs_biomass_200_400 <- bruvs_biomass_predict %>%
+  filter(BottomDepth <= 400) %>%
+  filter(BottomDepth > 200)
+
+bruvs_biomass_200_400 <- bruvs_biomass_200_400 %>% dplyr::select(x,y,bruvs_biomass)
+bruvs_biomass_200_400$x <- as.factor(bruvs_biomass_200_400$x)
+bruvs_biomass_200_400$y <- as.factor(bruvs_biomass_200_400$y)
+names(bruvs_biomass_200_400) <- c("x","y", "bruvs_biomass")
+
+# 400-600
+bruvs_biomass_400_600 <- bruvs_biomass_predict %>%
+  filter(BottomDepth > 400)
+
+bruvs_biomass_400_600 <- bruvs_biomass_400_600 %>% dplyr::select(x,y,bruvs_biomass)
+bruvs_biomass_400_600$x <- as.factor(bruvs_biomass_400_600$x)
+bruvs_biomass_400_600$y <- as.factor(bruvs_biomass_400_600$y)
+names(bruvs_biomass_400_600) <- c("x","y", "bruvs_biomass")
+
 ##################################################################################################################################################
 ## eDNA MOTUs richness benthic
+
+load("04_Modelling/01_benthic/02_eDNA/BRT_Output_edna/benthic_motu_predict.rdata")
+benthic_motu_predict$benthic_motus <- rescale(benthic_motu_predict$benthic_motus)
+
+# 0-200
+benthic_motu_0_200 <- benthic_motu_predict %>%
+  filter(BottomDepth <= 200)
+
+benthic_motu_0_200 <- benthic_motu_0_200 %>% dplyr::select(x,y,benthic_motus)
+benthic_motu_0_200$x <- as.factor(benthic_motu_0_200$x)
+benthic_motu_0_200$y <- as.factor(benthic_motu_0_200$y)
+names(benthic_motu_0_200) <- c("x","y", "benthic_motus")
+
+# 200-400
+benthic_motu_200_400 <- benthic_motu_predict %>%
+  filter(BottomDepth <= 400) %>%
+  filter(BottomDepth > 200)
+
+benthic_motu_200_400 <- benthic_motu_200_400 %>% dplyr::select(x,y,benthic_motus)
+benthic_motu_200_400$x <- as.factor(benthic_motu_200_400$x)
+benthic_motu_200_400$y <- as.factor(benthic_motu_200_400$y)
+names(benthic_motu_200_400) <- c("x","y", "benthic_motus")
+
+# 400-600
+benthic_motu_400_600 <- benthic_motu_predict %>%
+  filter(BottomDepth > 400)
+
+benthic_motu_400_600 <- benthic_motu_400_600 %>% dplyr::select(x,y,benthic_motus)
+benthic_motu_400_600$x <- as.factor(benthic_motu_400_600$x)
+benthic_motu_400_600$y <- as.factor(benthic_motu_400_600$y)
+names(benthic_motu_400_600) <- c("x","y", "benthic_motus")
 
 ##################################################################################################################################################
 ## eDNA MOTUs richness pelagic
@@ -164,6 +257,9 @@ pelagic_motu_400_600$y <- as.factor(pelagic_motu_400_600$y)
 df_0_200 <- left_join(pelagic_motu_0_200, abund_0_200, by=c("x","y"))
 df_0_200 <- left_join(df_0_200, reads_0_200, by=c("x","y"))
 df_0_200 <- left_join(df_0_200, benthic_acoustic_0_200, by=c("x","y"))
+df_0_200 <- left_join(df_0_200, bruvs_richness_0_200, by=c("x","y"))
+df_0_200 <- left_join(df_0_200, bruvs_biomass_0_200, by=c("x","y"))
+df_0_200 <- left_join(df_0_200, benthic_motu_0_200, by=c("x","y"))
 
 df_0_200[is.na(df_0_200)] <- 0
 
@@ -176,6 +272,9 @@ save(df_0_200, file = "05_Marine_Spatial_Planning/01_formating_prediction_layers
 df_200_400 <- left_join(pelagic_motu_200_400, abund_200_400, by=c("x","y"))
 df_200_400 <- left_join(df_200_400, reads_200_400, by=c("x","y"))
 df_200_400 <- left_join(df_200_400, benthic_acoustic_200_400, by=c("x","y"))
+df_200_400 <- left_join(df_200_400, bruvs_richness_200_400, by=c("x","y"))
+df_200_400 <- left_join(df_200_400, bruvs_biomass_200_400, by=c("x","y"))
+df_200_400 <- left_join(df_200_400, benthic_motu_200_400, by=c("x","y"))
 
 df_200_400[is.na(df_200_400)] <- 0
 
@@ -187,6 +286,9 @@ save(df_200_400, file = "05_Marine_Spatial_Planning/01_formating_prediction_laye
 df_400_600 <- left_join(pelagic_motu_400_600, abund_400_600, by=c("x","y"))
 df_400_600 <- left_join(df_400_600, reads_400_600, by=c("x","y"))
 df_400_600 <- left_join(df_400_600, benthic_acoustic_400_600, by=c("x","y"))
+df_400_600 <- left_join(df_400_600, bruvs_richness_400_600, by=c("x","y"))
+df_400_600 <- left_join(df_400_600, bruvs_biomass_400_600, by=c("x","y"))
+df_400_600 <- left_join(df_400_600, benthic_motu_400_600, by=c("x","y"))
 
 df_400_600[is.na(df_400_600)] <- 0
 

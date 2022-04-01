@@ -33,6 +33,7 @@ source("04_Modelling/01_benthic/02_eDNA/00_Functions_BRT.R")
 load("02_formating_data/01_Benthic/Rdata/edna_richness_benthic.rdata")
 load("00_metadata/edna_explanatory_variables_benthic.rdata")
 edna_var$log_richness<- log(edna_richness_benthic$richness_tot+1)
+edna_var$richness<- edna_richness_benthic$richness_tot
 edna_var$BottomDepth <- as.numeric(edna_var$BottomDepth)
 
 myData <- edna_var
@@ -40,11 +41,11 @@ myData <- edna_var
 myData$Habitat <- as.factor(myData$Habitat)
 
 
-myResponse=c("log_richness")
+myResponse=c("richness")
 
 myPredictor=c("BottomDepth", "TravelTime",
-              "SSTmean", "EastwardVelocity", "NorthwardVelocity", "Chla",
-              "Salinity", "seafloorTemp")
+              "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla",
+              "Salinity", "seafloorTemp", "SuspendedParticulateMatter")
 
 myPredictorNumeric=c("SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
                      "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
@@ -193,12 +194,12 @@ gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,2),level.plot=FALSE)
 
 ### Predict REDUCED BRT on study area
 load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_benthic.rdata")
+df_benthic <- na.omit(df_benthic)
+
 df <- df_benthic
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 rast <- stack(df)
-
-rast2 <- brick("02_formating_data/00_Prediction_raster/Raster_df_predictions/raster_benthic.tif")
 
 
 # Predict based on reduced model
@@ -207,14 +208,24 @@ pred_fish = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
 
 plot(pred_fish)
 
-# Map prediction
-map_brt_prediction(pred_fish, responseName, "gaussian")
+benthic_motu_predict <- as.data.frame(pred_fish, xy=TRUE)
 
-map_brt_prediction_exp_transf(pred_fish, responseName, "gaussian")
+benthic_motu_predict <- benthic_motu_predict %>% filter(!is.na(layer))
 
-map_brt_prediction_quantile_cols(pred_fish, responseName, "gaussian")
+names(benthic_motu_predict) <- c("x", "y", "benthic_motus")
 
-# } ### BOUCLE de FOR
+benthic_motu_predict <- cbind(benthic_motu_predict, df_benthic[,-c(1,2)])
+
+save(benthic_motu_predict, file="04_Modelling/01_benthic/02_eDNA/BRT_Output_edna/benthic_motu_predict.rdata")   
+
+
+df <- benthic_motu_predict[,1:3]
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_benthic_motu_predict <- raster(df)
+plot(raster_benthic_motu_predict)
+
+writeRaster(raster_benthic_motu_predict, filename = "04_Modelling/01_benthic/02_eDNA/BRT_Output_edna/raster_benthic_motu_predict.tif")
 
 
 #Stop cluster

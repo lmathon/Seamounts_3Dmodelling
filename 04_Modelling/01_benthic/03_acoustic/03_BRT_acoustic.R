@@ -197,9 +197,7 @@ coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 rast <- stack(df)
   
-rast2 <- brick("02_formating_data/00_Prediction_raster/Raster_df_predictions/raster_benthic.tif")
-  
-  
+
   # Predict based on reduced model
 pred_fish = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
                           preds = var_sup5_best_fixed, rast)
@@ -219,10 +217,10 @@ benthic_acoustic_predict <- cbind(benthic_acoustic_predict, df_benthic[,-c(1,2)]
 save(benthic_acoustic_predict, file="04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/benthic_acoustic_predict.rdata")   
 
 
-df <- benthic_acoustic_predict
+df <- benthic_acoustic_predict[,1:3]
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
-raster_benthic_acoustic_predict <- stack(df)
+raster_benthic_acoustic_predict <- raster(df)
 plot(raster_benthic_acoustic_predict)
 
 writeRaster(raster_benthic_acoustic_predict, filename = "04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/raster_benthic_acoustic_predict.tif")

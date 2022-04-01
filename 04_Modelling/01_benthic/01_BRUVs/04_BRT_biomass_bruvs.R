@@ -191,12 +191,12 @@ gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,3),level.plot=FALSE)
 
 ### Predict REDUCED BRT on study area
 load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_benthic.rdata")
+df_benthic <- na.omit(df_benthic)
+
 df <- df_benthic
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 rast <- stack(df)
-
-rast2 <- brick("02_formating_data/00_Prediction_raster/Raster_df_predictions/raster_benthic.tif")
 
 
 # Predict based on reduced model
@@ -209,23 +209,22 @@ bruvs_biomass_predict <- as.data.frame(pred_fish, xy=TRUE)
 
 bruvs_biomass_predict <- bruvs_biomass_predict %>% filter(!is.na(layer))
 
-names(bruvs_biomass_predict) <- c("x", "y", "biomass_predict")
+names(bruvs_biomass_predict) <- c("x", "y", "bruvs_biomass")
 
-bruvs_biomass_predict$biomass_predict <- exp(bruvs_biomass_predict$biomass_predict)-1 
+bruvs_biomass_predict$bruvs_biomass <- exp(bruvs_biomass_predict$bruvs_biomass)+1
 
 bruvs_biomass_predict <- cbind(bruvs_biomass_predict, df_benthic[,-c(1,2)])
 
 save(bruvs_biomass_predict, file="04_Modelling/01_benthic/01_BRUVs/BRT_Output_bruvs/bruvs_biomass_predict.rdata")   
 
 
-# Map prediction
-map_brt_prediction(pred_fish, responseName, "gaussian")
+df <- bruvs_biomass_predict[,1:3]
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_bruvs_biomass_predict <- raster(df)
+plot(raster_bruvs_biomass_predict)
 
-map_brt_prediction_exp_transf(pred_fish, responseName, "gaussian")
-
-map_brt_prediction_quantile_cols(pred_fish, responseName, "gaussian")
-
-# } ### BOUCLE de FOR
+writeRaster(raster_bruvs_biomass_predict, filename = "04_Modelling/01_benthic/01_BRUVs/BRT_Output_bruvs/raster_bruvs_biomass_predict.tif")
 
 
 #Stop cluster

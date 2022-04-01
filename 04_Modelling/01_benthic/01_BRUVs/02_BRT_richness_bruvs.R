@@ -171,8 +171,7 @@ dev.off()
 
 par(mfrow=c(1,1))
 
-#Stop cluster
-stopCluster(cl)
+
 
 
 png(paste0("04_Modelling/01_benthic/01_BRUVs/BRT_Output_bruvs/", "InteractionPlotsBestModelDismo.png"), width = 1200, height = 600)
@@ -191,12 +190,12 @@ gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,6),level.plot=FALSE)
 
 ### Predict REDUCED BRT on study area
 load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_benthic.rdata")
+df_benthic <- na.omit(df_benthic)
+
 df <- df_benthic
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 rast <- stack(df)
-
-rast2 <- brick("02_formating_data/00_Prediction_raster/Raster_df_predictions/raster_benthic.tif")
 
 
 # Predict based on reduced model
@@ -205,14 +204,24 @@ pred_fish = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
 
 plot(pred_fish)
 
-# Map prediction
-map_brt_prediction(pred_fish, responseName, "gaussian")
+bruvs_richness_predict <- as.data.frame(pred_fish, xy=TRUE)
 
-map_brt_prediction_exp_transf(pred_fish, responseName, "gaussian")
+bruvs_richness_predict <- bruvs_richness_predict %>% filter(!is.na(layer))
 
-map_brt_prediction_quantile_cols(pred_fish, responseName, "gaussian")
+names(bruvs_richness_predict) <- c("x", "y", "bruvs_richness")
 
-# } ### BOUCLE de FOR
+bruvs_richness_predict <- cbind(bruvs_richness_predict, df_benthic[,-c(1,2)])
+
+save(bruvs_richness_predict, file="04_Modelling/01_benthic/01_BRUVs/BRT_Output_bruvs/bruvs_richness_predict.rdata")   
+
+
+df <- bruvs_richness_predict[,1:3]
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_bruvs_richness_predict <- raster(df)
+plot(raster_bruvs_richness_predict)
+
+writeRaster(raster_bruvs_richness_predict, filename = "04_Modelling/01_benthic/01_BRUVs/BRT_Output_bruvs/raster_bruvs_richness_predict.tif", overwrite=TRUE)
 
 
 #Stop cluster
