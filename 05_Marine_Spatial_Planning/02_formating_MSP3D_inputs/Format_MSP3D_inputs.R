@@ -18,11 +18,11 @@ df_pelagic <- df_pelagic %>% filter(Sampling_Depth==20)
 df <- df_pelagic
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
-raster_pelagic <- raster(df)
-raster_pelagic[raster::Which(!is.na(raster_pelagic))] <- 1
-projection(raster_pelagic) <- "+proj=longlat +datum=WGS84 +no_defs"
-pu_raster <- rasterToPolygons(raster_pelagic)
-pu_sf <- st_as_sf(pu_raster)
+pu_raster <- raster(df)
+pu_raster[raster::Which(!is.na(pu_raster))] <- 1
+projection(pu_raster) <- "+proj=longlat +datum=WGS84 +no_defs"
+pu_polygons <- rasterToPolygons(pu_raster)
+pu_sf <- st_as_sf(pu_polygons)
 names(pu_sf) <- c("cost", "geometry")
 
 save(pu_sf, file="05_Marine_Spatial_Planning/02_formating_MSP3D_inputs/Rdata/pu_sf.rdata")

@@ -2,21 +2,21 @@ library(tidyverse)
 library(raster)
 library(terra)
 
-load("02_formating_data/00_Prediction_raster/Rdata/df_grandeterre2.rdata")
+load("02_formating_data/00_Prediction_raster/Rdata/df_grandeterre3.rdata")
 load("02_formating_data/00_Prediction_raster/Rdata/df_seamount_islands.rdata")
 
 # select same variable order
 
-df_GT <- df_grandeterre2 %>%
+df_GT <- df_grandeterre3 %>%
   dplyr::select(x,y,BottomDepth,Habitat,ValleyDepth,SummitDepth,Height,SummitAreaKm2,SummitRugosity,           
                 SSTmean,SSTmin,SSTmax,SSTsd,Chla,EastwardVelocity,NorthwardVelocity,Salinity,
-                seafloorTemp,SuspendedParticulateMatter,ReefMinDist,LandMinDist)
+                seafloorTemp,SuspendedParticulateMatter,ReefMinDist,LandMinDist,TravelTime)
 df_GT$id <- c(1:nrow(df_GT))
 
 df_SM <- df_seamount_islands %>%
   dplyr::select(x,y,BottomDepth,Habitat,ValleyDepth,SummitDepth,Height,SummitAreaKm2,SummitRugosity,           
                 SSTmean,SSTmin,SSTmax,SSTsd,Chla,EastwardVelocity,NorthwardVelocity,Salinity,
-                seafloorTemp,SuspendedParticulateMatter,ReefMinDist,LandMinDist)
+                seafloorTemp,SuspendedParticulateMatter,ReefMinDist,LandMinDist,TravelTime)
 df_SM$id <- c((nrow(df_GT)+1):(nrow(df_GT)+nrow(df_SM)))
 
 df_ALL <- rbind(df_GT, df_SM)

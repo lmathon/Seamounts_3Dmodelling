@@ -82,15 +82,58 @@ writeRaster(raster_grandeterre2, filename = "02_formating_data/00_Prediction_ras
 
 df_grandeterre2$Habitat <- "DeepSlope"
 
-
-save(df_grandeterre2, file="02_formating_data/00_Prediction_raster/Rdata/df_grandeterre2.rdata")
-
-#############################################################################################################################
-# Load df and extract travel time
-
-
 # transform distances in km
 df_grandeterre2$ReefMinDist=df_grandeterre2$ReefMinDist.m/1000
 df_grandeterre2$LandMinDist=df_grandeterre2$LandMinDist.m/1000
 
 df_grandeterre2 <- df_grandeterre2[,-c(20,21)]
+
+
+save(df_grandeterre2, file="02_formating_data/00_Prediction_raster/Rdata/df_grandeterre2.rdata")
+
+#############################################################################################################################
+# Load df and extract travel time
+TravelTime <- read.csv("02_formating_data/00_Prediction_raster/TravelTime_df_seamount_grandeterre2.csv")
+
+df <- TravelTime[,2:4]
+coordinates(df) <- ~longitude+latitude
+gridded(df) <- TRUE
+raster_TT <- raster(df)
+
+
+df <- df_grandeterre2
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_grandeterre <- stack(df)
+
+grandeterre_TT <- raster_grandeterre[["BottomDepth"]]
+grandeterre_TT <- resample(raster_TT, grandeterre_TT)
+
+
+raster_grandeterre <- stack(raster_grandeterre, grandeterre_TT)
+
+df_grandeterre3 <- as.data.frame(raster_grandeterre, xy=TRUE)
+df_grandeterre3 <- df_grandeterre3 %>%
+  filter(!is.na(BottomDepth))
+
+# replace NAs in TravelTime
+
+for (i in 1:nrow(df_grandeterre3)) {
+  if (is.na(df_grandeterre3[i, "TravelTime"])) {
+    df_grandeterre3[i, "TravelTime"] <- (df_grandeterre3[i-1, "TravelTime"]+df_grandeterre3[i+1, "TravelTime"])/2
+  }
+}
+for (i in 1:nrow(df_grandeterre3)) {
+  if (is.na(df_grandeterre3[i, "TravelTime"])) {
+    df_grandeterre3[i, "TravelTime"] <- df_grandeterre3[i-1, "TravelTime"]
+  }
+}
+
+# Transform TravelTime in Hour
+df_grandeterre3$TravelTime <- df_grandeterre3$TravelTime/3600
+
+
+# Habitat = Deepslope
+df_grandeterre3$Habitat <- "DeepSlope"
+
+save(df_grandeterre3, file="02_formating_data/00_Prediction_raster/Rdata/df_grandeterre3.rdata")
