@@ -20,7 +20,7 @@ coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 pu_raster <- raster(df)
 pu_raster[raster::Which(!is.na(pu_raster))] <- 1
-projection(pu_raster) <- "+proj=longlat +datum=WGS84 +no_defs"
+#projection(pu_raster) <- "+proj=longlat +datum=WGS84 +no_defs"
 pu_polygons <- rasterToPolygons(pu_raster)
 pu_sf <- st_as_sf(pu_polygons)
 names(pu_sf) <- c("cost", "geometry")
@@ -208,6 +208,7 @@ bound_data <-
   group_by(id1, id2) %>%
   summarize(boundary = sum(boundary)) %>%
   ungroup()
+
 
 
 save(bound_data, file="05_Marine_Spatial_Planning/02_formating_MSP3D_inputs/Rdata/bound_data.rdata")
