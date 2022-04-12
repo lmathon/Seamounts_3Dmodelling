@@ -87,6 +87,7 @@ ggsave(plot_sens, file="04_Modelling/01_benthic/01_BRUVs/GJAM_Output_bruvs/gjamO
 
 ##########################################################################################
 # load new data for predictions
+load("04_Modelling/01_benthic/01_BRUVs/GJAM_Output_bruvs/gjam_model.rdata")
 load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_benthic.rdata")
 
 df_benthic <- na.omit(df_benthic)
@@ -113,10 +114,3 @@ predictions <- cbind(predictions, df_benthic)
 save(predictions, file="04_Modelling/01_benthic/01_BRUVs/GJAM_Output_bruvs/predictions.rdata")
 
 
-raster_predict_abundance <- predictions[,1:17]
-
-coordinates(raster_predict_abundance) <- ~x+y
-gridded(raster_predict_abundance) <- TRUE
-raster_predict_abundance <- stack(raster_predict_abundance)
-
-plot(raster_predict_abundance)

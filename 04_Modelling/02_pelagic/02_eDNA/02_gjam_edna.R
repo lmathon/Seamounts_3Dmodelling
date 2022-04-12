@@ -79,7 +79,11 @@ ggsave(plot_sens, file="04_Modelling/02_pelagic/02_eDNA/GJAM_Output_edna/gjamOut
 
 ##########################################################################################
 # load new data for predictions
+load("04_Modelling/02_pelagic/02_eDNA/GJAM_Output_edna/gjam_model.rdata")
 load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_pelagic.rdata")
+
+df_pelagic <- df_pelagic %>%
+  filter(!is.na(Sampling_Depth))
 
 df_pelagic <- na.omit(df_pelagic)
 df_pelagic$SamplingDepth <- df_pelagic$Sampling_Depth
@@ -87,10 +91,6 @@ df_pelagic$SamplingDepth <- df_pelagic$Sampling_Depth
 new_df <- df_pelagic %>%
   dplyr::select(x, y, Habitat,Salinity,SuspendedParticulateMatter,NorthwardVelocity,SSTmax,SummitRugosity,SamplingDepth, 
          ReefMinDist, seafloorTemp, Chla)
-Habitat + Salinity + I(Salinity^2) + SuspendedParticulateMatter + 
-  NorthwardVelocity + I(NorthwardVelocity^2) + SSTmax + 
-  seafloorTemp + I(seafloorTemp^3) + Chla + SummitRugosity + 
-  I(SummitRugosity^2) + ReefMinDist + SamplingDepth
 
 new_df$Habitat <- as.factor(new_df$Habitat)
 new_df$SamplingDepth <- as.numeric(new_df$SamplingDepth)

@@ -195,14 +195,6 @@ gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,2),level.plot=FALSE)
 ### Predict REDUCED BRT on study area
 load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_pelagic.rdata")
 
-for (i in 1:nrow(df_pelagic)) {
-  if (df_pelagic[i,"BottomDepth"] < (df_pelagic[i,"Sampling_Depth"]-19.99)){
-    df_pelagic[i,"Sampling_Depth"] <- NA
-  }
-}
-na <- df_pelagic %>%
-  filter(is.na(Sampling_Depth))
-
 df_pelagic <- df_pelagic %>%
   filter(!is.na(Sampling_Depth))
 

@@ -76,6 +76,7 @@ ggsave(plot_sens, file="04_Modelling/01_benthic/02_eDNA/GJAM_Output_edna/gjamOut
 
 ##########################################################################################
 # load new data for predictions
+load("04_Modelling/01_benthic/02_eDNA/GJAM_Output_edna/gjam_model.rdata")
 load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_benthic.rdata")
 
 df_benthic <- na.omit(df_benthic)
@@ -103,13 +104,6 @@ predictions <- cbind(predictions, df_benthic)
 save(predictions, file="04_Modelling/01_benthic/02_eDNA/GJAM_Output_edna/predictions.rdata")
 
 
-raster_predict_motus <- predictions[,1:16]
-
-coordinates(raster_predict_motus) <- ~x+y
-gridded(raster_predict_motus) <- TRUE
-raster_predict_motus <- stack(raster_predict_motus)
-
-plot(raster_predict_motus)
 
 
 

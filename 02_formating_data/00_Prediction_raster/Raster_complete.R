@@ -38,6 +38,12 @@ origin(raster_SM) <- c(0,0)
 
 raster_all <- merge(raster_GT, raster_SM)
 names(raster_all) <- names(df_GT[,-c(1,2)])
+projection(raster_all) <- "+proj=longlat +datum=WGS84 +no_defs"
+sr <- "+proj=utm +zone=58 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+raster_all <- projectRaster(raster_all, crs = sr)
+raster_all <- stack(raster_all)
+
+
 
 df_all <- as.data.frame(raster_all, xy=TRUE)
 
@@ -45,6 +51,7 @@ df_all <- df_all %>%
   filter(!is.na(BottomDepth))
 
 df_all <- df_all[,-4] # remove empty habitat variable
+df_all$id <- round(df_all$id)
 df_all <- left_join(df_all, df_ALL[,c("Habitat", "id")])
 
 df_all$BottomDepth <- gsub("-", "", df_all$BottomDepth)
@@ -62,10 +69,9 @@ df <- df_benthic
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 raster_benthic <- stack(df)
+projection(raster_benthic) <- "+proj=utm +zone=58 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
 
 plot(raster_benthic)
-
-raster_benthic <- rast(raster_benthic)
 
 writeRaster(raster_benthic, filename = "02_formating_data/00_Prediction_raster/Raster_df_predictions/raster_benthic.tif", overwrite=T)
 
@@ -89,5 +95,11 @@ for (i in 1:length(sampling_depth)) {
 }
 
 df_pelagic <- bind_rows(list_pelagic)
+
+for (i in 1:nrow(df_pelagic)) {
+  if (df_pelagic[i,"BottomDepth"] < (df_pelagic[i,"Sampling_Depth"]-19.99)){
+    df_pelagic[i,"Sampling_Depth"] <- NA
+  }
+}
 
 save(df_pelagic, file="02_formating_data/00_Prediction_raster/Raster_df_predictions/df_pelagic.rdata")
