@@ -309,7 +309,7 @@ df_0_200 <- left_join(df_0_200, benthic_acoustic_0_200, by=c("x","y"))
 df_0_200 <- left_join(df_0_200, bruvs_richness_0_200, by=c("x","y"))
 df_0_200 <- left_join(df_0_200, bruvs_biomass_0_200, by=c("x","y"))
 df_0_200 <- left_join(df_0_200, benthic_motu_0_200, by=c("x","y"))
-#df_0_200 <- left_join(df_0_200, pelagic_acoustic_0_200, by=c("x","y"))
+df_0_200 <- left_join(df_0_200, pelagic_acoustic_0_200, by=c("x","y"))
 df_0_200 <- left_join(df_0_200, reads_pel_0_200, by=c("x","y"))
 
 
@@ -327,7 +327,7 @@ df_200_400 <- left_join(df_200_400, benthic_acoustic_200_400, by=c("x","y"))
 df_200_400 <- left_join(df_200_400, bruvs_richness_200_400, by=c("x","y"))
 df_200_400 <- left_join(df_200_400, bruvs_biomass_200_400, by=c("x","y"))
 df_200_400 <- left_join(df_200_400, benthic_motu_200_400, by=c("x","y"))
-#df_200_400 <- left_join(df_200_400, pelagic_acoustic_200_400, by=c("x","y"))
+df_200_400 <- left_join(df_200_400, pelagic_acoustic_200_400, by=c("x","y"))
 df_200_400 <- left_join(df_200_400, reads_pel_200_400, by=c("x","y"))
 
 df_200_400[is.na(df_200_400)] <- 0
@@ -343,7 +343,7 @@ df_400_600 <- left_join(df_400_600, benthic_acoustic_400_600, by=c("x","y"))
 df_400_600 <- left_join(df_400_600, bruvs_richness_400_600, by=c("x","y"))
 df_400_600 <- left_join(df_400_600, bruvs_biomass_400_600, by=c("x","y"))
 df_400_600 <- left_join(df_400_600, benthic_motu_400_600, by=c("x","y"))
-#df_400_600 <- left_join(df_400_600, pelagic_acoustic_400_600, by=c("x","y"))
+df_400_600 <- left_join(df_400_600, pelagic_acoustic_400_600, by=c("x","y"))
 df_400_600 <- left_join(df_400_600, reads_pel_400_600, by=c("x","y"))
 
 df_400_600[is.na(df_400_600)] <- 0
