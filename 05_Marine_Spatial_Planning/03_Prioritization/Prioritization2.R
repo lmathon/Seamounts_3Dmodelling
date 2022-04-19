@@ -5,6 +5,7 @@ library(parallel)
 library(foreach)
 library(doParallel)
 library(topsis)
+library(ggplot2)
 
 load("05_Marine_Spatial_Planning/02_formating_MSP3D_inputs/Rdata/bound_data.rdata")
 load("05_Marine_Spatial_Planning/02_formating_MSP3D_inputs/Rdata/pu_data.rdata")
@@ -114,21 +115,22 @@ for (i in 1:length(blmval)){
 
 stopCluster(cl)
 
+hierarchical_results2$blmval <- format(hierarchical_results2$blmval, scientific = FALSE)
 hierarchical_results2$blmval <- as.factor(hierarchical_results2$blmval)
 
 save(hierarchical_results2, file="05_Marine_Spatial_Planning/03_Prioritization/Rdata/hierarchical_results_2.rdata")
 
 # create plot to visualize trade-offs and show selected candidate prioritization
-result_plot2 <- ggplot(data = hierarchical_results2, aes(x = total_boundary_length, y = total_cost)+
+result_plot2 <- ggplot(data = hierarchical_results2, aes(x = total_boundary_length, y = total_cost)) +
                         geom_line() +
                         geom_point(size = 3) +
                         geom_text(hjust = -0.15, aes(label=blmval)) +
                         xlab("Total boundary length of prioritization") +
                         ylab("Total cost of prioritization") +
-                        scale_x_continuous(expand = expansion(mult = c(0.05, 0.4))) +
-                        theme(legend.title = element_blank()))
+                        #scale_x_continuous(expand = expansion(mult = c(0.05, 0.4))) +
+                        theme(legend.title = element_blank())
 
-ggsave(result_plot2, "05_Marine_Spatial_Planning/03_Prioritization/result_plot_2.png")
+ggsave(result_plot2, filename = "05_Marine_Spatial_Planning/03_Prioritization/result_plot_2.png")
 
 # calculate TOPSIS scores
 topsis_results2 <- topsis(
@@ -138,4 +140,8 @@ topsis_results2 <- topsis(
   weights = c(1, 1),
   impacts = c("-", "-"))
 
+topsis_results2$blmval <- hierarchical_results2$blmval
+
 save(topsis_results2, file="05_Marine_Spatial_Planning/03_Prioritization/Rdata/topsis_results_2.rdata")
+
+
