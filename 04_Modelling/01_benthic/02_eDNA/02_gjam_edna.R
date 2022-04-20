@@ -17,9 +17,10 @@ edna_var$BottomDepth <- as.numeric(edna_var$BottomDepth)
 
 
 # define model
-formula <- as.formula(~ Habitat + Salinity + I(Salinity^3) + SuspendedParticulateMatter + I(SuspendedParticulateMatter^2) +
-                        NorthwardVelocity + I(NorthwardVelocity^3) + SSTmean + I(SSTmean^2) + BottomDepth + I(BottomDepth^2) +
-                        SummitRugosity + I(SummitRugosity^2))
+formula <- as.formula(~ Habitat + Salinity + I(Salinity^3) + SuspendedParticulateMatter + 
+                        I(SuspendedParticulateMatter^2) + NorthwardVelocity + 
+                        I(NorthwardVelocity^3) + SSTmean + I(SSTmean^2) + 
+                        BottomDepth + I(BottomDepth^2) + SummitRugosity + I(SummitRugosity^2))
 
 types <- c(rep('CC', ncol(edna_motus)))
 ml <- list(ng = 2500, burnin = 500, typeNames = types)

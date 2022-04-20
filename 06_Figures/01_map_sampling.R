@@ -5,6 +5,7 @@ library(ggplot2)
 library(scales)
 library(rnaturalearth)
 library(ggrepel)
+library(ggpubr)
 
 # load sampling data and maps
 
@@ -611,3 +612,13 @@ site15 <- ggplot()+
 
 save(site15, file = "06_Figures/Rdata/site15.rdata")
 ggsave(site15, filename="06_Figures/Rdata/site15.png")
+
+
+##################################################################
+# Assemble figure 1
+
+site1_6 <- ggarrange(site1, site6, ncol=2, labels = c("B", "C"))
+
+fig1 <- ggarrange(map_global, site1_6, nrow=2, labels = c("A", "", ""), heights = c(1.2, 1))
+
+ggsave(fig1, filename = "06_Figures/Figure1.png", width = 10, height = 10)
