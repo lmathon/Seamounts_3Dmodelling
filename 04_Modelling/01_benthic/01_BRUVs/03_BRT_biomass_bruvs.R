@@ -224,7 +224,10 @@ gridded(df) <- TRUE
 raster_bruvs_biomass_predict <- raster(df)
 plot(raster_bruvs_biomass_predict)
 
-writeRaster(raster_bruvs_biomass_predict, filename = "04_Modelling/01_benthic/01_BRUVs/BRT_Output_bruvs/raster_bruvs_biomass_predict.tif")
+raster_bruvs_biomass_predict <- raster_bruvs_biomass_predict/1000
+
+
+writeRaster(raster_bruvs_biomass_predict, filename = "04_Modelling/01_benthic/01_BRUVs/BRT_Output_bruvs/raster_bruvs_biomass_predict.tif", overwrite=TRUE)
 
 
 #Stop cluster

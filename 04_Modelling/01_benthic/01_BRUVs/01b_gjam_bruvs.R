@@ -114,3 +114,11 @@ predictions <- cbind(predictions, df_benthic)
 save(predictions, file="04_Modelling/01_benthic/01_BRUVs/GJAM_Output_bruvs/predictions.rdata")
 
 
+df <- predictions[,1:17]
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_pred <- stack(df)
+
+
+plot(raster_pred, nc=3, nr=5, axes=FALSE, legend.mar = 2)
+

@@ -1,5 +1,6 @@
 library(gjam)
 library(tidyverse)
+library(terra)
 
 
 ########################################################################################################################################
@@ -105,6 +106,13 @@ predictions <- cbind(predictions, df_benthic)
 save(predictions, file="04_Modelling/01_benthic/02_eDNA/GJAM_Output_edna/predictions.rdata")
 
 
+df <- predictions[,1:16]
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_pred <- stack(df)
+names(raster_pred) <- paste("MOTU_", 1:14, sep="")
+
+terra::plot(raster_pred, nc=3, nr=5, axes=FALSE,axis.args=list( cex.axis=0.7))
 
 
 

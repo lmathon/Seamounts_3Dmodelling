@@ -6,6 +6,7 @@ library(foreach)
 library(doParallel)
 library(topsis)
 library(ggplot2)
+library(ggrepel)
 
 load("05_Marine_Spatial_Planning/02_formating_MSP3D_inputs/Rdata/bound_data.rdata")
 load("05_Marine_Spatial_Planning/02_formating_MSP3D_inputs/Rdata/pu_data.rdata")
@@ -118,28 +119,36 @@ stopCluster(cl)
 
 save(hierarchical_results, file="05_Marine_Spatial_Planning/03_Prioritization/Rdata/hierarchical_results.rdata")
 
+hierarchical_results$blmval <- c("0", "1e-05", "1e-04", "1e-03", "1e-02", "1e-01", "1", "10")
+
 hierarchical_results$blmval <- as.factor(hierarchical_results$blmval)
+
+# calculate TOPSIS scores
+topsis_results <- topsis(
+  decision = hierarchical_results %>%
+    dplyr::select(total_cost, total_boundary_length) %>%
+    as.matrix(),
+  weights = c(1, 1),
+  impacts = c("-", "-"))
+
+topsis_results <- cbind(hierarchical_results, topsis_results[,2:3])
+
+save(topsis_results, file="05_Marine_Spatial_Planning/03_Prioritization/Rdata/topsis_results.rdata")         
+write.csv(topsis_results, "05_Marine_Spatial_Planning/03_Prioritization/Rdata/topsis_results.csv", row.names = FALSE)
+
+hierarchical_results$color <- c("black","black","black","#018571","black","black","black","black")
 
 # create plot to visualize trade-offs and show selected candidate prioritization
 result_plot <- ggplot(data = hierarchical_results, aes(x = total_boundary_length, y = total_cost))+
                         geom_line() +
-                        geom_point(size = 3) +
-                        geom_text(hjust = -0.15, aes(label=blmval)) +
+                        geom_point(size = 3, color=hierarchical_results$color) +
+                        geom_text_repel(aes(label = blmval),color=hierarchical_results$color,size=3, min.segment.length = 0.2, force = 5) +
                         xlab("Total boundary length of prioritization") +
                         ylab("Total cost of prioritization") +
-                        #scale_x_continuous(expand = expansion(mult = c(0.05, 0.4))) +
-                        theme(legend.title = element_blank())
+                        theme_bw()+
+                        theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),
+                              panel.border = element_rect(colour = "black", size=1, fill=NA),
+                              legend.title = element_blank())
 
 ggsave(result_plot, file="05_Marine_Spatial_Planning/03_Prioritization/result_plot.png")
-         
-# calculate TOPSIS scores
-topsis_results <- topsis(
-   decision = hierarchical_results %>%
-     dplyr::select(total_cost, total_boundary_length) %>%
-     as.matrix(),
-   weights = c(1, 1),
-   impacts = c("-", "-"))
-
-topsis_results$blmval <- hierarchical_results$blmval
-
-save(topsis_results, file="05_Marine_Spatial_Planning/03_Prioritization/Rdata/topsis_results.rdata")         
+save(result_plot, file="05_Marine_Spatial_Planning/03_Prioritization/Rdata/result_plot.rdata")

@@ -396,7 +396,7 @@ partial_dependance_plots3 <- function(model, responseName_brts, distrib){
     
     #plot
     
-      plot(a, ylab="Sa", pch = 16, cex.axis=1.2, cex.lab=1.5, cex = 1)
+      plot(a, ylab="BRUVS biomass", pch = 16, cex.axis=1.2, cex.lab=1.5, cex = 1)
     
     
     if (!predictors[j] %in%  c("Habitat", "Day")){

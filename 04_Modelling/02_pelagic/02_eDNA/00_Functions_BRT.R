@@ -375,6 +375,7 @@ partial_dependance_plots3 <- function(model, responseName_brts, distrib){
   
   if (length(predictors)>=7){
     par(mfrow=c(3,3))
+    par(mar=c(5,5,5,5))
   }
   
   if (length(predictors)==5 | length(predictors)==6){
@@ -396,7 +397,7 @@ partial_dependance_plots3 <- function(model, responseName_brts, distrib){
     
     #plot
     
-      plot(a, ylab="Sa", pch = 16, cex.axis=1.2, cex.lab=1.5, cex = 1)
+      plot(a, ylab="pelagic MOTU richness", pch = 16, cex.axis=2, cex.lab=2.5, cex = 1)
     
     
     if (!predictors[j] %in%  c("Habitat", "Day")){

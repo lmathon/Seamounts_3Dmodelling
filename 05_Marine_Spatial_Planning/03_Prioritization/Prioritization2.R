@@ -115,22 +115,10 @@ for (i in 1:length(blmval)){
 
 stopCluster(cl)
 
-hierarchical_results2$blmval <- format(hierarchical_results2$blmval, scientific = FALSE)
-hierarchical_results2$blmval <- as.factor(hierarchical_results2$blmval)
+hierarchical_results2$blmval <- c(0.0001, 0.0002, 0.0004, 0.0006, 0.0008, 0.001, 0.002, 0.004, 0.006, 0.008, 0.01, 0.02, 0.04, 0.06, 0.08, 0.1)
+
 
 save(hierarchical_results2, file="05_Marine_Spatial_Planning/03_Prioritization/Rdata/hierarchical_results_2.rdata")
-
-# create plot to visualize trade-offs and show selected candidate prioritization
-result_plot2 <- ggplot(data = hierarchical_results2, aes(x = total_boundary_length, y = total_cost)) +
-                        geom_line() +
-                        geom_point(size = 3) +
-                        geom_text(hjust = -0.15, aes(label=blmval)) +
-                        xlab("Total boundary length of prioritization") +
-                        ylab("Total cost of prioritization") +
-                        #scale_x_continuous(expand = expansion(mult = c(0.05, 0.4))) +
-                        theme(legend.title = element_blank())
-
-ggsave(result_plot2, filename = "05_Marine_Spatial_Planning/03_Prioritization/result_plot_2.png")
 
 # calculate TOPSIS scores
 topsis_results2 <- topsis(
@@ -140,8 +128,31 @@ topsis_results2 <- topsis(
   weights = c(1, 1),
   impacts = c("-", "-"))
 
-topsis_results2$blmval <- hierarchical_results2$blmval
+topsis_results2 <- cbind(hierarchical_results2, topsis_results2[,2:3])
 
 save(topsis_results2, file="05_Marine_Spatial_Planning/03_Prioritization/Rdata/topsis_results_2.rdata")
+write.csv(topsis_results2, "05_Marine_Spatial_Planning/03_Prioritization/Rdata/topsis_results2.csv", row.names = FALSE)
+
+
+hierarchical_results2$color <- c("black","black","black","black","black","#018571","black","black","black","black","black","black","black","black","black","black")
+
+# create plot to visualize trade-offs and show selected candidate prioritization
+result_plot2 <- ggplot(data = hierarchical_results2, aes(x = total_boundary_length, y = total_cost)) +
+                        geom_line() +
+                        geom_point(size = 3, color=hierarchical_results2$color) +
+                        geom_text_repel(aes(label = blmval),color=hierarchical_results2$color,size=3, min.segment.length = 0.2, force = 5, max.overlaps = 20) +
+                        xlab("Total boundary length of prioritization") +
+                        ylab("Total cost of prioritization") +
+                        scale_x_continuous(labels = scientific)+
+                        theme_bw()+
+                        theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),
+                              panel.border = element_rect(colour = "black", size=1, fill=NA),
+                              legend.title = element_blank())
+
+ggsave(result_plot2, filename = "05_Marine_Spatial_Planning/03_Prioritization/result_plot_2.png")
+
+save(result_plot2, file="05_Marine_Spatial_Planning/03_Prioritization/Rdata/result_plot2.rdata")
+
+
 
 
