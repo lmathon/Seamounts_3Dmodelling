@@ -54,6 +54,8 @@ plot(chesterfield_Summit_Poly)
 chesterfield_Summit_Poly=rasterToPolygons(chesterfield_Summit_Poly, dissolve=T)
 chesterfield_SummitArea=area(chesterfield_Summit_Poly)*1e-6
 
+save(chesterfield_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_chester.rdata")
+
 
 raster_chesterfield <- mask(raster_chesterfield, chesterfield_Summit_Poly, inverse=T)
 plot(raster_chesterfield)
@@ -108,6 +110,8 @@ values(chesterfield2_Summit_Poly)[!is.na(values(chesterfield2_Summit_Poly))] <- 
 plot(chesterfield2_Summit_Poly)
 chesterfield2_Summit_Poly=rasterToPolygons(chesterfield2_Summit_Poly, dissolve=T)
 chesterfield2_SummitArea=area(chesterfield2_Summit_Poly)*1e-6
+
+save(chesterfield2_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_chester2.rdata")
 
 
 raster_chesterfield2 <- mask(raster_chesterfield2, chesterfield2_Summit_Poly, inverse=T)
@@ -168,6 +172,7 @@ plot(bellona_Summit_Poly)
 bellona_Summit_Poly=rasterToPolygons(bellona_Summit_Poly, dissolve=T)
 bellona_SummitArea=area(bellona_Summit_Poly)*1e-6
 
+save(bellona_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_bellona.rdata")
 
 raster_bellona <- mask(raster_bellona, bellona_Summit_Poly, inverse=T)
 plot(raster_bellona)
@@ -227,6 +232,7 @@ plot(entrecasteaux1_Summit_Poly)
 entrecasteaux1_Summit_Poly=rasterToPolygons(entrecasteaux1_Summit_Poly, dissolve=T)
 entrecasteaux1_SummitArea=area(entrecasteaux1_Summit_Poly)*1e-6
 
+save(entrecasteaux1_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_entrecasteaux1.rdata")
 
 raster_entrecasteaux1 <- mask(raster_entrecasteaux1, entrecasteaux1_Summit_Poly, inverse=T)
 plot(raster_entrecasteaux1)
@@ -287,6 +293,7 @@ plot(entrecasteaux2_Summit_Poly)
 entrecasteaux2_Summit_Poly=rasterToPolygons(entrecasteaux2_Summit_Poly, dissolve=T)
 entrecasteaux2_SummitArea=area(entrecasteaux2_Summit_Poly)*1e-6
 
+save(entrecasteaux2_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_entrecasteaux2.rdata")
 
 raster_entrecasteaux2 <- mask(raster_entrecasteaux2, entrecasteaux2_Summit_Poly, inverse=T)
 plot(raster_entrecasteaux2)
@@ -344,6 +351,7 @@ plot(entrecasteaux3_Summit_Poly)
 entrecasteaux3_Summit_Poly=rasterToPolygons(entrecasteaux3_Summit_Poly, dissolve=T)
 entrecasteaux3_SummitArea=area(entrecasteaux3_Summit_Poly)*1e-6
 
+save(entrecasteaux3_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_entrecasteaux3.rdata")
 
 raster_entrecasteaux3 <- mask(raster_entrecasteaux3, entrecasteaux3_Summit_Poly, inverse=T)
 plot(raster_entrecasteaux3)
@@ -401,6 +409,7 @@ plot(entrecasteaux4_Summit_Poly)
 entrecasteaux4_Summit_Poly=rasterToPolygons(entrecasteaux4_Summit_Poly, dissolve=T)
 entrecasteaux4_SummitArea=area(entrecasteaux4_Summit_Poly)*1e-6
 
+save(entrecasteaux4_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_entrecasteaux4.rdata")
 
 raster_entrecasteaux4 <- mask(raster_entrecasteaux4, entrecasteaux4_Summit_Poly, inverse=T)
 plot(raster_entrecasteaux4)
@@ -458,6 +467,7 @@ plot(entrecasteaux5_Summit_Poly)
 entrecasteaux5_Summit_Poly=rasterToPolygons(entrecasteaux5_Summit_Poly, dissolve=T)
 entrecasteaux5_SummitArea=area(entrecasteaux5_Summit_Poly)*1e-6
 
+save(entrecasteaux5_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_entrecasteaux5.rdata")
 
 raster_entrecasteaux5 <- mask(raster_entrecasteaux5, entrecasteaux5_Summit_Poly, inverse=T)
 plot(raster_entrecasteaux5)
@@ -515,6 +525,7 @@ plot(entrecasteaux6_Summit_Poly)
 entrecasteaux6_Summit_Poly=rasterToPolygons(entrecasteaux6_Summit_Poly, dissolve=T)
 entrecasteaux6_SummitArea=area(entrecasteaux6_Summit_Poly)*1e-6
 
+save(entrecasteaux6_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_entrecasteaux6.rdata")
 
 raster_entrecasteaux6 <- mask(raster_entrecasteaux6, entrecasteaux6_Summit_Poly, inverse=T)
 plot(raster_entrecasteaux6)
@@ -569,6 +580,7 @@ plot(iledespins_Summit_Poly)
 iledespins_Summit_Poly=rasterToPolygons(iledespins_Summit_Poly, dissolve=T)
 iledespins_SummitArea=area(iledespins_Summit_Poly)*1e-6
 
+save(iledespins_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_iledespins2.rdata")
 
 raster_iledespins <- mask(raster_iledespins, iledespins_Summit_Poly, inverse=T)
 plot(raster_iledespins)
@@ -623,6 +635,7 @@ plot(lifou_Summit_Poly)
 lifou_Summit_Poly=rasterToPolygons(lifou_Summit_Poly, dissolve=T)
 lifou_SummitArea=area(lifou_Summit_Poly)*1e-6
 
+save(lifou_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_lifou.rdata")
 
 raster_lifou <- mask(raster_lifou, lifou_Summit_Poly, inverse=T)
 plot(raster_lifou)
@@ -677,6 +690,7 @@ plot(mare_Summit_Poly)
 mare_Summit_Poly=rasterToPolygons(mare_Summit_Poly, dissolve=T)
 mare_SummitArea=area(mare_Summit_Poly)*1e-6
 
+save(mare_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_mare.rdata")
 
 raster_mare <- mask(raster_mare, mare_Summit_Poly, inverse=T)
 plot(raster_mare)
@@ -731,6 +745,7 @@ plot(ouvea_Summit_Poly)
 ouvea_Summit_Poly=rasterToPolygons(ouvea_Summit_Poly, dissolve=T)
 ouvea_SummitArea=area(ouvea_Summit_Poly)*1e-6
 
+save(ouvea_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_ouvea.rdata")
 
 raster_ouvea <- mask(raster_ouvea, ouvea_Summit_Poly, inverse=T)
 plot(raster_ouvea)
@@ -786,6 +801,7 @@ plot(tiga_Summit_Poly)
 tiga_Summit_Poly=rasterToPolygons(tiga_Summit_Poly, dissolve=T)
 tiga_SummitArea=area(tiga_Summit_Poly)*1e-6
 
+save(tiga_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_tiga.rdata")
 
 raster_tiga <- mask(raster_tiga, tiga_Summit_Poly, inverse=T)
 plot(raster_tiga)
@@ -840,6 +856,7 @@ plot(atoll1_Summit_Poly)
 atoll1_Summit_Poly=rasterToPolygons(atoll1_Summit_Poly, dissolve=T)
 atoll1_SummitArea=area(atoll1_Summit_Poly)*1e-6
 
+save(atoll1_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_atoll1.rdata")
 
 raster_atoll1 <- mask(raster_atoll1, atoll1_Summit_Poly, inverse=T)
 plot(raster_atoll1)
@@ -894,6 +911,7 @@ plot(atoll2_Summit_Poly)
 atoll2_Summit_Poly=rasterToPolygons(atoll2_Summit_Poly, dissolve=T)
 atoll2_SummitArea=area(atoll2_Summit_Poly)*1e-6
 
+save(atoll2_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_atoll2.rdata")
 
 raster_atoll2 <- mask(raster_atoll2, atoll2_Summit_Poly, inverse=T)
 plot(raster_atoll2)
@@ -948,6 +966,7 @@ plot(atoll5_Summit_Poly)
 atoll5_Summit_Poly=rasterToPolygons(atoll5_Summit_Poly, dissolve=T)
 atoll5_SummitArea=area(atoll5_Summit_Poly)*1e-6
 
+save(atoll5_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_atoll5.rdata")
 
 raster_atoll5 <- mask(raster_atoll5, atoll5_Summit_Poly, inverse=T)
 plot(raster_atoll5)

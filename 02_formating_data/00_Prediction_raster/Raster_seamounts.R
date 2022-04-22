@@ -67,6 +67,8 @@ plot(Antigonia_Depth)
 contour(Antigonia_Depth,add=TRUE)
 plot(Antigonia_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(Antigonia_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_antigonia.rdata")
+
 ###SLOPE
 Antigonia_Slope_Poly=Antigonia_Depth
 values(Antigonia_Slope_Poly)[values(Antigonia_Slope_Poly) > Antigonia_SummitDepth+30/100*Antigonia_SummitDepth | values(Antigonia_Slope_Poly) < Antigonia_ValleyDepth-30/100*Antigonia_ValleyDepth] = NA
@@ -151,6 +153,8 @@ Argo_SummitAreaKm2
 plot(Argo_Depth)
 contour(Argo_Depth,add=TRUE)
 plot(Argo_Summit_Poly,border="magenta",lwd=3,add=TRUE)
+
+save(Argo_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_argo.rdata")
 
 ###SLOPE
 Argo_Slope_Poly=Argo_Depth
@@ -237,6 +241,8 @@ plot(Capel_Depth)
 contour(Capel_Depth,add=TRUE)
 plot(Capel_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(Capel_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_capel.rdata")
+
 ###SLOPE
 Capel_Slope_Poly=Capel_Depth
 values(Capel_Slope_Poly)[values(Capel_Slope_Poly) > Capel_SummitDepth+30/100*Capel_SummitDepth | values(Capel_Slope_Poly) < Capel_ValleyDepth-30/100*Capel_ValleyDepth] = NA
@@ -312,6 +318,8 @@ Crypthelia_SummitAreaKm2
 plot(Crypthelia_Depth)
 contour(Crypthelia_Depth,add=TRUE)
 plot(Crypthelia_Summit_Poly,border="magenta",lwd=3,add=TRUE)
+
+save(Crypthelia_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_crypthelia.rdata")
 
 ###SLOPE
 Crypthelia_Slope_Poly=Crypthelia_Depth
@@ -389,6 +397,8 @@ Eponge_SummitAreaKm2
 plot(Eponge_Depth)
 contour(Eponge_Depth,add=TRUE)
 plot(Eponge_Summit_Poly,border="magenta",lwd=3,add=TRUE)
+
+save(Eponge_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_eponge.rdata")
 
 ###SLOPE
 Eponge_Slope_Poly=Eponge_Depth
@@ -477,6 +487,8 @@ plot(Fairway_Depth)
 contour(Fairway_Depth,add=TRUE)
 plot(Fairway_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(Fairway_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_fairway.rdata")
+
 ###SLOPE
 Fairway_Slope_Poly=Fairway_Depth
 values(Fairway_Slope_Poly)[values(Fairway_Slope_Poly) > Fairway_SummitDepth+30/100*Fairway_SummitDepth | values(Fairway_Slope_Poly) < Fairway_ValleyDepth-30/100*Fairway_ValleyDepth] = NA
@@ -552,6 +564,8 @@ plot(IleDesPins_Depth)
 contour(IleDesPins_Depth,add=TRUE)
 plot(IleDesPins_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(IleDesPins_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_iledespins.rdata")
+
 ###SLOPE
 IleDesPins_Slope_Poly=IleDesPins_Depth
 values(IleDesPins_Slope_Poly)[values(IleDesPins_Slope_Poly) > IleDesPins_SummitDepth+30/100*IleDesPins_SummitDepth | values(IleDesPins_Slope_Poly) < IleDesPins_ValleyDepth-30/100*IleDesPins_ValleyDepth] = NA
@@ -626,6 +640,8 @@ JumeauOuest_SummitAreaKm2
 plot(JumeauOuest_Depth)
 contour(JumeauOuest_Depth,add=TRUE)
 plot(JumeauOuest_Summit_Poly,border="magenta",lwd=3,add=TRUE)
+
+save(JumeauOuest_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_jumeauOuest.rdata")
 
 ###SLOPE
 JumeauOuest_Slope_Poly=JumeauOuest_Depth
@@ -703,6 +719,8 @@ plot(KaimonMaru_Depth)
 contour(KaimonMaru_Depth,add=TRUE)
 plot(KaimonMaru_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(KaimonMaru_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_kaimonmaru.rdata")
+
 ###SLOPE
 KaimonMaru_Slope_Poly=KaimonMaru_Depth
 values(KaimonMaru_Slope_Poly)[values(KaimonMaru_Slope_Poly) > KaimonMaru_SummitDepth+30/100*KaimonMaru_SummitDepth | values(KaimonMaru_Slope_Poly) < KaimonMaru_ValleyDepth-30/100*KaimonMaru_ValleyDepth] = NA
@@ -777,6 +795,8 @@ Nova_SummitAreaKm2
 plot(Nova_Depth)
 contour(Nova_Depth,add=TRUE)
 plot(Nova_Summit_Poly,border="magenta",lwd=3,add=TRUE)
+
+save(Nova_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_nova.rdata")
 
 ###SLOPE
 Nova_Slope_Poly=Nova_Depth
@@ -853,6 +873,8 @@ Stylaster_SummitAreaKm2
 plot(Stylaster_Depth)
 contour(Stylaster_Depth,add=TRUE)
 plot(Stylaster_Summit_Poly,border="magenta",lwd=3,add=TRUE)
+
+save(Stylaster_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_stylaster.rdata")
 
 ###SLOPE
 Stylaster_Slope_Poly=Stylaster_Depth
@@ -939,6 +961,8 @@ plot(Torche_Depth)
 contour(Torche_Depth,add=TRUE)
 plot(Torche_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(Torche_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_torche.rdata")
+
 ###SLOPE
 Torche_Slope_Poly=Torche_Depth
 values(Torche_Slope_Poly)[values(Torche_Slope_Poly) > Torche_SummitDepth+30/100*Torche_SummitDepth | values(Torche_Slope_Poly) < Torche_ValleyDepth-30/100*Torche_ValleyDepth] = NA
@@ -1023,6 +1047,8 @@ plot(Chesterfield_Depth)
 contour(Chesterfield_Depth,add=TRUE)
 plot(Chesterfield_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(Chesterfield_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_chesterfield.rdata")
+
 ###SLOPE
 Chesterfield_Slope_Poly=Chesterfield_Depth
 values(Chesterfield_Slope_Poly)[values(Chesterfield_Slope_Poly) > Chesterfield_SummitDepth+30/100*Chesterfield_SummitDepth | values(Chesterfield_Slope_Poly) < Chesterfield_ValleyDepth-30/100*Chesterfield_ValleyDepth] = NA
@@ -1097,6 +1123,8 @@ JumeauEst_SummitAreaKm2
 plot(JumeauEst_Depth)
 contour(JumeauEst_Depth,add=TRUE)
 plot(JumeauEst_Summit_Poly,border="magenta",lwd=3,add=TRUE)
+
+save(JumeauEst_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_jumeauest.rdata")
 
 ###SLOPE
 JumeauEst_Slope_Poly=JumeauEst_Depth
@@ -1183,6 +1211,8 @@ plot(Seamount01_Depth)
 contour(Seamount01_Depth,add=TRUE)
 plot(Seamount01_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(Seamount01_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_sm1.rdata")
+
 ###SLOPE
 Seamount01_Slope_Poly=Seamount01_Depth
 values(Seamount01_Slope_Poly)[values(Seamount01_Slope_Poly) > Seamount01_SummitDepth+30/100*Seamount01_SummitDepth | values(Seamount01_Slope_Poly) < Seamount01_ValleyDepth-30/100*Seamount01_ValleyDepth] = NA
@@ -1260,6 +1290,8 @@ plot(Seamount02_Depth)
 contour(Seamount02_Depth,add=TRUE)
 plot(Seamount02_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(Seamount02_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_sm2.rdata")
+
 ###SLOPE
 Seamount02_Slope_Poly=Seamount02_Depth
 values(Seamount02_Slope_Poly)[values(Seamount02_Slope_Poly) > Seamount02_SummitDepth+30/100*Seamount02_SummitDepth | values(Seamount02_Slope_Poly) < Seamount02_ValleyDepth-30/100*Seamount02_ValleyDepth] = NA
@@ -1334,6 +1366,8 @@ plot(Seamount03_Depth)
 contour(Seamount03_Depth,add=TRUE)
 plot(Seamount03_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(Seamount03_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_sm3.rdata")
+
 ###SLOPE
 Seamount03_Slope_Poly=Seamount03_Depth
 values(Seamount03_Slope_Poly)[values(Seamount03_Slope_Poly) > Seamount03_SummitDepth+30/100*Seamount03_SummitDepth | values(Seamount03_Slope_Poly) < Seamount03_ValleyDepth-30/100*Seamount03_ValleyDepth] = NA
@@ -1406,6 +1440,8 @@ Seamount04_SummitAreaKm2
 plot(Seamount04_Depth)
 contour(Seamount04_Depth,add=TRUE)
 plot(Seamount04_Summit_Poly,border="magenta",lwd=3,add=TRUE)
+
+save(Seamount04_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_sm4.rdata")
 
 ###SLOPE
 Seamount04_Slope_Poly=Seamount04_Depth
@@ -1481,6 +1517,8 @@ plot(Introuvable_Depth)
 contour(Introuvable_Depth,add=TRUE)
 plot(Introuvable_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(Introuvable_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_introuvable.rdata")
+
 ###SLOPE
 Introuvable_Slope_Poly=Introuvable_Depth
 values(Introuvable_Slope_Poly)[values(Introuvable_Slope_Poly) > Introuvable_SummitDepth+30/100*Introuvable_SummitDepth | values(Introuvable_Slope_Poly) < Introuvable_ValleyDepth-30/100*Introuvable_ValleyDepth] = NA
@@ -1551,6 +1589,8 @@ plot(seamount05_Depth)
 contour(seamount05_Depth,add=TRUE)
 plot(seamount05_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(seamount05_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_sm5.rdata")
+
 ###SLOPE
 seamount05_Slope_Poly=seamount05_Depth
 values(seamount05_Slope_Poly)[values(seamount05_Slope_Poly) > seamount05_SummitDepth+30/100*seamount05_SummitDepth | values(seamount05_Slope_Poly) < seamount05_ValleyDepth-30/100*seamount05_ValleyDepth] = NA
@@ -1620,6 +1660,8 @@ plot(seamount06_Depth)
 contour(seamount06_Depth,add=TRUE)
 plot(seamount06_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(seamount06_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_sm6.rdata")
+
 ###SLOPE
 seamount06_Slope_Poly=seamount06_Depth
 values(seamount06_Slope_Poly)[values(seamount06_Slope_Poly) > seamount06_SummitDepth+30/100*seamount06_SummitDepth | values(seamount06_Slope_Poly) < seamount06_ValleyDepth-30/100*seamount06_ValleyDepth] = NA
@@ -1688,6 +1730,8 @@ seamount07_SummitAreaKm2
 plot(seamount07_Depth)
 contour(seamount07_Depth,add=TRUE)
 plot(seamount07_Summit_Poly,border="magenta",lwd=3,add=TRUE)
+
+save(seamount07_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_sm7.rdata")
 
 ###SLOPE
 seamount07_Slope_Poly=seamount07_Depth
@@ -1760,6 +1804,8 @@ plot(seamount11_Depth)
 contour(seamount11_Depth,add=TRUE)
 plot(seamount11_Summit_Poly,border="magenta",lwd=3,add=TRUE)
 
+save(seamount11_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_sm11.rdata")
+
 ###SLOPE
 seamount11_Slope_Poly=seamount11_Depth
 values(seamount11_Slope_Poly)[values(seamount11_Slope_Poly) > seamount11_SummitDepth+30/100*seamount11_SummitDepth | values(seamount11_Slope_Poly) < seamount11_ValleyDepth-30/100*seamount11_ValleyDepth] = NA
@@ -1829,6 +1875,8 @@ seamount12_SummitAreaKm2
 plot(seamount12_Depth)
 contour(seamount12_Depth,add=TRUE)
 plot(seamount12_Summit_Poly,border="magenta",lwd=3,add=TRUE)
+
+save(seamount12_Summit_Poly, file = "02_formating_data/00_Prediction_raster/Rdata/summit_sm12.rdata")
 
 ###SLOPE
 seamount12_Slope_Poly=seamount12_Depth
