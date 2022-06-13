@@ -6,6 +6,7 @@ library(scales)
 library(rnaturalearth)
 library(ggrepel)
 library(ggpubr)
+library(cartomisc)
 
 # load sampling data and maps
 
@@ -21,6 +22,7 @@ load("00_metadata/acoustic_explanatory_variables_benthic.rdata")
 bathy100 <- raster("00_metadata/environmental/bathytopoMNT100m/MNT-nettoye_v3_FINAL.tif")
 bathy100[raster::Which(bathy100<(-10000))] <- NA
 bathy100[raster::Which(bathy100>0)] <- NA
+
 
 test_spdf <- as(bathy100, "SpatialPixelsDataFrame")
 test_df <- as.data.frame(test_spdf)
@@ -63,13 +65,12 @@ acoustic$coords <- st_as_sf(acoustic[,c("Longitude", "Latitude")], coords = c("L
 world <- st_read("c://Users/mathon/Desktop/PhD/Projets/Megafauna/Carto_megafauna/GSHHS_f_L1.shp")
 
 map_global <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=test_df, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=test_df, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=test_df, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
-  geom_sf(aes(fill = sites$Habitat), size=3, data= sites$coords, shape=21, show.legend = F)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
+  geom_tile(data=filter(test_df, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(col = sites$Habitat), size=3, data= sites$coords, shape=19, show.legend = F)+
   geom_text_repel(data = sites, aes(x=Longitude, y=Latitude, label = id),size=3, min.segment.length = 0.2, force = 2, max.overlaps=20) +
-  scale_fill_manual(values=c("#FDE725FF", "#B40F20", "#20A387FF", "#440154FF"))+
+  scale_color_manual(values=c("#FDE725FF", "#B40F20", "#20A387FF", "#440154FF"))+
   coord_sf(xlim = c(158.1504, 171.7728), ylim = c(-25.632, -17.856))+
   labs(x="", y="")+
   theme_minimal()+
@@ -97,10 +98,9 @@ colnames(df1) <- c("value", "x", "y")
 
 
 site1 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df1, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df1, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df1, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df1, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_1$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#FDE725FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#FDE725FF", show.legend = F)+
@@ -130,10 +130,9 @@ colnames(df2) <- c("value", "x", "y")
 
 
 site2 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df2, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df2, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df2, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df2, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_2$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#FDE725FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#FDE725FF", show.legend = F)+
@@ -156,21 +155,20 @@ ggsave(site2, filename="06_Figures/Rdata/site2.png")
 acoustic_3 <- acoustic %>%
   filter(Site=="Antigonia")
 
-extent <- extent(167.893,168.2,-23.53, -23.3)
+extent <- extent(167.893,168.22,-23.55, -23.25)
 bathy3 <- crop(bathy100, extent)
 spdf3 <- as(bathy3, "SpatialPixelsDataFrame")
 df3 <- as.data.frame(spdf3)
 colnames(df3) <- c("value", "x", "y")
 
 site3 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df3, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df3, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df3, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df3, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_3$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#20A387FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#20A387FF", show.legend = F)+
-  coord_sf(xlim = c(167.893,168.2), ylim = c(-23.53, -23.3))+
+  coord_sf(xlim = c(167.893,168.22), ylim = c(-23.55, -23.25))+
   labs(x="", y="")+
   theme_minimal()+
   theme(legend.position = "bottom",
@@ -196,10 +194,9 @@ colnames(df4) <- c("value", "x", "y")
 
 
 site4 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df4, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df4, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df4, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df4, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_4$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#440154FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#440154FF", show.legend = F)+
@@ -231,10 +228,9 @@ colnames(df5) <- c("value", "x", "y")
 
 
 site5 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df5, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df5, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df5, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df5, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_5$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#B40F20", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#B40F20", show.legend = F)+
@@ -267,10 +263,9 @@ colnames(df6) <- c("value", "x", "y")
 
 
 site6 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df6, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df6, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df6, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df6, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_6$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#440154FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#440154FF", show.legend = F)+
@@ -302,10 +297,9 @@ colnames(df7) <- c("value", "x", "y")
 
 
 site7 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df7, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df7, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df7, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df7, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_7$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#B40F20", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#B40F20", show.legend = F)+
@@ -340,10 +334,9 @@ colnames(df8) <- c("value", "x", "y")
 
 
 site8 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df8, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df8, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df8, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df8, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_8$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#440154FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#440154FF", show.legend = F)+
@@ -375,10 +368,9 @@ colnames(df9) <- c("value", "x", "y")
 
 
 site9 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df9, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df9, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df9, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df9, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_9$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#B40F20", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#B40F20", show.legend = F)+
@@ -411,10 +403,9 @@ colnames(df10) <- c("value", "x", "y")
 
 
 site10 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df10, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df10, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df10, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df10, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_10$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#20A387FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#20A387FF", show.legend = F)+
@@ -446,10 +437,9 @@ colnames(df11) <- c("value", "x", "y")
 
 
 site11 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df11, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df11, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df11, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df11, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_11$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#FDE725FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#FDE725FF", show.legend = F)+
@@ -482,10 +472,9 @@ colnames(df12) <- c("value", "x", "y")
 
 
 site12 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df12, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df12, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df12, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df12, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_12$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#FDE725FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#FDE725FF", show.legend = F)+
@@ -519,10 +508,9 @@ colnames(df13) <- c("value", "x", "y")
 
 
 site13 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df13, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df13, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df13, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df13, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_13$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#20A387FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#20A387FF", show.legend = F)+
@@ -556,10 +544,9 @@ colnames(df14) <- c("value", "x", "y")
 
 
 site14 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df14, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df14, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df14, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df14, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_14$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#B40F20", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#B40F20", show.legend = F)+
@@ -592,10 +579,9 @@ colnames(df15) <- c("value", "x", "y")
 
 
 site15 <- ggplot()+
-  geom_sf(aes(), data = world, fill = "grey50", col="grey50") +
-  geom_contour(data=df15, aes(x=x,y=y, z=value), breaks=c(-100),size=c(0.2),colour="grey80")+
-  geom_contour(data=df15, aes(x=x,y=y, z=value), breaks=c(-500),size=c(0.2),colour="grey80")+
-  geom_contour(data=df15, aes(x=x,y=y, z=value), breaks=c(-1000),size=c(0.2),colour="grey80")+
+  geom_tile(data=filter(df15, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_15$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#20A387FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#20A387FF", show.legend = F)+
