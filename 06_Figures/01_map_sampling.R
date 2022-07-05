@@ -68,8 +68,8 @@ map_global <- ggplot()+
   geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_tile(data=filter(test_df, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
   scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
-  geom_sf(aes(col = sites$Habitat), size=3, data= sites$coords, shape=19, show.legend = F)+
-  geom_text_repel(data = sites, aes(x=Longitude, y=Latitude, label = id),size=3, min.segment.length = 0.2, force = 2, max.overlaps=20) +
+  geom_sf(aes(col = sites$Habitat), size=4, data= sites$coords, shape=19, show.legend = F)+
+  geom_text_repel(data = sites, aes(x=Longitude, y=Latitude, label = id),size=4, min.segment.length = 0.2, force = 2, max.overlaps=20) +
   scale_color_manual(values=c("#FDE725FF", "#B40F20", "#20A387FF", "#440154FF"))+
   coord_sf(xlim = c(158.1504, 171.7728), ylim = c(-25.632, -17.856))+
   labs(x="", y="")+

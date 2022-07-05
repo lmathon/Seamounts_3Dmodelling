@@ -438,7 +438,7 @@ predict_brt <- function(model, distrib, species, preds, shp_rast){
   #unit of predictions = nb of fish in 1 x 1 km cell
   
   # Write raster
-  if (distrib == "poisson"){
+  if (distrib == "gaussian"){
     raster::writeRaster(p, here::here(paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", distrib, "_predictions_", species, ".grd")), overwrite=TRUE)
   } else { #exp transformation of predictions
     raster::writeRaster(exp(p), here::here(paste0("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/", distrib, "_predictions_", species, ".grd")), overwrite=TRUE)

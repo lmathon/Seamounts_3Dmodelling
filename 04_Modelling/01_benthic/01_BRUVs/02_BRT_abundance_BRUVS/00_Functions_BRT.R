@@ -36,7 +36,7 @@ optimize_gaussian_brts <- function(tree.com, learn, bag.f, data_brts, responseNa
   k1 = dismo::gbm.step(data = data_brts2,
                        gbm.x = myPredictor_brts,
                        gbm.y = col_response,
-                       family = "gaussian",
+                       family = "poisson",
                        tree.complexity = tree.com,
                        learning.rate = learn,
                        bag.fraction = bag.f,
@@ -114,7 +114,7 @@ extract_best_parameters_par <- function(output, responseName_brts, distrib){
     dplyr::mutate(bag.fract = as.numeric(substr(df$model, nchar(as.character(df$model))-2, nchar(as.character(df$model))))) -> df
   
   #write results
-  write.csv(list(df = df),file=paste0("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/", "train_results_", responseName_brts, "_", distrib, ".csv"))
+  write.csv(list(df = df),file=paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", "train_results_", responseName_brts, "_", distrib, ".csv"))
   
   # extract best parameters
   best_parameters = df[1,]
@@ -152,13 +152,13 @@ fit_best_gaussian_brt_fixed <- function(data_brts, responseName_brts, best_param
   
   tbmod = dismo::gbm.fixed(data = data_brts2, gbm.x = myPredictor_brts,
                            gbm.y = col_response,
-                           family = "gaussian",
+                           family = "poisson",
                            tree.complexity = as.numeric(best_params[,2]),
                            learning.rate = as.numeric(best_params[,3]),
                            bag.fraction = as.numeric(best_params[,10]),
                            n.trees = as.numeric(best_params[,4]))
   
-  save(tbmod, file = paste0("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/", "best_fixed_gaussian_brt_", responseName_brts, ".RData"))
+  save(tbmod, file = paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", "best_fixed_poisson_brt_", responseName_brts, ".RData"))
   
   return(tbmod)
 }
@@ -216,13 +216,13 @@ fit_best_reduced_gaussian_brt_fixed <- function(data_brts, responseName_brts,  b
   #fit model with fixed number of trees
   tbmod = dismo::gbm.fixed(data = data_brts2, gbm.x = as.character(preds),
                            gbm.y = col_response,
-                           family = "gaussian",
+                           family = "poisson",
                            tree.complexity = as.numeric(best_params[,2]),
                            learning.rate = as.numeric(best_params[,3]),
                            bag.fraction = as.numeric(best_params[,10]),
                            n.trees = as.numeric(best_params[,4]))
   
-  save(tbmod, file = paste0("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/", "best_fixed_reduced_gaussian_brt_", responseName_brts, ".RData"))
+  save(tbmod, file = paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", "best_fixed_reduced_poisson_brt_", responseName_brts, ".RData"))
   
   return(tbmod)
 }
@@ -260,7 +260,7 @@ fit_best_reduced_gaussian_brt_gbmStep <- function(data_brts, responseName_brts, 
   #fit model with step-variable number of trees
   tbmod = dismo::gbm.step(data = data_brts2, gbm.x = as.character(preds),
                            gbm.y = col_response,
-                           family = "gaussian",
+                           family = "poisson",
                            tree.complexity = as.numeric(best_params[,2]),
                            learning.rate = as.numeric(best_params[,3]),
                            bag.fraction = as.numeric(best_params[,10]),
@@ -290,8 +290,8 @@ fit_best_reduced_gaussian_brt_gbmStep <- function(data_brts, responseName_brts, 
                               tbmod$cv.statistics$correlation.se))
  
 
-  write.csv(list(BestModel = k.out),file=paste0("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/", "final_results_mod_best_gbmStep_reduced_", responseName_brts, "_Gaussian_", ".csv"))
-  save(tbmod, file = paste0("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/", "best_gbmStep_reduced_gaussian_brt_", responseName_brts, ".RData"))
+  write.csv(list(BestModel = k.out),file=paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", "final_results_mod_best_gbmStep_reduced_", responseName_brts, "_poisson_", ".csv"))
+  save(tbmod, file = paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", "best_gbmStep_reduced_poisson_brt_", responseName_brts, ".RData"))
   
   return(tbmod)
 }
@@ -327,8 +327,8 @@ make_contribution_reduced_plot <- function(model, responseName_brts, distrib){
           panel.background = element_blank(),
           axis.text=element_text(size=14))
   
-  ggplot2::ggsave(paste0("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/", deparse(substitute(model)),"_", responseName_brts,"_", distrib , ".png"), plot, width = 6, height = 7)
-  write_xlsx(list(contrib = contrib),path=paste0("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/", "contrib_",deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".xlsx"))
+  ggplot2::ggsave(paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", deparse(substitute(model)),"_", responseName_brts,"_", distrib , ".png"), plot, width = 6, height = 7)
+  write_xlsx(list(contrib = contrib),path=paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", "contrib_",deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".xlsx"))
   
 }
 
@@ -370,7 +370,7 @@ partial_dependance_plots3 <- function(model, responseName_brts, distrib){
     height = 300
   }
   
-  png(paste0("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/", "partial_plots3_", deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".png"), width = width, height = height)
+  png(paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", "partial_plots3_", deparse(substitute(model)),"_", responseName_brts, "_", distrib, ".png"), width = width, height = height)
   
   
   if (length(predictors)>=7){
@@ -396,7 +396,7 @@ partial_dependance_plots3 <- function(model, responseName_brts, distrib){
     
     #plot
     
-      plot(a, ylab="benthic acoustic biomass", pch = 16, cex.axis=1.2, cex.lab=1.5, cex = 1)
+      plot(a, ylab="BRUVS abundance", pch = 16, cex.axis=1.2, cex.lab=1.5, cex = 1)
     
     
     if (!predictors[j] %in%  c("Habitat", "Day")){
@@ -438,10 +438,10 @@ predict_brt <- function(model, distrib, species, preds, shp_rast){
   #unit of predictions = nb of fish in 1 x 1 km cell
   
   # Write raster
-  if (distrib == "gaussian"){
-    raster::writeRaster(p, here::here(paste0("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/", distrib, "_predictions_", species, ".grd")), overwrite=TRUE)
+  if (distrib == "poisson"){
+    raster::writeRaster(p, here::here(paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", distrib, "_predictions_", species, ".grd")), overwrite=TRUE)
   } else { #exp transformation of predictions
-    raster::writeRaster(exp(p), here::here(paste0("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/", distrib, "_predictions_", species, ".grd")), overwrite=TRUE)
+    raster::writeRaster(exp(p), here::here(paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", distrib, "_predictions_", species, ".grd")), overwrite=TRUE)
   }
   
   return(p)
@@ -461,8 +461,8 @@ predict_brt <- function(model, distrib, species, preds, shp_rast){
 
 map_brt_prediction <- function(prediction, species, distrib){
   
-  png(here::here(paste0("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/", distrib, "_map_brt_prediction_", species,".png")), width = 960, height = 480)
-  if (distrib == "gaussian"){
+  png(here::here(paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", distrib, "_map_brt_prediction_", species,".png")), width = 960, height = 480)
+  if (distrib == "poisson"){
     raster::plot(prediction, main=paste0('BRT prediction ', species, ' (LOG biomass (kg))'), col = viridisLite::viridis(10))
     }else{
     raster::plot(prediction, main=paste0('BRT prediction ', species, ' (nb individuals)'), col = viridisLite::viridis(10))

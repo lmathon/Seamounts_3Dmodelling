@@ -22,30 +22,27 @@ devtools::load_all()
 
 # creer un repertoire de sortie
 
-dir.exists("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna")
-dir.create("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna")
+dir.exists("04_Modelling/01_benthic/01_BRUVs/03_BRT_biomass_BRUVS/BRT_Outputs/")
+dir.create("04_Modelling/01_benthic/01_BRUVs/03_BRT_biomass_BRUVS/BRT_Outputs/")
 
 # charger les fonctions BRT necessaires
-source("04_Modelling/02_pelagic/02_eDNA/00_Functions_BRT.R")
+source("04_Modelling/01_benthic/01_BRUVs/03_BRT_biomass_BRUVS/00_Functions_BRT.R")
 
 
 # definir le jeu de donnee, les variables "reponse" (Y) si on voulait analyser plus qu'une variable reponse, et les variables predicteur (X)
-load("02_formating_data/02_pelagic/Rdata/edna_richness_pelagic.rdata")
-load("00_metadata/edna_explanatory_variables_pelagic.rdata")
-edna_var$log_richness<- log(edna_richness_pelagic$richness_tot+1)
-edna_var$BottomDepth <- as.numeric(edna_var$BottomDepth)
-edna_var$richness <- edna_richness_pelagic$richness_tot
+load("02_formating_data/01_Benthic/Rdata/bruvs_biomass_all.rdata")
+load("00_metadata/bruvs_explanatory_variables.rdata")
+bruvs_var$biomass_tot <- bruvs_biomass_all$biomass_tot
+bruvs_var$Log_biomass <- bruvs_biomass_all$Logbiomass_tot
 
-myData <- edna_var
+myData <- bruvs_var
 
 myData$Habitat <- as.factor(myData$Habitat)
-myData$Sampling_Depth <- as.numeric(myData$Sampling_Depth)
 
-myResponse=c("log_richness")
 
-myPredictor=c("SummitRugosity","BottomDepth",
-              "EastwardVelocity", "NorthwardVelocity", "Sampling_Depth",
-              "Salinity", "seafloorTemp", "LandMinDist")
+myResponse=c("Log_biomass")
+
+myPredictor=c("BottomDepth", "TravelTime","SSTmax", "Salinity", "seafloorTemp", "SuspendedParticulateMatter")
 
 myPredictorNumeric=c("SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
                      "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
@@ -91,7 +88,7 @@ par_output =  foreach(i = tree.complexity, .packages=c("foreach")) %dopar% {
   foreach(j = learning.rate, .packages=c("foreach")) %dopar% {
     foreach(k = bag.fraction, .packages=c("foreach")) %dopar% {
       #need to load package within foreach loop
-      source("04_Modelling/02_pelagic/02_eDNA/00_Functions_BRT.R")
+      source("04_Modelling/01_benthic/01_BRUVs/03_BRT_biomass_BRUVS/00_Functions_BRT.R")
       # model name
       nam = paste0("Model_",responseName,"_tc_", i, "_lr_", j, "_bf_", k)
       # model optimization
@@ -107,7 +104,7 @@ par_output =  foreach(i = tree.complexity, .packages=c("foreach")) %dopar% {
 
 
 # extract best brts parameters
-best_parameters = extract_best_parameters_par(par_output, responseName, "poisson")
+best_parameters = extract_best_parameters_par(par_output, responseName, "gaussian")
 best_parameters
 
 
@@ -121,7 +118,7 @@ names(mod_best_fixed)
 mod_best_fixed$contributions
 
 # Make plot of variable contributions best fixed model
-make_contribution_reduced_plot(mod_best_fixed, responseName, "poisson")
+make_contribution_reduced_plot(mod_best_fixed, responseName, "gaussian")
 
 
 # Get variables with contributions > 5%
@@ -140,10 +137,10 @@ mod_best_fixed_reduced$contributions
 mod_best_fixed_reduced$var.names
 
 # Make plot of variable contributions reduced model
-make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "poisson")
+make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "gaussian")
 
 # Partial dependance plots reduced model
-partial_dependance_plots3(mod_best_fixed_reduced, responseName, "poisson")
+partial_dependance_plots3(mod_best_fixed_reduced, responseName, "gaussian")
 
 # Refit a gbmStep after dropping predictors with contributions < 5%
 mod_best_gbmStep_reduced = fit_best_reduced_gaussian_brt_gbmStep(myData, responseName, best_parameters,
@@ -164,11 +161,11 @@ find.int$rank.list
 
 #dev.new()
 
-png(paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", "InteractionPlotsBestModel.png"), width = 1200, height = 600)
+png(paste0("04_Modelling/01_benthic/01_BRUVs/03_BRT_biomass_BRUVS/BRT_Outputs/", "InteractionPlotsBestModel.png"), width = 1200, height = 600)
 
 par(mfrow=c(1,2))
-dismo::gbm.perspec(mod_best_gbmStep_reduced, 1, 3, z.range=c(0,2))
-dismo::gbm.perspec(mod_best_gbmStep_reduced, 4, 2, z.range=c(1,3.5))
+dismo::gbm.perspec(mod_best_gbmStep_reduced, 5, 1, z.range=c(0,2))
+dismo::gbm.perspec(mod_best_gbmStep_reduced, 1, 3, z.range=c(1,3.5))
 
 dev.off()
 
@@ -178,61 +175,59 @@ par(mfrow=c(1,1))
 stopCluster(cl)
 
 
-png(paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", "InteractionPlotsBestModelDismo.png"), width = 1200, height = 600)
+png(paste0("04_Modelling/01_benthic/01_BRUVs/03_BRT_biomass_BRUVS/BRT_Outputs/", "InteractionPlotsBestModelDismo.png"), width = 1200, height = 600)
 
-dismo::gbm.plot(mod_best_gbmStep_reduced, n.plots=5, plot.layout=c(4, 2), write.title = FALSE)
+dismo::gbm.plot(mod_best_gbmStep_reduced, n.plots=5, plot.layout=c(3, 2), write.title = FALSE)
 
 dev.off()
 
 
 
 gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1))
-gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,2),level.plot=FALSE)
+gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,3),level.plot=FALSE)
 
 
 
 
 ### Predict REDUCED BRT on study area
-load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_pelagic.rdata")
+load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_benthic.rdata")
+df_benthic <- na.omit(df_benthic)
 
-df_pelagic <- df_pelagic %>%
-  filter(!is.na(Sampling_Depth))
-
-list_df <- split(df_pelagic, df_pelagic$Sampling_Depth)
-depth <- unique(df_pelagic$Sampling_Depth)
-
-pred_fish <- vector("list", 30)
-pred_df <- vector("list", 30)
- 
-pelagic_motu_predict <- list_df[[1]][,1:3]
-pelagic_motu_predict$x <- as.factor(pelagic_motu_predict$x)
-pelagic_motu_predict$y <- as.factor(pelagic_motu_predict$y)
+df <- df_benthic
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+rast <- stack(df)
 
 
-for (i in 1:length(list_df)) {
-  df <- list_df[[i]]
-  coordinates(df) <- ~x+y
-  gridded(df) <- TRUE
-  rast <- stack(df)
-  
-  # Predict based on reduced model
-  pred_fish[[i]] = predict_brt(mod_best_gbmStep_reduced, "poisson", responseName,
-                          preds = var_sup5_best_fixed, rast)
- 
-  
-  
-  pred_df[[i]] <- as.data.frame(pred_fish[[i]], xy=TRUE) 
-  pred_df[[i]] <- pred_df[[i]] %>% filter(!is.na(layer))
-  pred_df[[i]]$layer <- exp(pred_df[[i]]$layer)-1
-  names(pred_df[[i]]) <- c("x", "y", paste("depth_", depth[[i]], sep=""))
-  
-  pred_df[[i]]$x <- as.factor(pred_df[[i]]$x)
-  pred_df[[i]]$y <- as.factor(pred_df[[i]]$y)
-  
-  pelagic_motu_predict <- left_join(pelagic_motu_predict, pred_df[[i]], by=c("x","y"))
-}
+# Predict based on reduced model
+pred_fish = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
+                        preds = var_sup5_best_fixed, rast)
 
-save(pelagic_motu_predict, file="04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/pelagic_motu_predict.rdata")
+plot(pred_fish)
+
+bruvs_biomass_predict <- as.data.frame(pred_fish, xy=TRUE)
+
+bruvs_biomass_predict <- bruvs_biomass_predict %>% filter(!is.na(layer))
+
+names(bruvs_biomass_predict) <- c("x", "y", "bruvs_biomass")
+
+bruvs_biomass_predict$bruvs_biomass <- exp(bruvs_biomass_predict$bruvs_biomass)+1
+
+bruvs_biomass_predict <- cbind(bruvs_biomass_predict, df_benthic[,-c(1,2)])
+
+save(bruvs_biomass_predict, file="04_Modelling/01_benthic/01_BRUVs/03_BRT_biomass_BRUVS/BRT_Outputs/bruvs_biomass_predict.rdata")   
+
+
+df <- bruvs_biomass_predict[,1:3]
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_bruvs_biomass_predict <- raster(df)
+plot(raster_bruvs_biomass_predict)
+
+raster_bruvs_biomass_predict <- raster_bruvs_biomass_predict/1000
+
+
+writeRaster(raster_bruvs_biomass_predict, filename = "04_Modelling/01_benthic/01_BRUVs/03_BRT_biomass_BRUVS/BRT_Outputs/raster_bruvs_biomass_predict.tif", overwrite=TRUE)
 
 
 #Stop cluster
