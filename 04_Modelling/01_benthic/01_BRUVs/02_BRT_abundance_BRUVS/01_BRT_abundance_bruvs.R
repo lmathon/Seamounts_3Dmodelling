@@ -17,16 +17,15 @@ library(doParallel)
 library(dplyr)
 library(here)
 library(raster)
-devtools::load_all() 
 
 
 # creer un repertoire de sortie
 
-dir.exists("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/")
-dir.create("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/")
+dir.exists("04_Modelling/01_benthic/01_BRUVs/02_BRT_abundance_BRUVS/BRT_Outputs/")
+dir.create("04_Modelling/01_benthic/01_BRUVs/02_BRT_abundance_BRUVS/BRT_Outputs/")
 
 # charger les fonctions BRT necessaires
-source("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/00_Functions_BRT.R")
+source("04_Modelling/01_benthic/01_BRUVs/02_BRT_abundance_BRUVS/00_Functions_BRT.R")
 
 
 # definir le jeu de donnee, les variables "reponse" (Y) si on voulait analyser plus qu'une variable reponse, et les variables predicteur (X)
@@ -42,10 +41,11 @@ myData$Habitat <- as.factor(myData$Habitat)
 
 myResponse=c("Log_abundance")
 
-myPredictor=c("SummitRugosity","BottomDepth", "TravelTime",
-              "SSTmean","Chla", "Salinity", "seafloorTemp")
+myPredictor=c("SummitDepth","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
+              "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
+              "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist", "Habitat")
 
-myPredictorNumeric=c("SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
+myPredictorNumeric=c("SummitDepth","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
                      "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
                      "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist")
 
@@ -89,7 +89,7 @@ par_output =  foreach(i = tree.complexity, .packages=c("foreach")) %dopar% {
   foreach(j = learning.rate, .packages=c("foreach")) %dopar% {
     foreach(k = bag.fraction, .packages=c("foreach")) %dopar% {
       #need to load package within foreach loop
-      source("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/00_Functions_BRT.R")
+      source("04_Modelling/01_benthic/01_BRUVs/02_BRT_abundance_BRUVS/00_Functions_BRT.R")
       # model name
       nam = paste0("Model_",responseName,"_tc_", i, "_lr_", j, "_bf_", k)
       # model optimization
@@ -105,7 +105,7 @@ par_output =  foreach(i = tree.complexity, .packages=c("foreach")) %dopar% {
 
 
 # extract best brts parameters
-best_parameters = extract_best_parameters_par(par_output, responseName, "poisson")
+best_parameters = extract_best_parameters_par(par_output, responseName, "gaussian")
 best_parameters
 
 
@@ -119,7 +119,7 @@ names(mod_best_fixed)
 mod_best_fixed$contributions
 
 # Make plot of variable contributions best fixed model
-make_contribution_reduced_plot(mod_best_fixed, responseName, "poisson")
+make_contribution_reduced_plot(mod_best_fixed, responseName, "gaussian")
 
 
 # Get variables with contributions > 5%
@@ -138,10 +138,10 @@ mod_best_fixed_reduced$contributions
 mod_best_fixed_reduced$var.names
 
 # Make plot of variable contributions reduced model
-make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "poisson")
+make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "gaussian")
 
 # Partial dependance plots reduced model
-partial_dependance_plots3(mod_best_fixed_reduced, responseName, "poisson")
+partial_dependance_plots3(mod_best_fixed_reduced, responseName, "gaussian")
 
 # Refit a gbmStep after dropping predictors with contributions < 5%
 mod_best_gbmStep_reduced = fit_best_reduced_gaussian_brt_gbmStep(myData, responseName, best_parameters,
@@ -162,10 +162,10 @@ find.int$rank.list
 
 #dev.new()
 
-png(paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", "InteractionPlotsBestModel.png"), width = 1200, height = 600)
+png(paste0("04_Modelling/01_benthic/01_BRUVs/02_BRT_abundance_BRUVS/BRT_Outputs/", "InteractionPlotsBestModel.png"), width = 1200, height = 600)
 
 par(mfrow=c(1,2))
-dismo::gbm.perspec(mod_best_gbmStep_reduced, 5, 2, z.range=c(0,2))
+dismo::gbm.perspec(mod_best_gbmStep_reduced, 1, 2, z.range=c(0,2))
 dismo::gbm.perspec(mod_best_gbmStep_reduced, 1, 3, z.range=c(1,3.5))
 
 dev.off()
@@ -175,7 +175,7 @@ par(mfrow=c(1,1))
 
 
 
-png(paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/", "InteractionPlotsBestModelDismo.png"), width = 1200, height = 600)
+png(paste0("04_Modelling/01_benthic/01_BRUVs/02_BRT_abundance_BRUVS/BRT_Outputs/", "InteractionPlotsBestModelDismo.png"), width = 1200, height = 600)
 
 dismo::gbm.plot(mod_best_gbmStep_reduced, n.plots=5, plot.layout=c(3, 2), write.title = FALSE)
 
@@ -184,7 +184,7 @@ dev.off()
 
 
 gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1))
-gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,6),level.plot=FALSE)
+gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,2),level.plot=FALSE)
 
 
 
@@ -200,29 +200,33 @@ rast <- stack(df)
 
 
 # Predict based on reduced model
-pred_fish = predict_brt(mod_best_gbmStep_reduced, "poisson", responseName,
+pred_fish = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
                         preds = var_sup5_best_fixed, rast)
 
 plot(pred_fish)
 
-bruvs_richness_predict <- as.data.frame(pred_fish, xy=TRUE)
+bruvs_abundance_predict <- as.data.frame(pred_fish, xy=TRUE)
 
-bruvs_richness_predict <- bruvs_richness_predict %>% filter(!is.na(layer))
+bruvs_abundance_predict <- bruvs_abundance_predict %>% filter(!is.na(layer))
 
-names(bruvs_richness_predict) <- c("x", "y", "bruvs_abundance")
+names(bruvs_abundance_predict) <- c("x", "y", "bruvs_abundance")
 
-bruvs_richness_predict <- cbind(bruvs_richness_predict, df_benthic[,-c(1,2)])
+bruvs_abundance_predict$bruvs_abundance <- exp(bruvs_abundance_predict$bruvs_abundance)+1
 
-save(bruvs_richness_predict, file="04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/bruvs_abundance_predict.rdata")   
+bruvs_abundance_predict <- cbind(bruvs_abundance_predict, df_benthic[,-c(1,2)])
+
+save(bruvs_abundance_predict, file="04_Modelling/01_benthic/01_BRUVs/02_BRT_abundance_BRUVS/BRT_Outputs/bruvs_abundance_predict.rdata")   
 
 
-df <- bruvs_richness_predict[,1:3]
+df <- bruvs_abundance_predict[,1:3]
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
-raster_bruvs_richness_predict <- raster(df)
-plot(raster_bruvs_richness_predict)
+raster_bruvs_abundance_predict <- raster(df)
+projection(raster_bruvs_abundance_predict) <- "+proj=utm +zone=58 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+raster_bruvs_abundance_predict <- projectRaster(raster_bruvs_abundance_predict, crs="+proj=longlat +datum=WGS84 +no_defs")
+plot(raster_bruvs_abundance_predict)
 
-writeRaster(raster_bruvs_richness_predict, filename = "04_Modelling/01_benthic/01_BRUVs/01_BRT_abundance_BRUVS/BRT_Outputs/raster_bruvs_abundance_predict.tif", overwrite=TRUE)
+writeRaster(raster_bruvs_abundance_predict, filename = "04_Modelling/01_benthic/01_BRUVs/02_BRT_abundance_BRUVS/BRT_Outputs/raster_bruvs_abundance_predict.tif", overwrite=TRUE)
 
 
 #Stop cluster

@@ -17,7 +17,6 @@ library(doParallel)
 library(dplyr)
 library(here)
 library(raster)
-devtools::load_all() 
 
 
 # creer un repertoire de sortie
@@ -43,13 +42,14 @@ myData$Habitat <- as.factor(myData$Habitat)
 
 myResponse=c("richness")
 
-myPredictor=c("BottomDepth", "TravelTime",
-              "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla",
-              "Salinity", "seafloorTemp", "SuspendedParticulateMatter")
+myPredictor=c("SummitDepth","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
+              "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
+              "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist", "Habitat")
 
-myPredictorNumeric=c("SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
+myPredictorNumeric=c("SummitDepth","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
                      "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
                      "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist")
+
 
 
 
@@ -223,6 +223,8 @@ df <- benthic_motu_predict[,1:3]
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 raster_benthic_motu_predict <- raster(df)
+projection(raster_benthic_motu_predict) <- "+proj=utm +zone=58 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+raster_benthic_motu_predict <- projectRaster(raster_benthic_motu_predict, crs="+proj=longlat +datum=WGS84 +no_defs")
 plot(raster_benthic_motu_predict)
 
 writeRaster(raster_benthic_motu_predict, filename = "04_Modelling/01_benthic/02_eDNA/BRT_Output_edna/raster_benthic_motu_predict.tif")

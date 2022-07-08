@@ -17,7 +17,6 @@ library(doParallel)
 library(dplyr)
 library(here)
 library(raster)
-devtools::load_all() 
 
 
 # creer un repertoire de sortie
@@ -43,13 +42,13 @@ myData$Sampling_Depth <- as.numeric(myData$Sampling_Depth)
 
 myResponse=c("log_acoustic")
 
-myPredictor=c("BottomDepth","TravelTime", "SSTmean","NorthwardVelocity", "Chla",
-              "Salinity","SuspendedParticulateMatter", "Sampling_Depth")
+myPredictor=c("SummitDepth","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime", "Sampling_Depth",
+              "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
+              "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist", "Habitat")
 
-myPredictorNumeric=c("SummitDepth", "SummitRugosity","BottomDepth",
-                     "SSTmean", "EastwardVelocity", "NorthwardVelocity",
+myPredictorNumeric=c("SummitDepth","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime", "Sampling_Depth",
+                     "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
                      "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist")
-
 
 # verifier les correlations entre predicteurs numeriques
 cort = cor(na.omit(myData[,myPredictorNumeric]))
@@ -191,26 +190,46 @@ responseName=myResponse # in case there is only one response variable
   
   
   ### Predict REDUCED BRT on study area
-  load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_pelagic.rdata")
+  load("df_pelagic.rdata")
   
-  rast <- df_pelagic
+  df_pelagic <- df_pelagic %>%
+    filter(!is.na(Sampling_Depth))
+  
+  list_df <- split(df_pelagic, df_pelagic$Sampling_Depth)
+  depth <- unique(df_pelagic$Sampling_Depth)
+  
+  pred_fish <- vector("list", 30)
+  pred_df <- vector("list", 30)
+  
+  pelagic_acoustic_predict <- list_df[[1]][,1:3]
+  pelagic_acoustic_predict$x <- as.factor(pelagic_acoustic_predict$x)
+  pelagic_acoustic_predict$y <- as.factor(pelagic_acoustic_predict$y)
   
   
-  # Predict based on reduced model
-  pred_fish = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
-                          preds = var_sup5_best_fixed, rast)
+  for (i in 1:length(list_df)) {
+    df <- list_df[[i]]
+    coordinates(df) <- ~x+y
+    gridded(df) <- TRUE
+    rast <- stack(df)
+    
+    # Predict based on reduced model
+    pred_fish[[i]] = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
+                                 preds = var_sup5_best_fixed, rast)
+    
+    
+    
+    pred_df[[i]] <- as.data.frame(pred_fish[[i]], xy=TRUE) 
+    pred_df[[i]] <- pred_df[[i]] %>% filter(!is.na(layer))
+    pred_df[[i]]$layer <- exp(pred_df[[i]]$layer)-1
+    names(pred_df[[i]]) <- c("x", "y", paste("depth_", depth[[i]], sep=""))
+    
+    pred_df[[i]]$x <- as.factor(pred_df[[i]]$x)
+    pred_df[[i]]$y <- as.factor(pred_df[[i]]$y)
+    
+    pelagic_acoustic_predict <- left_join(pelagic_acoustic_predict, pred_df[[i]], by=c("x","y"))
+  }
   
-  plot(pred_fish)
+  save(pelagic_acoustic_predict, file="BRT_Output_acoustic/pelagic_acoustic_predict.rdata")
   
-  # Map prediction
-  map_brt_prediction(pred_fish, responseName, "gaussian")
-  
-  map_brt_prediction_exp_transf(pred_fish, responseName, "gaussian")
-  
-  map_brt_prediction_quantile_cols(pred_fish, responseName, "gaussian")
-  
- # } ### BOUCLE de FOR
-
-
 #Stop cluster
 stopCluster(cl)

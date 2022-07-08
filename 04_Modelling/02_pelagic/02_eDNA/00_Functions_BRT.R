@@ -36,7 +36,7 @@ optimize_gaussian_brts <- function(tree.com, learn, bag.f, data_brts, responseNa
   k1 = dismo::gbm.step(data = data_brts2,
                        gbm.x = myPredictor_brts,
                        gbm.y = col_response,
-                       family = "poisson",
+                       family = "gaussian",
                        tree.complexity = tree.com,
                        learning.rate = learn,
                        bag.fraction = bag.f,
@@ -152,13 +152,13 @@ fit_best_gaussian_brt_fixed <- function(data_brts, responseName_brts, best_param
   
   tbmod = dismo::gbm.fixed(data = data_brts2, gbm.x = myPredictor_brts,
                            gbm.y = col_response,
-                           family = "poisson",
+                           family = "gaussian",
                            tree.complexity = as.numeric(best_params[,2]),
                            learning.rate = as.numeric(best_params[,3]),
                            bag.fraction = as.numeric(best_params[,10]),
                            n.trees = as.numeric(best_params[,4]))
   
-  save(tbmod, file = paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", "best_fixed_poisson_brt_", responseName_brts, ".RData"))
+  save(tbmod, file = paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", "best_fixed_gaussian_brt_", responseName_brts, ".RData"))
   
   return(tbmod)
 }
@@ -216,13 +216,13 @@ fit_best_reduced_gaussian_brt_fixed <- function(data_brts, responseName_brts,  b
   #fit model with fixed number of trees
   tbmod = dismo::gbm.fixed(data = data_brts2, gbm.x = as.character(preds),
                            gbm.y = col_response,
-                           family = "poisson",
+                           family = "gaussian",
                            tree.complexity = as.numeric(best_params[,2]),
                            learning.rate = as.numeric(best_params[,3]),
                            bag.fraction = as.numeric(best_params[,10]),
                            n.trees = as.numeric(best_params[,4]))
   
-  save(tbmod, file = paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", "best_fixed_reduced_poisson_brt_", responseName_brts, ".RData"))
+  save(tbmod, file = paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", "best_fixed_reduced_gaussian_brt_", responseName_brts, ".RData"))
   
   return(tbmod)
 }
@@ -260,7 +260,7 @@ fit_best_reduced_gaussian_brt_gbmStep <- function(data_brts, responseName_brts, 
   #fit model with step-variable number of trees
   tbmod = dismo::gbm.step(data = data_brts2, gbm.x = as.character(preds),
                            gbm.y = col_response,
-                           family = "poisson",
+                           family = "gaussian",
                            tree.complexity = as.numeric(best_params[,2]),
                            learning.rate = as.numeric(best_params[,3]),
                            bag.fraction = as.numeric(best_params[,10]),
@@ -290,8 +290,8 @@ fit_best_reduced_gaussian_brt_gbmStep <- function(data_brts, responseName_brts, 
                               tbmod$cv.statistics$correlation.se))
  
 
-  write.csv(list(BestModel = k.out),file=paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", "final_results_mod_best_gbmStep_reduced_", responseName_brts, "_poisson_", ".csv"))
-  save(tbmod, file = paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", "best_gbmStep_reduced_poisson_brt_", responseName_brts, ".RData"))
+  write.csv(list(BestModel = k.out),file=paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", "final_results_mod_best_gbmStep_reduced_", responseName_brts, "_gaussian_", ".csv"))
+  save(tbmod, file = paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", "best_gbmStep_reduced_gaussian_brt_", responseName_brts, ".RData"))
   
   return(tbmod)
 }
@@ -464,7 +464,7 @@ predict_brt <- function(model, distrib, species, preds, shp_rast){
 map_brt_prediction <- function(prediction, species, distrib){
   
   png(here::here(paste0("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/", distrib, "_map_brt_prediction_", species,".png")), width = 960, height = 480)
-  if (distrib == "poisson"){
+  if (distrib == "gaussian"){
     raster::plot(prediction, main=paste0('BRT prediction ', species, ' (LOG biomass (kg))'), col = viridisLite::viridis(10))
     }else{
     raster::plot(prediction, main=paste0('BRT prediction ', species, ' (nb individuals)'), col = viridisLite::viridis(10))

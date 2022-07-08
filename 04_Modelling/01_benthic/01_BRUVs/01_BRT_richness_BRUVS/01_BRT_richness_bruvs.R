@@ -17,7 +17,7 @@ library(doParallel)
 library(dplyr)
 library(here)
 library(raster)
-devtools::load_all() 
+
 
 
 # creer un repertoire de sortie
@@ -41,10 +41,11 @@ myData$Habitat <- as.factor(myData$Habitat)
 
 myResponse=c("richness_tot")
 
-myPredictor=c("SummitRugosity","BottomDepth", "TravelTime",
-              "SSTmean","Chla", "Salinity", "seafloorTemp")
+myPredictor=c("SummitDepth","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
+              "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
+              "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist", "Habitat")
 
-myPredictorNumeric=c("SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
+myPredictorNumeric=c("SummitDepth","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
                      "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
                      "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist")
 
@@ -164,7 +165,7 @@ find.int$rank.list
 png(paste0("04_Modelling/01_benthic/01_BRUVs/01_BRT_richness_BRUVS/BRT_Outputs/", "InteractionPlotsBestModel.png"), width = 1200, height = 600)
 
 par(mfrow=c(1,2))
-dismo::gbm.perspec(mod_best_gbmStep_reduced, 5, 2, z.range=c(0,2))
+dismo::gbm.perspec(mod_best_gbmStep_reduced, 4, 2, z.range=c(0,2))
 dismo::gbm.perspec(mod_best_gbmStep_reduced, 1, 3, z.range=c(1,3.5))
 
 dev.off()
@@ -183,7 +184,7 @@ dev.off()
 
 
 gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1))
-gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,6),level.plot=FALSE)
+gbm::plot.gbm(mod_best_gbmStep_reduced, i.var=c(1,2),level.plot=FALSE)
 
 
 
@@ -196,6 +197,7 @@ df <- df_benthic
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 rast <- stack(df)
+
 
 
 # Predict based on reduced model
@@ -219,6 +221,8 @@ df <- bruvs_richness_predict[,1:3]
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 raster_bruvs_richness_predict <- raster(df)
+projection(raster_bruvs_richness_predict) <- "+proj=utm +zone=58 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+raster_bruvs_richness_predict <- projectRaster(raster_bruvs_richness_predict, crs="+proj=longlat +datum=WGS84 +no_defs")
 plot(raster_bruvs_richness_predict)
 
 writeRaster(raster_bruvs_richness_predict, filename = "04_Modelling/01_benthic/01_BRUVs/01_BRT_richness_BRUVS/BRT_Outputs/raster_bruvs_richness_predict.tif", overwrite=TRUE)

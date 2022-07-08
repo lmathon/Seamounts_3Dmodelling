@@ -1,0 +1,9 @@
+"","BestModel.BestGbmStep","BestModel.Value"
+"1","TreeComplexity",5
+"2","LearningRate",0.001
+"3","n.trees",2475
+"4","deviance",1.10685018614478
+"5","cv.deviance.mean",1.72264924109944
+"6","cv.deviance.se",0.356054576092419
+"7","cv.correlation.mean",0.715238664299893
+"8","cv.correlation.se",0.0313343007320866

@@ -17,7 +17,6 @@ library(doParallel)
 library(dplyr)
 library(here)
 library(raster)
-devtools::load_all() 
 
 
 # creer un repertoire de sortie
@@ -43,14 +42,13 @@ myData$Sampling_Depth <- as.numeric(myData$Sampling_Depth)
 
 myResponse=c("log_richness")
 
-myPredictor=c("SummitRugosity","BottomDepth",
-              "EastwardVelocity", "NorthwardVelocity", "Sampling_Depth",
-              "Salinity", "seafloorTemp", "LandMinDist")
+myPredictor=c("SummitDepth","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime", "Sampling_Depth",
+              "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
+              "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist", "Habitat")
 
-myPredictorNumeric=c("SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
+myPredictorNumeric=c("SummitDepth","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime", "Sampling_Depth",
                      "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
                      "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist")
-
 
 
 # verifier les correlations entre predicteurs numeriques
@@ -107,7 +105,7 @@ par_output =  foreach(i = tree.complexity, .packages=c("foreach")) %dopar% {
 
 
 # extract best brts parameters
-best_parameters = extract_best_parameters_par(par_output, responseName, "poisson")
+best_parameters = extract_best_parameters_par(par_output, responseName, "gaussian")
 best_parameters
 
 
@@ -121,7 +119,7 @@ names(mod_best_fixed)
 mod_best_fixed$contributions
 
 # Make plot of variable contributions best fixed model
-make_contribution_reduced_plot(mod_best_fixed, responseName, "poisson")
+make_contribution_reduced_plot(mod_best_fixed, responseName, "gaussian")
 
 
 # Get variables with contributions > 5%
@@ -140,10 +138,10 @@ mod_best_fixed_reduced$contributions
 mod_best_fixed_reduced$var.names
 
 # Make plot of variable contributions reduced model
-make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "poisson")
+make_contribution_reduced_plot(mod_best_fixed_reduced, responseName, "gaussian")
 
 # Partial dependance plots reduced model
-partial_dependance_plots3(mod_best_fixed_reduced, responseName, "poisson")
+partial_dependance_plots3(mod_best_fixed_reduced, responseName, "gaussian")
 
 # Refit a gbmStep after dropping predictors with contributions < 5%
 mod_best_gbmStep_reduced = fit_best_reduced_gaussian_brt_gbmStep(myData, responseName, best_parameters,
@@ -216,7 +214,7 @@ for (i in 1:length(list_df)) {
   rast <- stack(df)
   
   # Predict based on reduced model
-  pred_fish[[i]] = predict_brt(mod_best_gbmStep_reduced, "poisson", responseName,
+  pred_fish[[i]] = predict_brt(mod_best_gbmStep_reduced, "gaussian", responseName,
                           preds = var_sup5_best_fixed, rast)
  
   

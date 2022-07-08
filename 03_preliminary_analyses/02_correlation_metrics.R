@@ -19,6 +19,8 @@ all <- left_join(bruvs, edna_richness_benthic)
 
 # correlation eDNA richness / BRUVS richness
 
+cor.test(all$Richness, all$richness_tot, method = "spearman")
+
 lm1 <- lm(all$Richness~all$richness_tot)
 summary(lm1)
 plot1 <- ggplot(all)+
@@ -33,6 +35,8 @@ plot1 <- ggplot(all)+
         axis.title.x = element_text(size=9))
 
 # correlation BRUVS abundance / BRUVS richness
+
+cor.test(all$Richness, all$abundance_tot, method = "spearman")
 
 lm2 <- lm(all$Richness~all$abundance_tot)
 summary(lm2)
@@ -50,6 +54,8 @@ plot2 <- ggplot(all)+
 
 # correlation BRUVS biomass / BRUVS richness
 
+cor.test(all$Richness, all$biomass_tot, method = "spearman")
+
 lm3 <- lm(all$Richness~all$biomass_tot)
 summary(lm3)
 plot3 <- ggplot(all)+
@@ -64,6 +70,8 @@ plot3 <- ggplot(all)+
         axis.title.x = element_text(size=9))
 
 # correlation BRUVS biomass / BRUVS abundance
+
+cor.test(all$abundance_tot, all$biomass_tot, method = "spearman")
 
 lm4 <- lm(all$abundance_tot~all$biomass_tot)
 summary(lm4)

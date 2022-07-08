@@ -17,7 +17,6 @@ library(doParallel)
 library(dplyr)
 library(here)
 library(raster)
-devtools::load_all() 
 
 
 # creer un repertoire de sortie
@@ -42,9 +41,11 @@ myData$Habitat <- as.factor(myData$Habitat)
 
 myResponse=c("Log_biomass")
 
-myPredictor=c("BottomDepth", "TravelTime","SSTmax", "Salinity", "seafloorTemp", "SuspendedParticulateMatter")
+myPredictor=c("SummitDepth","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
+              "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
+              "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist", "Habitat")
 
-myPredictorNumeric=c("SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
+myPredictorNumeric=c("SummitDepth","SummitAreaKm2", "SummitRugosity","BottomDepth", "TravelTime",
                      "SSTmean", "SSTmax", "EastwardVelocity", "NorthwardVelocity", "Chla", "ReefMinDist",
                      "Salinity", "seafloorTemp", "SuspendedParticulateMatter", "LandMinDist")
 
@@ -222,6 +223,8 @@ df <- bruvs_biomass_predict[,1:3]
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 raster_bruvs_biomass_predict <- raster(df)
+projection(raster_bruvs_biomass_predict) <- "+proj=utm +zone=58 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+raster_bruvs_biomass_predict <- projectRaster(raster_bruvs_biomass_predict, crs="+proj=longlat +datum=WGS84 +no_defs")
 plot(raster_bruvs_biomass_predict)
 
 raster_bruvs_biomass_predict <- raster_bruvs_biomass_predict/1000
