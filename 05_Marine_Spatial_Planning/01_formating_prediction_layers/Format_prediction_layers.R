@@ -335,9 +335,9 @@ df_200_400 <- df_all %>%
 df_400_600 <- df_all %>%
   filter(layer==600)
 
-df_0_200 <- df_0_200[,-51]
-df_200_400 <- df_200_400[,-51]
-df_400_600 <- df_400_600[,-51]
+df_0_200 <- df_0_200[,-10]
+df_200_400 <- df_200_400[,-10]
+df_400_600 <- df_400_600[,-10]
 
 save(df_0_200, file = "05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_0_200.rdata")
 save(df_200_400, file = "05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_200_400.rdata")

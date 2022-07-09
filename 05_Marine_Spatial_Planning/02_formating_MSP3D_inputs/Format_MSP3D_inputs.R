@@ -12,6 +12,7 @@ library(sf)
 load("05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_0_200.rdata")
 load("05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_200_400.rdata")
 load("05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_400_600.rdata")
+
 # load df_pelagic for full spatial extent
 load("02_formating_data/00_Prediction_raster/Raster_df_predictions/df_pelagic.rdata")
 df_pelagic <- df_pelagic %>% filter(Sampling_Depth==20)
