@@ -10,6 +10,8 @@ library(scales)
 
 load("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/benthic_acoustic_predict.rdata")
 
+benthic_acoustic_predict$acoustic_predict[benthic_acoustic_predict$acoustic_predict<0] <- 0
+
 # 0-200
 benthic_acoustic_0_200 <- benthic_acoustic_predict %>%
   filter(BottomDepth <= 200)
@@ -169,7 +171,9 @@ pelagic_motu_0_200 <- pelagic_motu_predict[,c(1,2,4:13)]
 pelagic_motu_0_200$pelagic_motus <- rowMeans(pelagic_motu_0_200[,3:12], na.rm=TRUE)
 
 pelagic_motu_0_200 <- pelagic_motu_0_200 %>% dplyr::select(x,y,pelagic_motus)
+pelagic_motu_0_200$x <- as.character(pelagic_motu_0_200$x)
 pelagic_motu_0_200$x <- as.numeric(pelagic_motu_0_200$x)
+pelagic_motu_0_200$y <- as.character(pelagic_motu_0_200$y)
 pelagic_motu_0_200$y <- as.numeric(pelagic_motu_0_200$y)
 
 df <- pelagic_motu_0_200
@@ -186,7 +190,9 @@ pelagic_motu_200_400 <- pelagic_motu_predict[,c(1,2,14:23)]
 pelagic_motu_200_400$pelagic_motus <- rowMeans(pelagic_motu_200_400[,3:12], na.rm=TRUE)
 
 pelagic_motu_200_400 <- pelagic_motu_200_400 %>% dplyr::select(x,y,pelagic_motus)
+pelagic_motu_200_400$x <- as.character(pelagic_motu_200_400$x)
 pelagic_motu_200_400$x <- as.numeric(pelagic_motu_200_400$x)
+pelagic_motu_200_400$y <- as.character(pelagic_motu_200_400$y)
 pelagic_motu_200_400$y <- as.numeric(pelagic_motu_200_400$y)
 
 df <- pelagic_motu_200_400
@@ -203,7 +209,9 @@ pelagic_motu_400_600 <- pelagic_motu_predict[,c(1,2,24:33)]
 pelagic_motu_400_600$pelagic_motus <- rowMeans(pelagic_motu_400_600[,3:12], na.rm=TRUE)
 
 pelagic_motu_400_600 <- pelagic_motu_400_600 %>% dplyr::select(x,y,pelagic_motus)
+pelagic_motu_400_600$x <- as.character(pelagic_motu_400_600$x)
 pelagic_motu_400_600$x <- as.numeric(pelagic_motu_400_600$x)
+pelagic_motu_400_600$y <- as.character(pelagic_motu_400_600$y)
 pelagic_motu_400_600$y <- as.numeric(pelagic_motu_400_600$y)
 
 df <- pelagic_motu_400_600
@@ -225,7 +233,9 @@ pelagic_acoustic_0_200 <- pelagic_acoustic_predict[,c(1,2,4:13)]
 pelagic_acoustic_0_200$pelagic_acoustic <- rowSums(pelagic_acoustic_0_200[,3:12], na.rm=TRUE)
 
 pelagic_acoustic_0_200 <- pelagic_acoustic_0_200 %>% dplyr::select(x,y,pelagic_acoustic)
+pelagic_acoustic_0_200$x <- as.character(pelagic_acoustic_0_200$x)
 pelagic_acoustic_0_200$x <- as.numeric(pelagic_acoustic_0_200$x)
+pelagic_acoustic_0_200$y <- as.character(pelagic_acoustic_0_200$y)
 pelagic_acoustic_0_200$y <- as.numeric(pelagic_acoustic_0_200$y)
 
 df <- pelagic_acoustic_0_200
@@ -242,7 +252,9 @@ pelagic_acoustic_200_400 <- pelagic_acoustic_predict[,c(1,2,14:23)]
 pelagic_acoustic_200_400$pelagic_acoustic <- rowSums(pelagic_acoustic_200_400[,3:12], na.rm=TRUE)
 
 pelagic_acoustic_200_400 <- pelagic_acoustic_200_400 %>% dplyr::select(x,y,pelagic_acoustic)
+pelagic_acoustic_200_400$x <- as.character(pelagic_acoustic_200_400$x)
 pelagic_acoustic_200_400$x <- as.numeric(pelagic_acoustic_200_400$x)
+pelagic_acoustic_200_400$y <- as.character(pelagic_acoustic_200_400$y)
 pelagic_acoustic_200_400$y <- as.numeric(pelagic_acoustic_200_400$y)
 
 df <- pelagic_acoustic_200_400
@@ -259,7 +271,9 @@ pelagic_acoustic_400_600 <- pelagic_acoustic_predict[,c(1,2,24:33)]
 pelagic_acoustic_400_600$pelagic_acoustic <- rowSums(pelagic_acoustic_400_600[,3:12], na.rm=TRUE)
 
 pelagic_acoustic_400_600 <- pelagic_acoustic_400_600 %>% dplyr::select(x,y,pelagic_acoustic)
+pelagic_acoustic_400_600$x <- as.character(pelagic_acoustic_400_600$x)
 pelagic_acoustic_400_600$x <- as.numeric(pelagic_acoustic_400_600$x)
+pelagic_acoustic_400_600$y <- as.character(pelagic_acoustic_400_600$y)
 pelagic_acoustic_400_600$y <- as.numeric(pelagic_acoustic_400_600$y)
 
 df <- pelagic_acoustic_400_600

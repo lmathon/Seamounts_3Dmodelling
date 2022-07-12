@@ -161,8 +161,8 @@ plot_0.1 <- ggplot(sol_2d_data) +
 
 plot_total <- ggarrange(plot_0, plot_0.001, plot_0.1, nrow = 3, ncol = 1, labels=c("A", "B", "C"))
 
-ggsave(plot_total, filename = "06_Figures/plot_planification_map.png", width = 14, height = 9)
-ggsave(plot_total, filename = "06_Figures/plot_planification_map.pdf", width = 14, height = 9)
+ggsave(plot_total, filename = "06_Figures/plot_planification_map.png", width = 8, height = 13.5)
+ggsave(plot_total, filename = "06_Figures/plot_planification_map.pdf", width = 8, height = 13.5)
 
 
 

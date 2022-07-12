@@ -42,7 +42,7 @@ for (i in 1:length(blmval)){
     add_boundary_penalties(blmval[[i]],0.5,data=bound_data) %>%
     add_binary_decisions()%>%
     #add_contiguity_constraints()%>%
-    add_gurobi_solver(gap=0.01, threads = 1)
+    add_gurobi_solver(gap=0.01, threads = 5)
   
   # generate a solution
   solution <- solve(problem)
