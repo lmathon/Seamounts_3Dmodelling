@@ -12,4 +12,4 @@
 02_formating_data/00_Prediction_raster/Raster_df_predictions/df_pelagic.rdata
 06_Figures/Rdata/*
 04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/best_gbmStep_reduced_gaussian_brt_log_acoustic.RData
-04_Modelling/02_pelagic/02_eDNA/GJAM_Output_edna/predictions.rdata
+04_Modelling/02_pelagic/02_eDNA/02_GJAM_eDNA/GJAM_Output_edna/predictions.rdata

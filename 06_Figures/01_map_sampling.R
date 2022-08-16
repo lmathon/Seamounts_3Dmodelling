@@ -66,20 +66,24 @@ world <- st_read("c://Users/mathon/Desktop/PhD/Projets/Megafauna/Carto_megafauna
 
 map_global <- ggplot()+
   geom_sf(aes(), data = world, fill = "white", col="black") +
-  geom_tile(data=filter(test_df, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  geom_tile(data=filter(test_df, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = T)+
   scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
   geom_sf(aes(col = sites$Habitat), size=4, data= sites$coords, shape=19, show.legend = F)+
   geom_text_repel(data = sites, aes(x=Longitude, y=Latitude, label = id),size=4, min.segment.length = 0.2, force = 2, max.overlaps=20) +
   scale_color_manual(values=c("#FDE725FF", "#B40F20", "#20A387FF", "#440154FF"))+
   coord_sf(xlim = c(158.1504, 171.7728), ylim = c(-25.632, -17.856))+
-  labs(x="", y="")+
+  labs(x="", y="", fill="Seafloor\ndepth (m)")+
+  guides(col=FALSE)+
   theme_minimal()+
-  theme(legend.position = "bottom",
+  theme(legend.position = "right",
         legend.title = element_text(size=10),
         legend.text = element_text(size=10),
-        legend.key.height = unit(3, "mm"),
+        legend.key.height = unit(10, "mm"),
+        legend.key.width = unit(4, "mm"),
         panel.grid.major = element_blank(),panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", size=1, fill=NA))
+  
+
 
 save(map_global, file = "06_Figures/Rdata/global.rdata")
 ggsave(map_global, filename="06_Figures/Rdata/global.png")
@@ -98,14 +102,14 @@ colnames(df1) <- c("value", "x", "y")
 
 
 site1 <- ggplot()+
-  geom_tile(data=filter(df1, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  geom_tile(data=filter(df1, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = T)+
   scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
   geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_1$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#FDE725FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#FDE725FF", show.legend = F)+
   coord_sf(xlim = c(165.80,166.28), ylim = c(-22.23,-21.89))+
-  labs(x="", y="")+
+  labs(x="", y="", fill="Seafloor depth (m)")+
   theme_minimal()+
   theme(legend.position = "bottom",
         legend.title = element_text(size=10),
@@ -270,7 +274,7 @@ site6 <- ggplot()+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#440154FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#440154FF", show.legend = F)+
   coord_sf(xlim = c(167.596,167.862), ylim = c(-23.734,-23.55))+
-  labs(x="", y="")+
+  labs(x="", y="", fill="Seafloor depth (m)")+
   theme_minimal()+
   theme(legend.position = "bottom",
         legend.title = element_text(size=10),
@@ -603,7 +607,7 @@ ggsave(site15, filename="06_Figures/Rdata/site15.png")
 ##################################################################
 # Assemble figure 1
 
-site1_6 <- ggarrange(site1, site6, ncol=2, labels = c("B", "C"))
+site1_6 <- ggarrange(site1, site6, ncol=2, labels = c("B", "C"), common.legend = T, legend = "bottom")
 
 fig1 <- ggarrange(map_global, site1_6, nrow=2, labels = c("A", "", ""), heights = c(1.2, 1))
 

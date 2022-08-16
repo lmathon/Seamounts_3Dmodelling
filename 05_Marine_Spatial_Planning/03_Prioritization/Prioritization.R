@@ -21,7 +21,7 @@ cl = makeCluster(5)
 registerDoParallel(cl)
 
 blmval = c(0, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10)
-targets =c(0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3)
+targets =c(rep(0.3, 52))
 
 hierarchical_results <- data.frame(blmval=numeric(length(blmval)), total_boundary_length=numeric(length(blmval)), total_cost=numeric(length(blmval)))
 
