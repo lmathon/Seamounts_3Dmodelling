@@ -36,7 +36,7 @@ ml <- list(ng = 2500, burnin = 500, typeNames = types)
 gjam <- gjam(formula = formula, xdata = bruvs_var, ydata = bruvs_species, modelList= ml )
 
 # outputs model
-plotPars = list(GRIDPLOTS=T, SAVEPLOTS = T)
+plotPars = list(GRIDPLOTS=T, SAVEPLOTS = T, ncluster=2)
 gjamPlot( output = gjam,  plotPars = plotPars)
 
 gjam$fit$DIC
