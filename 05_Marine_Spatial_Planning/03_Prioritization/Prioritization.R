@@ -23,7 +23,8 @@ registerDoParallel(cl)
 blmval = c(0, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10)
 targets =c(rep(0.3, 52))
 
-hierarchical_results <- data.frame(blmval=numeric(length(blmval)), total_boundary_length=numeric(length(blmval)), total_cost=numeric(length(blmval)))
+load("05_Marine_Spatial_Planning/03_Prioritization/Rdata/hierarchical_results.rdata")
+#hierarchical_results <- data.frame(blmval=numeric(length(blmval)), total_boundary_length=numeric(length(blmval)), total_cost=numeric(length(blmval)))
 
 for (i in 1:length(blmval)){
 
@@ -41,8 +42,7 @@ for (i in 1:length(blmval)){
     add_relative_targets(targets) %>%
     add_boundary_penalties(blmval[[i]],0.5,data=bound_data) %>%
     add_binary_decisions()%>%
-    #add_contiguity_constraints()%>%
-    add_gurobi_solver(gap=0.01, threads = 5)
+    add_gurobi_solver(gap=0.02, threads = 5)
   
   # generate a solution
   solution <- solve(problem)
