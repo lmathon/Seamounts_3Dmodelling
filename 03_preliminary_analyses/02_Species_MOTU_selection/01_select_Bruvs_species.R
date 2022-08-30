@@ -64,3 +64,14 @@ for (i in 1:ncol(bruvs_species)) {
 colnames(df_bruvs_species) <- c("Species", "Min abundance", "Max abundance", "Mean abundance")
 
 write.csv(df_bruvs_species, file = "03_preliminary_analyses/02_Species_MOTU_selection/table_bruvs_species.csv", row.names = F)
+
+
+
+species <- data.frame(Species=colnames(bruvs_species))
+species$Species <- gsub("_", " ", species$Species)
+library(rfishbase)
+
+x <- load_taxa(collect=TRUE)
+taxa <- collect(x)
+
+species <- left_join(species, taxa[,c(2,5)])

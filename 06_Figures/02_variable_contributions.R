@@ -14,13 +14,13 @@ BRT_abundance_bruvs <- tbmod$contributions
 load("04_Modelling/01_benthic/01_BRUVs/03_BRT_biomass_BRUVS/BRT_Outputs/best_gbmStep_reduced_gaussian_brt_Log_biomass.RData")
 BRT_biomass_bruvs <- tbmod$contributions
 
-load("04_Modelling/01_benthic/02_eDNA/BRT_Output_edna/best_gbmStep_reduced_poisson_brt_richness.RData")
+load("04_Modelling/01_benthic/02_eDNA/01_BRT_richness_eDNA/BRT_Output_edna/best_gbmStep_reduced_poisson_brt_richness.RData")
 BRT_richness_edna_b <- tbmod$contributions
 
 load("04_Modelling/01_benthic/03_acoustic/BRT_Output_acoustic/best_gbmStep_reduced_gaussian_brt_logAcousticFond.RData")
 BRT_acoustic_biomass_b <- tbmod$contributions
 
-load("04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/best_gbmStep_reduced_gaussian_brt_log_richness.RData")
+load("04_Modelling/02_pelagic/02_eDNA/01_BRT_richness_eDNA/BRT_Output_edna/best_gbmStep_reduced_gaussian_brt_log_richness.RData")
 BRT_richness_edna_p <- tbmod$contributions
 
 load("04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/best_gbmStep_reduced_gaussian_brt_log_acoustic.RData")
