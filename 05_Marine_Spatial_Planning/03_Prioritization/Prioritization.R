@@ -134,7 +134,7 @@ topsis_results <- cbind(hierarchical_results, topsis_results[,2:3])
 save(topsis_results, file="05_Marine_Spatial_Planning/03_Prioritization/Rdata/topsis_results.rdata")         
 write.csv(topsis_results, "05_Marine_Spatial_Planning/03_Prioritization/Rdata/topsis_results.csv", row.names = FALSE)
 
-hierarchical_results$color <- c("black","black","black","#018571","black","black","black","black")
+hierarchical_results$color <- c("black","black","black","black","black","black","#018571","black")
 
 # create plot to visualize trade-offs and show selected candidate prioritization
 result_plot <- ggplot(data = hierarchical_results, aes(x = total_boundary_length, y = total_cost))+

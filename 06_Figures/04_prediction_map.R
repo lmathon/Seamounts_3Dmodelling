@@ -2,6 +2,8 @@ library(raster)
 library(ggplot2)
 library(sf)
 library(scales)
+library(tidyverse)
+library(ggpubr)
 
 
 # load bruvs richness predictions
@@ -10,15 +12,6 @@ load("04_Modelling/01_benthic/01_BRUVs/01_BRT_richness_BRUVS/BRT_Outputs/bruvs_r
 # load land contour
 world <- st_read("c://Users/mathon/Desktop/PhD/Projets/Megafauna/Carto_megafauna/GSHHS_f_L1.shp")
 
-
-# load sites coordinates
-load("00_metadata/bruvs_explanatory_variables.rdata")
-
-sites <- bruvs_var[,c("Site", "Latitude", "Longitude")]
-
-sites <- sites %>%
-  distinct(Site, .keep_all=TRUE)
-sites$coords <- st_as_sf(sites[,c("Longitude", "Latitude")], coords = c("Longitude", "Latitude"), crs=4326)
 
 
 # Cut predictions in 3
@@ -54,8 +47,8 @@ b <- c(0, 5, 10, 15, 20)
 map_predict1 <- ggplot()+
   geom_sf(aes(), data = world, fill = "white", col="grey80") +
   geom_tile(data=filter(test_df1, !is.na(Richness)), aes(x = x, y = y, fill = Richness))+
-  scale_fill_gradientn(limits=c(0,20), colours=terrain.colors(255), breaks=b, labels=format(b), aesthetics = "fill")+
-  geom_sf(col="black", size=1.5, data= sites$coords, shape=19, show.legend = F)+
+  scale_fill_gradientn(limits=c(0,20), colours=rev(terrain.colors(255)), breaks=b, labels=format(b), aesthetics = "fill")+
+  geom_rect(aes(xmin = 162.5, xmax = 164, ymin = -19.7, ymax = -17.7), color = "red", fill = NA)  +
   coord_sf(xlim = c(158.1504, 171.7728), ylim = c(-25.632, -17.856))+
   labs(x="", y="")+
   theme_minimal()+
@@ -86,8 +79,7 @@ colnames(test_df2) <- c("Richness", "x", "y")
 map_predict2 <- ggplot()+
   geom_sf(aes(), data = world, fill = "white", col="grey80") +
   geom_tile(data=filter(test_df2, !is.na(Richness)), aes(x = x, y = y, fill = Richness))+
-  scale_fill_gradientn(limits=c(0,20), colours=terrain.colors(255), breaks=b, labels=format(b), aesthetics = "fill")+
-  geom_sf(col="black", size=1.5, data= sites$coords, shape=19, show.legend = F)+
+  scale_fill_gradientn(limits=c(0,20), colours=rev(terrain.colors(255)), breaks=b, labels=format(b), aesthetics = "fill")+
   coord_sf(xlim = c(158.1504, 171.7728), ylim = c(-25.632, -17.856))+
   labs(x="", y="")+
   theme_minimal()+
@@ -118,8 +110,8 @@ colnames(test_df3) <- c("Richness", "x", "y")
 map_predict3 <- ggplot()+
   geom_sf(aes(), data = world, fill = "white", col="grey80") +
   geom_tile(data=filter(test_df3, !is.na(Richness)), aes(x = x, y = y, fill = Richness))+
-  scale_fill_gradientn(limits=c(0,20), colours=terrain.colors(255), breaks=b, labels=format(b), aesthetics = "fill")+
-  geom_sf(col="black", size=1.5, data= sites$coords, shape=19, show.legend = F)+
+  scale_fill_gradientn(limits=c(0,20), colours=rev(terrain.colors(255)), breaks=b, labels=format(b), aesthetics = "fill")+
+  geom_rect(aes(xmin = 167, xmax = 168.8, ymin = -24, ymax = -22.7), color = "red", fill = NA)  +
   coord_sf(xlim = c(158.1504, 171.7728), ylim = c(-25.632, -17.856))+
   labs(x="", y="")+
   theme_minimal()+
