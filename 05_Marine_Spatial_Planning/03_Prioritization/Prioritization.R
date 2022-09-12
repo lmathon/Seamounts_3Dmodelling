@@ -91,6 +91,9 @@ for (i in 1:length(blmval)){
   
   save(sol_2d_data, file=paste(path,"/sol_2d_data.rdata", sep=""))
   
+  sol_2d_data$surface <- rowSums(sol_2d_data[,2:4])
+  sol_surface <- nrow(as.data.frame(sol_2d_data$surface[sol_2d_data$surface>0]))
+  save(sol_surface, file=paste(path,"/sol_surface.rdata", sep=""))
   
   sol_depth1 <- sol_2d_data %>%
     filter(solution_1_depth_1 == 1)

@@ -88,7 +88,7 @@ map_global <- ggplot()+
 save(map_global, file = "06_Figures/Rdata/global.rdata")
 ggsave(map_global, filename="06_Figures/Rdata/global.png")
 
-
+################################################################################################################################
 
 # map site 1 = noumea
 acoustic_1 <- acoustic %>%
