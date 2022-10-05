@@ -27,6 +27,15 @@ acoustic_var <- acoustic_var %>%
     Site %in% c("Antigonia", "Torche", "Capel", "Fairway","JumeauWest", "Crypthelia", "KaimonMaru", "Argo", "Nova","Stylaster", "IleDesPins", "Eponge") ~ "Seamount"
   ))
 
+acoustic_var$Habitat2 <- acoustic_var$Habitat
+
+acoustic_var <- acoustic_var %>%
+  mutate(Habitat2 = case_when(
+    Site %in% c("Noumea", "PoyaNepoui", "Poum", "GLN") ~ "DeepSlope",
+    Site %in% c("Antigonia", "Torche", "Capel", "Fairway") ~ "Summit50",
+    Site %in% c("JumeauWest", "Crypthelia", "KaimonMaru", "Argo", "Nova") ~ "Summit250",
+    Site %in% c("Nova","Stylaster", "IleDesPins", "Eponge") ~ "Summit500"
+  ))
 
 
 #  transform travel time in hours
@@ -41,7 +50,7 @@ acoustic_var$ShortestDistanceReef=acoustic_var$ShortestDistanceReef/1000
 colnames(acoustic_var) <- c("Longitude","Latitude","Site","Day","Habitat","SummitDepth","ValleyDepth","Height",                      
                             "SummitAreaKm2","SummitRugosity","BottomDepth","SSTmean","SSTmin","SSTmax","SSTsd","Chla",
                             "EastwardVelocity","NorthwardVelocity","Salinity","seafloorTemp",
-                            "SuspendedParticulateMatter","ReefMinDist","LandMinDist","TravelTime")
+                            "SuspendedParticulateMatter","ReefMinDist","LandMinDist", "Habitat2","TravelTime")
 
 
 

@@ -1,7 +1,7 @@
 library(tidyverse)
 
 load("01_Raw_data/Clean_eDNA/Rdata/02-clean-data.Rdata")
-var <- read.csv("01_Raw_data/eDNA_Environmental_Variables_SEAMOUNTS_November2021.csv", sep=",")
+var <- read.csv("01_Raw_data/eDNA_Environmental_Variables_SEAMOUNTS_November2021.csv", sep=";")
 
 var <- var %>%
   filter(Habitat != "Pelagic")
@@ -78,6 +78,8 @@ edna_var$ReefMinDist=edna_var$ReefMinDist.m/1000
 edna_var$LandMinDist=edna_var$LandMinDist.m/1000
 
 # change Habitat variable
+edna_var$Habitat2 <- edna_var$Habitat
+
 edna_var$Habitat <- gsub("Summit500", "Seamount", edna_var$Habitat)
 edna_var$Habitat <- gsub("Summit250", "Seamount", edna_var$Habitat)
 edna_var$Habitat <- gsub("Summit50", "Seamount", edna_var$Habitat)
@@ -86,7 +88,7 @@ edna_var <- edna_var[-c(17,18,25)]
 
 colnames(edna_var) <- c("Station","Site","Latitude","Longitude","Habitat","EastwardVelocity","NorthwardVelocity","Salinity",
                         "SuspendedParticulateMatter","SSTmax","SSTmean","SSTmin","SSTsd","seafloorTemp","Chla","TravelTime",
-                        "SummitDepth","ValleyDepth","Height", "SummitAreaKm2","SummitRugosity","BottomDepth","ReefMinDist","LandMinDist")
+                        "SummitDepth","ValleyDepth","Height", "SummitAreaKm2","SummitRugosity","BottomDepth","ReefMinDist","LandMinDist", "Habitat2")
 
 
 save(edna_var, file="00_metadata/edna_explanatory_variables_benthic.rdata")

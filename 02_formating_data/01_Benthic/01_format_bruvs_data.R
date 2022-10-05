@@ -32,6 +32,8 @@ for (i in 1:nrow(bruvs_var)) {
   }
 }
 
+bruvs_var$Habitat2 <- bruvs_var$Habitat
+
 bruvs_var$Habitat <- gsub("Summit500", "Seamount", bruvs_var$Habitat)
 bruvs_var$Habitat <- gsub("Summit250", "Seamount", bruvs_var$Habitat)
 bruvs_var$Habitat <- gsub("Summit50", "Seamount", bruvs_var$Habitat)
