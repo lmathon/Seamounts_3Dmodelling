@@ -67,19 +67,21 @@ world <- st_read("c://Users/mathon/Desktop/PhD/Projets/Megafauna/Carto_megafauna
 map_global <- ggplot()+
   geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_tile(data=filter(test_df, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = T)+
-  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  scale_fill_gradient2(limits=c(-8000,0), low = 'black', mid="grey30", high = 'white', midpoint=-4000, na.value = NA)+
   geom_sf(aes(col = sites$Habitat), size=4, data= sites$coords, shape=19, show.legend = F)+
   geom_text_repel(data = sites, aes(x=Longitude, y=Latitude, label = id),size=4, min.segment.length = 0.2, force = 2, max.overlaps=20) +
   scale_color_manual(values=c("#FDE725FF", "#B40F20", "#20A387FF", "#440154FF"))+
   coord_sf(xlim = c(158.1504, 171.7728), ylim = c(-25.632, -17.856))+
-  labs(x="", y="", fill="Seafloor\ndepth (m)")+
+  labs(x="", y="", fill="Seafloor depth (m)  \n  ")+
+  ggtitle("A")+
   guides(col=FALSE)+
   theme_minimal()+
-  theme(legend.position = "right",
+  theme(title = element_text(size = 12, face = "bold"),
+        legend.position = "bottom",
         legend.title = element_text(size=10),
         legend.text = element_text(size=10),
-        legend.key.height = unit(10, "mm"),
-        legend.key.width = unit(4, "mm"),
+        legend.key.height = unit(3, "mm"),
+        legend.key.width = unit(15, "mm"),
         panel.grid.major = element_blank(),panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", size=1, fill=NA))
   
@@ -94,7 +96,7 @@ ggsave(map_global, filename="06_Figures/Rdata/global.png")
 acoustic_1 <- acoustic %>%
   filter(Site=="Noumea")
 
-extent <- extent(165.80,166.28,-22.23,-21.89)
+extent <- extent(165.80,166.28,-22.25,-21.91)
 bathy1 <- crop(bathy100, extent)
 spdf1 <- as(bathy1, "SpatialPixelsDataFrame")
 df1 <- as.data.frame(spdf1)
@@ -102,16 +104,18 @@ colnames(df1) <- c("value", "x", "y")
 
 
 site1 <- ggplot()+
-  geom_tile(data=filter(df1, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = T)+
-  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  geom_tile(data=filter(df1, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
+  scale_fill_gradient2(limits=c(-8000,0), low = 'black', mid="grey30", high = 'white', midpoint=-4000, na.value = NA)+
   geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_1$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#FDE725FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#FDE725FF", show.legend = F)+
-  coord_sf(xlim = c(165.80,166.28), ylim = c(-22.23,-21.89))+
-  labs(x="", y="", fill="Seafloor depth (m)")+
+  coord_sf(xlim = c(165.80,166.28), ylim = c(-22.25,-21.91))+
+  labs(x="", y="")+
+  ggtitle("B")+
   theme_minimal()+
-  theme(legend.position = "bottom",
+  theme(title = element_text(size = 12, face = "bold"),
+        legend.position = "bottom",
         legend.title = element_text(size=10),
         legend.text = element_text(size=10),
         legend.key.height = unit(3, "mm"),
@@ -119,7 +123,7 @@ site1 <- ggplot()+
         panel.border = element_rect(colour = "black", size=1, fill=NA))
 
 save(site1, file = "06_Figures/Rdata/site1.rdata")
-ggsave(site1, filename="06_Figures/Rdata/site1.png")
+ggsave(site1, filename="06_Figures/Rdata/site1.png", width = 4, height = 3)
 
 # map site 2 = PoyaNepoui
 
@@ -268,15 +272,18 @@ colnames(df6) <- c("value", "x", "y")
 
 site6 <- ggplot()+
   geom_tile(data=filter(df6, !is.na(value)), aes(x = x, y = y, fill = value), show.legend = F)+
-  scale_fill_gradient(low = 'black', high = 'white',na.value = NA)+
+  scale_fill_gradient2(limits=c(-8000,0), low = 'black', mid="grey30", high = 'white', midpoint=-4000, na.value = NA)+
+  scale_x_continuous(breaks = c(167.6, 167.7, 167.8))+
   geom_sf(aes(), data = world, fill = "white", col="black") +
   geom_sf(size=2, data= acoustic_6$coords, shape=20, col="black", show.legend = F)+
   geom_sf(size=3.5, data= edna$coords, shape=21, col="black", fill="#440154FF", show.legend = F)+
   geom_sf(size=3, data= bruvs$coords, shape=24, col="black", fill="#440154FF", show.legend = F)+
   coord_sf(xlim = c(167.596,167.862), ylim = c(-23.734,-23.55))+
-  labs(x="", y="", fill="Seafloor depth (m)")+
+  labs(x="", y="")+
+  ggtitle("C")+
   theme_minimal()+
-  theme(legend.position = "bottom",
+  theme(title = element_text(size = 12, face = "bold"),
+        legend.position = "bottom",
         legend.title = element_text(size=10),
         legend.text = element_text(size=10),
         legend.key.height = unit(3, "mm"),
@@ -285,7 +292,7 @@ site6 <- ggplot()+
 
 
 save(site6, file = "06_Figures/Rdata/site6.rdata")
-ggsave(site6, filename="06_Figures/Rdata/site6.png")
+ggsave(site6, filename="06_Figures/Rdata/site6.png", width = 4, height = 3)
 
 
 # map site 7 = KaimonMaru
@@ -607,8 +614,37 @@ ggsave(site15, filename="06_Figures/Rdata/site15.png")
 ##################################################################
 # Assemble figure 1
 
-site1_6 <- ggarrange(site1, site6, ncol=2, labels = c("B", "C"), common.legend = T, legend = "bottom")
+site1_6 <- ggarrange(site1, site6, ncol=2, labels = c("B", "C"))
 
-fig1 <- ggarrange(map_global, site1_6, nrow=2, labels = c("A", "", ""), heights = c(1.2, 1))
+fig1 <- ggarrange(map_global, site1_6, nrow=2, labels = c("A", ""), heights = c(1.2, 1), common.legend = T, legend = "bottom")
 
-ggsave(fig1, filename = "06_Figures/Figure1.png", width = 10, height = 10)
+ggsave(fig1, filename = "06_Figures/Figure1_test.png", width = 10, height = 11)
+
+
+
+
+
+
+##################################################################
+# Encart Australie
+
+ZEE <- st_read("c://Users/mathon/Desktop/PhD/Projets/Seamounts/SIG/World_EEZ/eez_boundaries_v11.shp")
+ZEE_NC <- ZEE %>%
+  filter(TERRITORY1=="New Caledonia") %>%
+  filter(LINE_TYPE!="Straight Baseline")
+
+ZEE_contour <- ZEE_NC[6]
+
+
+ggplot()+
+  geom_sf(aes(), data = world, fill = "grey80", col="black") +
+  geom_sf(aes(), data=ZEE_contour, fill=NA, col="red", size=2)+
+  coord_sf(xlim = c(113, 173), ylim = c(-40, -10))+
+  guides(col=FALSE)+
+  theme_minimal()+
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_rect(colour = "black", size=1, fill=NA))
+
