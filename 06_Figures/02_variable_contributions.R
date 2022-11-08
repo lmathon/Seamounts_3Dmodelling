@@ -32,9 +32,9 @@ BRT_acoustic_biomass_p <- tbmod$contributions
 
 var_contrib <- as.data.frame(matrix(nrow=14, ncol=1))
 names(var_contrib) <- "variable"
-var_contrib$variable <- c("Summit_Depth", "Seafloor_Depth", "Sampling_Depth", "Travel_Time", "Distance_Land", 
-                          "Distance_Reef", "SST", "CurrentVelocity", "Seafloor_Temp", "Salinity",
-                          "Summit_Rugosity", "Summit_Area" ,"Suspended_Particulate_Matter", "Chlorophyll_A")
+var_contrib$variable <- c("Summit Depth", "Seafloor Depth", "Sampling Depth", "Travel Time", "Distance Land", 
+                          "Distance Reef", "SST", "Current Velocity", "Seafloor Temp", "Salinity",
+                          "Summit Rugosity", "Summit Area" ,"Suspended Particulate Matter", "Chlorophyll A")
 
 var_contrib$BRUVS_richness_benthic <- c(BRT_richness_bruvs["SummitDepth","rel.inf"],
                                 BRT_richness_bruvs["BottomDepth","rel.inf"],
@@ -154,8 +154,8 @@ save(var_contrib, file="06_Figures/Rdata/var_contrib.rdata")
 
 var_contrib2 <- melt(var_contrib, id="variable")
 names(var_contrib2) <- c("explanatory_variable", "response_variable", "contribution")
-var_contrib2$explanatory_variable2 <- factor(var_contrib2$explanatory_variable, levels = c("Chlorophyll_A", "Suspended_Particulate_Matter", "Summit_Area", "Summit_Rugosity", "CurrentVelocity", "Seafloor_Temp",  "Salinity", "SST", "Distance_Reef", "Distance_Land", "Travel_Time", "Sampling_Depth", "Summit_Depth", "Seafloor_Depth"))
 var_contrib2$response_variable <- gsub("_", " ", var_contrib2$response_variable)
+var_contrib2$explanatory_variable2 <- factor(var_contrib2$explanatory_variable, levels = c("Chlorophyll A", "Suspended Particulate Matter", "Summit Area", "Summit Rugosity", "Current Velocity", "Seafloor Temp",  "Salinity", "SST", "Distance Reef", "Distance Land", "Travel Time", "Sampling Depth", "Summit Depth", "Seafloor Depth"))
 
 var_contrib_facet <- ggplot(data = var_contrib2, 
        aes(x = explanatory_variable2, y = contribution)) +
@@ -179,7 +179,7 @@ var_contrib$Mean_all_models <- rowMeans(var_contrib[,2:8])
 for (i in 1:nrow(var_contrib)) {
   var_contrib[i,"sd_contrib"] <- sd(var_contrib[i,2:8])
 }
-var_contrib$variable2 <- factor(var_contrib$variable, levels = c("Chlorophyll_A", "Suspended_Particulate_Matter", "Summit_Area", "Summit_Rugosity", "CurrentVelocity", "Seafloor_Temp",  "Salinity", "SST", "Distance_Reef", "Distance_Land", "Travel_Time", "Sampling_Depth", "Summit_Depth", "Seafloor_Depth"))
+var_contrib$variable2 <- factor(var_contrib$variable, levels = c("Chlorophyll A", "Suspended Particulate Matter", "Summit Area", "Summit Rugosity", "Current Velocity", "Seafloor Temp",  "Salinity", "SST", "Distance Reef", "Distance Land", "Travel Time", "Sampling Depth", "Summit Depth", "Seafloor Depth"))
 
 mean_contrib <- ggplot(data = var_contrib, 
        aes(x = variable2, y = Mean_all_models)) +

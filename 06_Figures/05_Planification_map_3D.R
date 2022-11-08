@@ -183,5 +183,67 @@ ggsave(plot_total, filename = "06_Figures/plot_planification_map.pdf", width = 8
 
 
 
+#############################################################
+# histograms percentage layers
+
+percent <- read.csv("05_Marine_Spatial_Planning/03_Prioritization/Rdata/percentage_layers.csv", sep=";")
+
+percent$layer <- factor(percent$layer, levels = c("0-200 & 400-600", "200-400 & 400-600", "0-200 & 200-400", "400-600", "200-400", "0-200", "all"))
+
+percent$color <- as.factor(percent$color)
+
+ggplot(percent)+
+  geom_col(aes(x=layer, y=blm0), fill=percent$color, width = 0.5)+
+  coord_flip()+
+  ylim(0,80)+
+  labs(x="", y="")+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        axis.text = element_text(size = 12),
+        axis.ticks = element_blank())
+ggsave(file="06_Figures/Rdata/blm0.jpeg", width = 5.5, height = 4)
+  
+ggplot(percent)+
+  geom_col(aes(x=layer, y=blm1), fill=percent$color, width = 0.5)+
+  coord_flip()+
+  ylim(0,80)+
+  labs(x="", y="")+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        axis.text = element_text(size = 12),
+        axis.ticks = element_blank())
+ggsave(file="06_Figures/Rdata/blm1.jpeg", width = 5.5, height = 4)
 
 
+
+habitat <-data.frame(habitat=c("Seamounts", "Deep slopes"), blm0=c(45.1,54.9), blm1=c(53.2,46.8), color=c("grey80", "white"))
+
+ggplot(habitat)+
+  geom_col(aes(x=habitat, y=blm0), fill=habitat$color, col="black", width = 0.5)+
+  coord_flip()+
+  ylim(0,80)+
+  labs(x="", y="")+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        axis.text = element_text(size = 14),
+        axis.ticks = element_blank())
+ggsave(file="06_Figures/Rdata/blm0_hab.jpeg", width = 5.5, height = 2)
+
+ggplot(habitat)+
+  geom_col(aes(x=habitat, y=blm1), fill=habitat$color, col="black", width = 0.5)+
+  coord_flip()+
+  ylim(0,80)+
+  labs(x="", y="")+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        axis.text = element_text(size = 14),
+        axis.ticks = element_blank())
+ggsave(file="06_Figures/Rdata/blm1_hab.jpeg", width = 5.5, height = 2)
