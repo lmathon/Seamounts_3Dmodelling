@@ -233,3 +233,16 @@ responseName=myResponse # in case there is only one response variable
   
 #Stop cluster
 stopCluster(cl)
+
+
+
+df <- pelagic_acoustic_predict[,c(1,2,4:33)]
+df[,c(1,2)] <- as.character(unlist(df[,c(1,2)]))
+df[,c(1,2)] <- as.numeric(unlist(df[,c(1,2)]))
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_pred <- stack(df)
+
+raster_pred <- rast(raster_pred)
+
+terra::writeRaster(raster_pred,"04_Modelling/02_pelagic/01_acoustic/BRT_Output_acoustic/raster_pelagic_acoustic_predict.tif")

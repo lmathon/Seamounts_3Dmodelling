@@ -25,51 +25,6 @@ save(bathy_sf, file="06_Figures/Rdata/bathy_sf.rdata")
 ######################################################################################
 # load prioritization data
 
-# blm=0.001
-load("05_Marine_Spatial_Planning/03_Prioritization/Solution_blm_0.001/sol_2d_data.rdata")
-
-data <- as.data.frame(sol_2d_data)
-data$color <- NA
-for (i in 1:nrow(data)) {
-  if((data[i, "solution_1_depth_1"]==1) & (data[i,"solution_1_depth_2"]==0) & (data[i,"solution_1_depth_3"]==0)){
-    data[i,"color"] <- "#FFFF19"
-  }
-  if ((data[i, "solution_1_depth_1"]==0) & (data[i,"solution_1_depth_2"]==1) & (data[i,"solution_1_depth_3"]==0)){
-    data[i,"color"] <- "#8DA2C6"
-  }
-  if((data[i, "solution_1_depth_1"]==0) & (data[i,"solution_1_depth_2"]==0) & (data[i,"solution_1_depth_3"]==1)){
-    data[i,"color"] <- "#FF7373"
-  }
-  if ((data[i, "solution_1_depth_1"]==1) & (data[i,"solution_1_depth_2"]==1) & (data[i,"solution_1_depth_3"]==0)){
-    data[i,"color"] <- "#5A8539"
-  }
-  if ((data[i, "solution_1_depth_1"]==1) & (data[i,"solution_1_depth_2"]==0) & (data[i,"solution_1_depth_3"]==1)){
-    data[i,"color"] <- "#F3670E"
-  }
-  if ((data[i, "solution_1_depth_1"]==0) & (data[i,"solution_1_depth_2"]==1) & (data[i,"solution_1_depth_3"]==1)){
-    data[i,"color"] <- "#CB2C3C"
-  }
-  if ((data[i, "solution_1_depth_1"]==1) & (data[i,"solution_1_depth_2"]==1) & (data[i,"solution_1_depth_3"]==1))
-    data[i,"color"] <- "#8E400D"
-}
-
-count_0.001 <- as.data.frame(table(data$color))
-count_0.001$zone <- c("depth1-2","depth2","all","depth3","depth1")
-
-sol_2d_data$color <- data$color
-
-plot_0.001 <- ggplot(sol_2d_data) +
-  geom_sf(col=sol_2d_data$color)+
-  geom_sf(data = bathy_sf, fill = "grey50", col="grey50")+
-  theme_minimal()+
-  xlab("Longitude")+
-  ylab("Latitude")+
-  ggtitle("BLM = 0.001")+
-  theme(plot.title = element_text(size=12, face="bold"),
-    panel.grid.major = element_blank(),panel.grid.minor = element_blank(),
-        panel.border = element_rect(colour = "black", size=1, fill=NA))
-
-
 
 # blm=0
 load("05_Marine_Spatial_Planning/03_Prioritization/Solution_blm_0/sol_2d_data.rdata")
@@ -247,3 +202,54 @@ ggplot(habitat)+
         axis.text = element_text(size = 14),
         axis.ticks = element_blank())
 ggsave(file="06_Figures/Rdata/blm1_hab.jpeg", width = 5.5, height = 2)
+
+
+
+
+
+
+
+
+# save raster of solutions
+load("05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_0_200.rdata")
+load("05_Marine_Spatial_Planning/03_Prioritization/Solution_blm_0/sol_2d_data.rdata")
+sol0 <- sol_2d_data
+
+df <- sol0[,-1]
+df <- as(df, Class = "Spatial")
+df <- df@data
+df[df==0] <- NA
+
+df <- cbind(df_0_200[,1:2], df)
+df[,c(1,2)] <- as.character(unlist(df[,c(1,2)]))
+df[,c(1,2)] <- as.numeric(unlist(df[,c(1,2)]))
+
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_sol0 <- stack(df)
+raster_sol0 <- rast(raster_sol0)
+
+terra::writeRaster(raster_sol0,"05_Marine_Spatial_Planning/03_Prioritization/Rdata/raster_sol0.tif", overwrite=T)
+terra::plot(raster_sol0, axes=FALSE,axis.args=list( cex.axis=0.7))
+
+
+load("05_Marine_Spatial_Planning/03_Prioritization/Solution_blm_1/sol_2d_data.rdata")
+sol1 <- sol_2d_data
+
+df <- sol1[,-1]
+df <- as(df, Class = "Spatial")
+df <- df@data
+df[df==0] <- NA
+
+df <- cbind(df_0_200[,1:2], df)
+df[,c(1,2)] <- as.character(unlist(df[,c(1,2)]))
+df[,c(1,2)] <- as.numeric(unlist(df[,c(1,2)]))
+
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_sol1 <- stack(df)
+raster_sol1 <- rast(raster_sol1)
+
+terra::writeRaster(raster_sol1,"05_Marine_Spatial_Planning/03_Prioritization/Rdata/raster_sol1.tif", overwrite=T)
+
+terra::plot(raster_sol1, axes=FALSE,axis.args=list( cex.axis=0.7))

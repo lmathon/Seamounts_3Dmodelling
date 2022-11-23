@@ -230,8 +230,21 @@ for (i in 1:length(list_df)) {
   pelagic_motu_predict <- left_join(pelagic_motu_predict, pred_df[[i]], by=c("x","y"))
 }
 
-save(pelagic_motu_predict, file="04_Modelling/02_pelagic/02_eDNA/BRT_Output_edna/pelagic_motu_predict.rdata")
+save(pelagic_motu_predict, file="04_Modelling/02_pelagic/02_eDNA/01_BRT_richness_eDNA/BRT_Output_edna/pelagic_motu_predict.rdata")
 
 
 #Stop cluster
 stopCluster(cl)
+
+
+
+df <- pelagic_motu_predict[,c(1,2,4:33)]
+df[,c(1,2)] <- as.character(unlist(df[,c(1,2)]))
+df[,c(1,2)] <- as.numeric(unlist(df[,c(1,2)]))
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_pred <- stack(df)
+
+raster_pred <- rast(raster_pred)
+
+terra::writeRaster(raster_pred,"04_Modelling/02_pelagic/02_eDNA/01_BRT_richness_eDNA/BRT_Output_edna/raster_pelagic_motu_predict.tif")

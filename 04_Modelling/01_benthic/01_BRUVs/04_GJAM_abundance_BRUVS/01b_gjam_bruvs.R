@@ -5,6 +5,7 @@ library(ecodist)
 library(modelr)
 library(raster)
 library(sp)
+library(terra)
 
 
 ########################################################################################################################################
@@ -118,7 +119,9 @@ df <- predictions[,1:25]
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
 raster_pred <- stack(df)
+raster_pred <- rast(raster_pred)
 
+terra::writeRaster(raster_pred, "04_Modelling/01_benthic/01_BRUVs/04_GJAM_abundance_BRUVS/GJAM_Output_bruvs/raster_bruvs_abundance_GJAM_predict.tif", overwrite=T)
 
 plot(raster_pred, nc=3, nr=8, legend.mar = 2)
 

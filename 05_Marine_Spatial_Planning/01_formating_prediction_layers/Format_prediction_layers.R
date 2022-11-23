@@ -474,3 +474,44 @@ df_400_600 <- df_400_600[,-55]
 save(df_0_200, file = "05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_0_200.rdata")
 save(df_200_400, file = "05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_200_400.rdata")
 save(df_400_600, file = "05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_400_600.rdata")
+
+
+
+#Transform to raster
+
+df <- df_0_200
+df[,c(1,2)] <- as.character(unlist(df[,c(1,2)]))
+df[,c(1,2)] <- as.numeric(unlist(df[,c(1,2)]))
+
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_0_200 <- stack(df)
+raster_0_200 <- rast(raster_0_200)
+
+terra::writeRaster(raster_0_200,"05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/raster_predictions_0_200.tif", overwrite=T)
+
+
+
+df <- df_200_400
+df[,c(1,2)] <- as.character(unlist(df[,c(1,2)]))
+df[,c(1,2)] <- as.numeric(unlist(df[,c(1,2)]))
+
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_200_400 <- stack(df)
+raster_200_400 <- rast(raster_200_400)
+
+terra::writeRaster(raster_200_400,"05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/raster_predictions_200_400.tif", overwrite=T)
+
+
+
+df <- df_400_600
+df[,c(1,2)] <- as.character(unlist(df[,c(1,2)]))
+df[,c(1,2)] <- as.numeric(unlist(df[,c(1,2)]))
+
+coordinates(df) <- ~x+y
+gridded(df) <- TRUE
+raster_400_600 <- stack(df)
+raster_400_600 <- rast(raster_400_600)
+
+terra::writeRaster(raster_400_600,"05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/raster_predictions_400_600.tif", overwrite=T)
