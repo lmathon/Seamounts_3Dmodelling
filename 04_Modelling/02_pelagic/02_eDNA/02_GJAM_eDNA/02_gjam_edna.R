@@ -1,5 +1,7 @@
 library(gjam)
 library(tidyverse)
+library(raster)
+library(terra)
 
 
 ########################################################################################################################################
@@ -110,13 +112,22 @@ predictions <- cbind(predictions, df_pelagic)
 save(predictions, file="04_Modelling/02_pelagic/02_eDNA/02_GJAM_eDNA/GJAM_Output_edna/predictions.rdata")
 
 
-raster_predict_motus <- predictions[,1:15]
+predict <- predictions[,c(1:12,34)]
 
-coordinates(raster_predict_motus) <- ~x+y
-gridded(raster_predict_motus) <- TRUE
-raster_predict_motus <- stack(raster_predict_motus)
+for (i in 1:10) {
+  df <- predict[,c(i,11,12,13)]
+  colnames(df)<- c("motu", "x", "y", "SamplingDepth")
+  df <- spread(df, key = "SamplingDepth", value="motu")
+  
+  coordinates(df) <- ~x+y
+  gridded(df) <- TRUE
+  df <- stack(df)
+  
+  df <- rast(df)
+  terra::writeRaster(df,filename = paste0("04_Modelling/02_pelagic/02_eDNA/02_GJAM_eDNA/GJAM_Output_edna/raster_predict_pelagic_motu", i, ".tif"))
+  
+}
 
-plot(raster_predict_motus)
 
 
 
