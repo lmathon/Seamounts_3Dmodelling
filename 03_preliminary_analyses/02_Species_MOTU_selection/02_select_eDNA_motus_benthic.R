@@ -68,4 +68,8 @@ for (i in 1:ncol(edna_motus)) {
 }
 colnames(df_MOTU_benthic) <- c("MOTU", "Assignment","Min read number", "Max read number", "Mean read number")
 
+df_MOTU_benthic <- df_MOTU_benthic %>%
+  left_join(., df_all_filters[,c("sequence", "definition")], by=c("MOTU"="definition")) %>%
+  distinct(MOTU, .keep_all=T)
+
 write.csv(df_MOTU_benthic, file = "03_preliminary_analyses/02_Species_MOTU_selection/table_MOTU_benthic.csv", row.names = F)

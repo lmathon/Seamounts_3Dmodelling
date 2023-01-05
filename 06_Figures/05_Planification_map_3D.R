@@ -4,6 +4,7 @@ library(stars)
 library(raster)
 library(terra)
 library(ggpubr)
+library(tidyverse)
 
 
 # load bathy and transform to keep land
@@ -141,11 +142,15 @@ ggsave(plot_total, filename = "06_Figures/plot_planification_map.pdf", width = 8
 #############################################################
 # histograms percentage layers
 
-percent <- read.csv("05_Marine_Spatial_Planning/03_Prioritization/Rdata/percentage_layers.csv", sep=";")
+percent <- left_join(count_0[,c("Var1", "zone", "perc")], count_1[,c("Var1", "perc")], by="Var1")
+
+colnames(percent) <- c("color", "layer", "blm0", "blm1")
+percent$layer <- c("0-200 & 200-400", "200-400", "all", "200-400 & 400-600", "0-200 & 400-600", "400-600", "0-200")
 
 percent$layer <- factor(percent$layer, levels = c("0-200 & 400-600", "200-400 & 400-600", "0-200 & 200-400", "400-600", "200-400", "0-200", "all"))
 
 percent$color <- as.factor(percent$color)
+percent[is.na(percent)] <- 0
 
 ggplot(percent)+
   geom_col(aes(x=layer, y=blm0), fill=percent$color, width = 0.5)+
@@ -156,7 +161,7 @@ ggplot(percent)+
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         panel.background = element_blank(),
-        axis.text = element_text(size = 12),
+        axis.text = element_text(size = 14),
         axis.ticks = element_blank())
 ggsave(file="06_Figures/Rdata/blm0.jpeg", width = 5.5, height = 4)
   
@@ -169,7 +174,7 @@ ggplot(percent)+
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         panel.background = element_blank(),
-        axis.text = element_text(size = 12),
+        axis.text = element_text(size = 14),
         axis.ticks = element_blank())
 ggsave(file="06_Figures/Rdata/blm1.jpeg", width = 5.5, height = 4)
 
@@ -186,7 +191,7 @@ ggplot(habitat)+
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         panel.background = element_blank(),
-        axis.text = element_text(size = 14),
+        axis.text = element_text(size = 16),
         axis.ticks = element_blank())
 ggsave(file="06_Figures/Rdata/blm0_hab.jpeg", width = 5.5, height = 2)
 
@@ -199,7 +204,7 @@ ggplot(habitat)+
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         panel.background = element_blank(),
-        axis.text = element_text(size = 14),
+        axis.text = element_text(size = 16),
         axis.ticks = element_blank())
 ggsave(file="06_Figures/Rdata/blm1_hab.jpeg", width = 5.5, height = 2)
 
