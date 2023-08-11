@@ -14,14 +14,23 @@ table_surface$surface <- c(sol10_surface, sol20_surface, sol_surface, sol40_surf
 table_surface$perc_surface <- (table_surface$surface*100)/surface_tot
 
 
+myreg=lm(table_surface$perc_surface~table_surface$target)
+summary(myreg)
+
+
+cor.test(table_surface$target,table_surface$perc_surface)
+
+
 ggplot(data=table_surface, aes(x=target, y=perc_surface))+
   geom_point(size=2, col=c("black", "black", "orange", "black", "black"))+
   geom_hline(yintercept=30, linetype="dashed")+
+  geom_abline(linetype="dashed", color="darkred")+
+  annotate(geom="text", x=40, y=10, label="y=1.07x+2.84", hjust=0, size=4, color="black", fontface = "bold")+
   scale_y_continuous(breaks = c(0,10,20,30,40,50,60), limits = c(0,60))+
-  scale_x_continuous(breaks = c(0,10,20,30,40,50), limits = c(0,50))+
+  scale_x_continuous(breaks = c(0,10,20,30,40,50,60), limits = c(0,60))+
   xlab("Biodiversity target (%)")+
   ylab("Spatial domain protected (%)")+
   theme_bw()+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())
 
-ggsave(filename = "06_Figures/Figure5.png", width = 4, height=3)
+ggsave(filename = "06_Figures/Surface_target.png", width = 4, height=3)
