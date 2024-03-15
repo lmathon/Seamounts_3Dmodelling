@@ -47,6 +47,23 @@ save(edna_motus, file="02_formating_data/01_Benthic/Rdata/edna_motus_matrix_bent
 save(edna_richness_benthic, file = "02_formating_data/01_Benthic/Rdata/edna_richness_benthic.rdata")
 
 
+# check for correlation between read number and motu richness
+edna_richness_benthic$read_number <- rowSums(edna_motus)
+cor.test(edna_richness_benthic$richness_tot,edna_richness_benthic$read_number)
+
+plot(edna_richness_benthic$richness_tot~edna_richness_benthic$read_number)
+
+lm <- lm(richness_tot~read_number, data=edna_richness_benthic)
+summary(lm)
+
+ggplot(data=edna_richness_benthic, aes(x=read_number, y=richness_tot))+
+  geom_point(size=2)+
+  geom_abline(slope = 6.033e-06, intercept = 8.901, size=0.8)+
+  annotate(geom="text", x=3e+06, y=70, label="Adjusted R square = 0.12", hjust=0, size=4, color="black", fontface = "bold")+
+  xlab("Number of reads per sample")+
+  ylab("MOTU richness per sample")+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())
 
 #--------------------------------------------------------------------------------------------------------------------------------------
 ## Explanatory variables

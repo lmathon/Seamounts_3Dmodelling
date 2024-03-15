@@ -28,7 +28,7 @@ save(bathy_sf, file="06_Figures/Rdata/bathy_sf.rdata")
 
 
 # blm=0
-load("05_Marine_Spatial_Planning/03_Prioritization/Solution_blm_0/sol_2d_data.rdata")
+load("05_Marine_Spatial_Planning/03_Prioritization/Second_round/Prioritization30/Solution30_blm_0/sol30_2d_data.rdata")
 
 data <- as.data.frame(sol_2d_data)
 data$color <- NA
@@ -78,8 +78,8 @@ plot_0 <- ggplot(sol_2d_data) +
 
 
 
-# blm=1
-load("05_Marine_Spatial_Planning/03_Prioritization/Solution_blm_1/sol_2d_data.rdata")
+# blm=10
+load("05_Marine_Spatial_Planning/03_Prioritization/Second_round/Prioritization30/Solution30_blm_10/sol30_2d_data.rdata")
 
 data <- as.data.frame(sol_2d_data)
 data$color <- NA
@@ -106,22 +106,22 @@ for (i in 1:nrow(data)) {
     data[i,"color"] <- "#8E400D"
 }
 
-count_1 <- as.data.frame(table(data$color))
-count_1$zone <- c("depth1-2","depth2","all","depth1")
-for(i in 1:nrow(count_1)){
-  count_1[i, "perc"] <- (count_1[i, "Freq"]/sum(count_1$Freq))*100
+count_10 <- as.data.frame(table(data$color))
+count_10$zone <- c("depth1-2","all","depth1")
+for(i in 1:nrow(count_10)){
+  count_10[i, "perc"] <- (count_10[i, "Freq"]/sum(count_10$Freq))*100
 }
 
 sol_2d_data$color <- data$color
 
 
-plot_1 <- ggplot(sol_2d_data) +
+plot_10 <- ggplot(sol_2d_data) +
   geom_sf(col=sol_2d_data$color)+
   geom_sf(data = bathy_sf, fill = "grey50", col="grey50")+
   theme_minimal()+
   xlab("Longitude")+
   ylab("Latitude")+
-  ggtitle("BLM = 1")+
+  ggtitle("BLM = 10")+
   theme(plot.title = element_text(size=12, face="bold"),
         panel.grid.major = element_blank(),panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", size=1, fill=NA))
@@ -130,7 +130,7 @@ plot_1 <- ggplot(sol_2d_data) +
 #############################################################
 # assemble plot
 
-plot_total <- ggarrange(plot_0, plot_1, nrow = 2, ncol = 1, labels=c("A", "B"))
+plot_total <- ggarrange(plot_0, plot_10, nrow = 2, ncol = 1, labels=c("A", "B"))
 
 ggsave(plot_total, filename = "06_Figures/plot_planification_map.png", width = 8, height = 10)
 ggsave(plot_total, filename = "06_Figures/plot_planification_map.pdf", width = 8, height = 10)
@@ -142,9 +142,9 @@ ggsave(plot_total, filename = "06_Figures/plot_planification_map.pdf", width = 8
 #############################################################
 # histograms percentage layers
 
-percent <- left_join(count_0[,c("Var1", "zone", "perc")], count_1[,c("Var1", "perc")], by="Var1")
+percent <- left_join(count_0[,c("Var1", "zone", "perc")], count_10[,c("Var1", "perc")], by="Var1")
 
-colnames(percent) <- c("color", "layer", "blm0", "blm1")
+colnames(percent) <- c("color", "layer", "blm0", "blm10")
 percent$layer <- c("0-200 & 200-400", "200-400", "all", "200-400 & 400-600", "0-200 & 400-600", "400-600", "0-200")
 
 percent$layer <- factor(percent$layer, levels = c("0-200 & 400-600", "200-400 & 400-600", "0-200 & 200-400", "400-600", "200-400", "0-200", "all"))
@@ -166,7 +166,7 @@ ggplot(percent)+
 ggsave(file="06_Figures/Rdata/blm0.jpeg", width = 5.5, height = 4)
   
 ggplot(percent)+
-  geom_col(aes(x=layer, y=blm1), fill=percent$color, width = 0.5)+
+  geom_col(aes(x=layer, y=blm10), fill=percent$color, width = 0.5)+
   coord_flip()+
   ylim(0,80)+
   labs(x="", y="")+
@@ -176,11 +176,11 @@ ggplot(percent)+
         panel.background = element_blank(),
         axis.text = element_text(size = 14),
         axis.ticks = element_blank())
-ggsave(file="06_Figures/Rdata/blm1.jpeg", width = 5.5, height = 4)
+ggsave(file="06_Figures/Rdata/blm10.jpeg", width = 5.5, height = 4)
 
 
 
-habitat <-data.frame(habitat=c("Seamounts", "Deep slopes"), blm0=c(45.1,54.9), blm1=c(53.2,46.8), color=c("grey80", "white"))
+habitat <-data.frame(habitat=c("Seamounts", "Deep slopes"), blm0=c(45.1,54.9), blm10=c(44.8,55.2), color=c("grey80", "white"))
 
 ggplot(habitat)+
   geom_col(aes(x=habitat, y=blm0), fill=habitat$color, col="black", width = 0.5)+
@@ -196,7 +196,7 @@ ggplot(habitat)+
 ggsave(file="06_Figures/Rdata/blm0_hab.jpeg", width = 5.5, height = 2)
 
 ggplot(habitat)+
-  geom_col(aes(x=habitat, y=blm1), fill=habitat$color, col="black", width = 0.5)+
+  geom_col(aes(x=habitat, y=blm10), fill=habitat$color, col="black", width = 0.5)+
   coord_flip()+
   ylim(0,80)+
   labs(x="", y="")+
@@ -206,7 +206,7 @@ ggplot(habitat)+
         panel.background = element_blank(),
         axis.text = element_text(size = 16),
         axis.ticks = element_blank())
-ggsave(file="06_Figures/Rdata/blm1_hab.jpeg", width = 5.5, height = 2)
+ggsave(file="06_Figures/Rdata/blm10_hab.jpeg", width = 5.5, height = 2)
 
 
 
@@ -217,7 +217,7 @@ ggsave(file="06_Figures/Rdata/blm1_hab.jpeg", width = 5.5, height = 2)
 
 # save raster of solutions
 load("05_Marine_Spatial_Planning/01_formating_prediction_layers/Rdata/df_0_200.rdata")
-load("05_Marine_Spatial_Planning/03_Prioritization/Solution_blm_0/sol_2d_data.rdata")
+load("05_Marine_Spatial_Planning/03_Prioritization/Second_round/Prioritization30/Solution30_blm_0/sol30_2d_data.rdata")
 sol0 <- sol_2d_data
 
 df <- sol0[,-1]
@@ -234,14 +234,14 @@ gridded(df) <- TRUE
 raster_sol0 <- stack(df)
 raster_sol0 <- rast(raster_sol0)
 
-terra::writeRaster(raster_sol0,"05_Marine_Spatial_Planning/03_Prioritization/Rdata/raster_sol0.tif", overwrite=T)
+terra::writeRaster(raster_sol0,"05_Marine_Spatial_Planning/03_Prioritization/Second_round/Prioritization30/Rdata/raster_sol0.tif", overwrite=T)
 terra::plot(raster_sol0, axes=FALSE,axis.args=list( cex.axis=0.7))
 
 
-load("05_Marine_Spatial_Planning/03_Prioritization/Solution_blm_1/sol_2d_data.rdata")
-sol1 <- sol_2d_data
+load("05_Marine_Spatial_Planning/03_Prioritization/Second_round/Prioritization30/Solution30_blm_10/sol30_2d_data.rdata")
+sol10 <- sol_2d_data
 
-df <- sol1[,-1]
+df <- sol10[,-1]
 df <- as(df, Class = "Spatial")
 df <- df@data
 df[df==0] <- NA
@@ -252,9 +252,9 @@ df[,c(1,2)] <- as.numeric(unlist(df[,c(1,2)]))
 
 coordinates(df) <- ~x+y
 gridded(df) <- TRUE
-raster_sol1 <- stack(df)
-raster_sol1 <- rast(raster_sol1)
+raster_sol10 <- stack(df)
+raster_sol10 <- rast(raster_sol10)
 
-terra::writeRaster(raster_sol1,"05_Marine_Spatial_Planning/03_Prioritization/Rdata/raster_sol1.tif", overwrite=T)
+terra::writeRaster(raster_sol10,"05_Marine_Spatial_Planning/03_Prioritization/Second_round/Prioritization30/Rdata/raster_sol10.tif", overwrite=T)
 
-terra::plot(raster_sol1, axes=FALSE,axis.args=list( cex.axis=0.7))
+terra::plot(raster_sol10, axes=FALSE,axis.args=list( cex.axis=0.7))

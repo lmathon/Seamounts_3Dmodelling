@@ -158,8 +158,13 @@ b_data_2d <- tibble(
   id2 = b_data_2d@j + 1,
   boundary = b_data_2d@x
 )
-### compute edge length
-edge_length <- raster::modal(b_data_2d$boundary)
+
+# Boundary was computed in 2D. We want it in 3D. So values should be multiplied by 200 (which is the height of the planning units)
+b_data_2d$boundary <- b_data_2d$boundary*200
+
+### compute vertical boundary area (should be 1000*1000 but distance are a bit distorted)
+#edge_length <- raster::modal(b_data_2d$boundary)
+edge_length <- 1060*992
 
 ## create matrix for 3d planning unit data
 ### initialize with horizontal connections between 3d planning units
