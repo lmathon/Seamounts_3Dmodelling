@@ -4,8 +4,14 @@
 .Ruserdata
 
 **/.DS_Store
-01_Raw_data/Clean_eDNA/data_MOTUs/NouvelleCaledonie/*
-!01_Raw_data/Clean_eDNA/data_MOTUs/NouvelleCaledonie/metadata/
+01_Raw_data/Clean_eDNA/data_MOTUs/*
+01_Raw_data/Clean_eDNA/LULU/*
+01_Raw_data/Clean_eDNA/Rdata/*
+01_Raw_data/Acoustic_Data_All_Site_Cut_10m.csv
+01_Raw_data/Bruvs_Environmental_Variables_SEAMOUNTS_November2021.csv
+01_Raw_data/BruvsDataForLaetitia.csv
+01_Raw_data/eDNA_Environmental_Variables_SEAMOUNTS_November2021.csv
+01_Raw_data/EdnaDataForLaetitia.csv
 00_metadata/environmental/*
 00_metadata/biblio/*
 00_metadata/Seamounts_Alain/*
