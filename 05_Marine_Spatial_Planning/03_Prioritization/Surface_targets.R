@@ -23,8 +23,9 @@ linearHypothesis(myreg, "(Intercept) = 0")
 
 ggplot(data=table_surface, aes(x=target, y=perc_surface))+
   geom_point(size=2, col=c("black", "black", "orange", "black", "black"))+
-  geom_hline(yintercept=30, linetype="dashed")+
+  geom_hline(yintercept=30, linetype="dashed", linewidth=0.3)+
   geom_abline(linetype="dashed", color="darkred")+
+  geom_abline(slope = 1.07, intercept = 2.84)+
   annotate(geom="text", x=35, y=25, label="R²=1, P<0.001", hjust=0, size=4, color="black", fontface = "bold")+
   annotate(geom="text", x=35, y=20, label="Slope=1.07 (against 1: P<0.001)", hjust=0, size=4, color="black")+
   annotate(geom="text", x=35, y=15, label="Intercept=2.84 (against 0: P<0.001)", hjust=0, size=4, color="black")+
@@ -35,4 +36,4 @@ ggplot(data=table_surface, aes(x=target, y=perc_surface))+
   theme_bw()+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())
 
-ggsave(filename = "06_Figures/Surface_target.png", width = 7, height=5)
+ggsave(filename = "05_Marine_Spatial_Planning/03_Prioritization//Surface_target.png", width = 7, height=5)

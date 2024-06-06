@@ -36,7 +36,7 @@ plot_MPA <- ggplot(MPA) +
   ylab("Latitude")+
   scale_x_continuous(breaks = xlabs1, labels = paste0(xlabs1,'°E')) +
   scale_y_continuous(breaks = ylabs1, labels = paste0(ylabs1,'°S')) +
-  ggtitle("Current MPAs in the Marine Park of the Coral Sea")+
+  ggtitle("Current MPAs in the archipelago of New-Caledonia")+
   theme(plot.title = element_text(size=11, face="bold"),
         panel.grid.major = element_blank(),panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", size=1, fill=NA))

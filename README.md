@@ -13,7 +13,8 @@ The folder [environmental](00_metadata/environmental) contains all the shapefile
 
 ### 01_Raw_data
 
-This folder contains the raw BRUVS and acoustic data, and the raw explanatory variables for each dataset.
+This folder contains the script to analyze the raw eDNA data.
+Data are accessible at https://doi.org/10.5281/zenodo.11480777 upon request.
 
 
 #### Clean_eDNA
