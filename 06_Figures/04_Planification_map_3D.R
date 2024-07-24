@@ -130,7 +130,7 @@ plot_10 <- ggplot(sol_2d_data) +
 #############################################################
 # assemble plot
 
-plot_total <- ggarrange(plot_0, plot_10, nrow = 2, ncol = 1, labels=c("A", "B"))
+plot_total <- ggarrange(plot_0, plot_10, nrow = 2, ncol = 1, labels=c("a", "b"))
 
 ggsave(plot_total, filename = "06_Figures/plot_planification_map.png", width = 8, height = 10)
 ggsave(plot_total, filename = "06_Figures/plot_planification_map.pdf", width = 8, height = 10)

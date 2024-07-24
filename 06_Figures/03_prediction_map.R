@@ -10,7 +10,7 @@ library(ggpubr)
 load("04_Modelling/01_benthic/01_BRUVs/01_BRT_richness_BRUVS/BRT_Outputs/bruvs_richness_predict.rdata")
 
 # load land contour
-world <- st_read("c://Users/mathon/Desktop/PhD/Projets/Megafauna/Carto_megafauna/GSHHS_f_L1.shp")
+world <- st_read("c://Users/mathonlocal/Desktop/PhD/Projets de Recherche/Megafauna/Carto_megafauna/GSHHS_f_L1.shp")
 
 
 
@@ -165,10 +165,11 @@ map_predict4 <- ggplot()+
 
 ## plot together
 
-richness <- ggarrange(map_predict1, map_predict2, ncol=2, labels = c("A", "B"), common.legend = T, legend = "bottom")
-abund <- ggarrange(map_predict3, map_predict4, ncol=2, labels = c("C", "D"), common.legend = T, legend = "bottom")
+richness <- ggarrange(map_predict1, map_predict2, ncol=2, labels = c("a", "b"), common.legend = T, legend = "bottom")
+abund <- ggarrange(map_predict3, map_predict4, ncol=2, labels = c("c", "d"), common.legend = T, legend = "bottom")
 
-Fig4 <- ggarrange(richness, abund, nrow=2)
+Fig3 <- ggarrange(richness, abund, nrow=2)
 
 
-ggsave(Fig4, file="06_Figures/Figure4.png", width=10, height = 7.5)
+ggsave(Fig3, file="06_Figures/Figure3.png", width=10, height = 7.5)
+ggsave(Fig3, file="06_Figures/Figure3.tiff", width=10, height = 7.5)
